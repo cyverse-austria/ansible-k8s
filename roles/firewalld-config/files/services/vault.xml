@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>vault</short>
+  <description>Vault is used for storage and retrieval of secrets.</description>
+  <port protocol="tcp" port="8200-8201"/>
+</service>

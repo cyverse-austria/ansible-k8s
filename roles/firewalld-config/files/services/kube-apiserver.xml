@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>kube-apiserver</short>
+  <description>kube-apiserver provides the REST API for Kubernetes.</description>
+  <port protocol="tcp" port="6443"/>
+</service>

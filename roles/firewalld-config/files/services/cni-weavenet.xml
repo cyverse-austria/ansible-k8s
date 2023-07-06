@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>cni-weavenet</short>
+  <description>Weavenet an overlay network for Kubernetes.</description>
+  <port protocol="tcp" port="6783"/>
+  <port protocol="udp" port="6783-6784"/>
+</service>

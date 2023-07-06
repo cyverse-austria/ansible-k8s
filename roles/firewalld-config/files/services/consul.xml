@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>consul</short>
+  <description>Consul is required by Vault</description>
+  <port protocol="tcp" port="8300-8302"/>
+  <port protocol="udp" port="8301-8302"/>
+</service>

@@ -1,0 +1,21 @@
+---
+
+- name: Install HAProxy loadbalancer
+  hosts: loadbalancer
+  gather_facts: true
+  become: true
+  roles:
+    - role: haproxy-loadbalancer
+
+  # Vars newly added
+  vars:
+    domain: cyverse.at
+    tls_pem_path: "/etc/ssl/certs/{{ domain }}.pem"
+
+  tasks:
+    - name: reload haproxy
+      systemd:
+        daemon_reload: true
+        service: haproxy
+        state: reloaded
+        enabled: true

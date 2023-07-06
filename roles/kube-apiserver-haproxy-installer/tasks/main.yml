@@ -1,0 +1,69 @@
+---
+- name: Install haproxy and setools
+  ansible.builtin.include_tasks: "{{ ansible_facts['distribution'] }}.yml"
+
+- name: Force flush handlers
+  ansible.builtin.meta: flush_handlers
+
+# sudo semanage port --add --type http_port_t --proto tcp 6443
+- name: Get selinux info
+  # ansible.builtin.command: semanage port -l \| egrep '^http_port_t\s+tcp\s+.*6443'
+  ansible.builtin.shell:
+    set -o pipefail &&
+    semanage port -l |
+    grep -E '^http_port_t\s+tcp\s+.*6443'
+  args:
+    executable: /bin/bash
+  register: seinfo
+  failed_when: false
+  changed_when: seinfo.rc != 0
+  check_mode: false
+
+- name: add selinux permission
+  ansible.builtin.command: semanage port --add --type http_port_t --proto tcp 6443
+  when: seinfo.rc != 0
+
+- name: Check if haproxy conf exists
+  ansible.builtin.stat:
+    path: /etc/haproxy/haproxy.cfg
+  register: proxy_conf
+
+# - name: Debug haproxy existst?
+#   ansible.builtin.debug:
+#     var: proxy_conf
+
+- name: Generate haproxy.cfg auto
+  ansible.builtin.template:
+    src: etc/haproxy/haproxy.{{ proxy_conf.stat.exists | ternary('multi', 'one') }}.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: "0644"
+    backup: true
+  notify:
+    - k8s-worker-fact-gatherer | restart haproxy
+  when:
+    haproxy is not defined
+
+# - name: Generate haproxy.cfg one
+#   ansible.builtin.template:
+#     src: etc/haproxy/haproxy.one.cfg.j2
+#     dest: /etc/haproxy/haproxy.cfg
+#     mode: "0644"
+#     backup: true
+#   notify:
+#     - k8s-worker-fact-gatherer | restart haproxy
+#   when:
+#     - haproxy is defined
+#     - haproxy | int == 1 or
+#       haproxy == "o"
+#
+# - name: Generate haproxy.cfg multi
+#   ansible.builtin.template:
+#     src: etc/haproxy/haproxy.{{ proxy_conf.stat.exists | ternary('multi', 'one') }}.cfg.j2
+#     dest: /etc/haproxy/haproxy.cfg
+#     mode: "0644"
+#     backup: true
+#   notify:
+#     - k8s-worker-fact-gatherer | restart haproxy
+#   when:
+#     - haproxy is defined
+#     - haproxy == "m"

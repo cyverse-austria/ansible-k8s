@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>k8s-worker</short>
+  <description>For incoming connections from Kubernetes worker nodes.</description>
+  <source ipset="k8s-worker"/>
+  <service name="consul"/>
+  <service name="cni-flannel"/>
+  <service name="cni-weavenet"/>
+  <service name="https"/>
+  <service name="kubelet-api-ro"/>
+  <service name="kubelet-api-rw"/>
+  <service name="node-ports"/>
+  <service name="ssh"/>
+  <service name="vault"/>
+  <masquerade/>
+</zone>

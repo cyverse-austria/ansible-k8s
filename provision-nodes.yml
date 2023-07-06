@@ -1,0 +1,76 @@
+---
+- name: Configure kube-apiserver haproxy
+  hosts: kube-apiserver-haproxy
+  # gather_facts: true
+  become: true
+  tasks:
+    - name: Put SELinux in permissive mode
+      ansible.posix.selinux:
+        policy: "{{ (ansible_facts['distribution'] == 'Debian') | ternary('default', 'targeted') }}"
+        # policy: targeted
+        state: permissive
+  roles:
+    - kube-apiserver-haproxy-installer
+  tags:
+    - haproxy
+
+# TODO
+# NOTE: is done by role `firewalld-config`
+# it's firewalld not iptables
+#
+# - name: Configure control plane firewalls
+#   hosts: k8s-control-plane
+#   gather_facts: true
+#   become: true
+#   roles:
+#     - control-plane-firewaller
+#   # tasks:
+#   #   - name: reload firewall
+#   #     ansible.builtin.shell: systemctl reload iptables
+#   #     ignore_errors: true
+#   # tags:
+#   #   - firewall
+#
+# - name: Configure worker firewalls
+#   hosts: k8s-worker
+#   gather_facts: true
+#   become: true
+#   roles:
+#     - worker-firewaller
+#   # tasks:
+#   #   - name: reload firewall
+#   #     ansible.builtin.shell: systemctl reload iptables
+#   #     ignore_errors: true
+#   #     tags:
+#   #       - firewall
+
+- name: Install stuff
+  hosts: k8s
+  gather_facts: true
+  become: true
+
+  pre_tasks:
+    - name: Install socat
+      ansible.builtin.yum:
+        name: socat
+        state: present
+
+  roles:
+    - githubixx.containerd
+    - docker-installer # todo remove actual docker installs
+    - kubeadm-installer
+
+  tasks:
+    - name: Start containerd
+      ansible.builtin.systemd:
+        daemon_reload: true
+        service: containerd
+        state: started
+        enabled: true
+
+    - name: Start kubelet
+      ansible.builtin.systemd:
+        daemon_reload: true
+        service: kubelet
+        state: started
+        enabled: true

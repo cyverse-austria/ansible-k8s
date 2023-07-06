@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>overlay</short>
+  <description>For incoming connections from the Kubernetes overlay network.</description>
+  <source ipset="overlay"/>
+  <service name="cni-weavenet"/>
+  <service name="kubelet-api-ro"/>
+  <service name="vault"/>
+  <masquerade/>
+</zone>

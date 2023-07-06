@@ -1,0 +1,74 @@
+---
+- name: Check that the /etc/kubernetes/kubelet.conf exists
+  ansible.builtin.stat:
+    path: /etc/kubernetes/kubelet.conf
+    get_attributes: false
+    get_checksum: false
+    get_mime: false
+  register: kubelet_presence
+
+- name: Get some facts
+  ansible.builtin.include_role:
+    name: gatherer_facts_from
+  vars:
+    role_var:
+      - "{{ groups['k8s-control-plane'][0] }}"
+      - "{{ groups['kube-apiserver-haproxy'][0] }}"
+
+- name: Get get join command
+  ansible.builtin.command:
+    kubeadm token create --print-join-command
+  register: r_join_command
+  delegate_to: "{{ groups['k8s-control-plane'][0] }}"
+  check_mode: false
+
+- name: Get get join cert
+  ansible.builtin.command:
+    kubeadm init phase upload-certs --upload-certs
+  register: r_certificate
+  delegate_to: "{{ groups['k8s-control-plane'][0] }}"
+  check_mode: false
+
+- name: Join Kubernetes controller
+  ansible.builtin.command:
+    "{{ r_join_command.stdout }} --control-plane --certificate-key {{ r_certificate.stdout_lines[2] }}"
+  when: not kubelet_presence.stat.exists | bool
+
+- name: Waiting for configuration to become available
+  ansible.builtin.wait_for:
+    path: /etc/kubernetes/admin.conf
+  # when: "'failed' in token_list_result.stderr"
+
+- name: Make .kube directory
+  ansible.builtin.file:
+    path: /root/.kube
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Copy Kubernetes config (root)
+  ansible.builtin.copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /root/.kube/config
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0644"
+
+#- name: Networking
+#  include_tasks: "{{ kubernetes_default_networking }}.yml"
+
+- name: Get cluster token
+  shell: kubeadm token list | awk 'NR==2{print $1}'
+  register: token_result
+
+- set_fact:
+    token: '{{token_result.stdout_lines}}'
+
+- name: Get cluster ca-cert-hash
+  shell: "openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'"
+  register: cert_result
+
+- set_fact:
+    cert: '{{cert_result.stdout_lines}}'

@@ -1,0 +1,5 @@
+tls_pem_path: /etc/ssl/certs/cyverse.run.pem
+domain: cyverse.run
+regsub: '\.cyverse\.run$,'
+keycloak: "keycloak.{{ domain }}"
+userportal: "user.{{ domain }}"

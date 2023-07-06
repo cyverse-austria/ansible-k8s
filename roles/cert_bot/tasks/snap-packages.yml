@@ -1,0 +1,22 @@
+---
+
+- name: Check certbot installation
+  ansible.builtin.shell: >
+    set -o pipefail &&
+    snap get certbot -d |
+    grep '"trust-plugin-with-root": "ok"'
+  register: snap_installed_result
+  failed_when: false
+  check_mode: false
+  changed_when: snap_installed_result.rc != 0
+  args:
+    executable: /bin/bash
+
+- name: Install snap certbot
+  ansible.builtin.shell: |
+    snap install --classic certbot
+    snap set certbot trust-plugin-with-root=ok
+    snap install certbot-dns-digitalocean
+  args:
+    executable: /bin/bash
+  when: snap_installed_result.rc != 0

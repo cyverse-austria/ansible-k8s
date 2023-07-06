@@ -1,0 +1,22 @@
+---
+
+- name: Update apt-cache
+  ansible.builtin.apt:
+    # name: "*"
+    # state: latest
+    update_cache: true
+
+- name: Install haproxy and setools for Debian
+  ansible.builtin.apt:
+    name:
+      - haproxy
+      - setools
+      - policycoreutils-python-utils
+      - selinux-basics
+      - selinux-policy-default
+      - auditd
+    state: present
+  notify:
+    - Move example haproxy.cfg
+    - Activate selinux
+    - Reboot and wait

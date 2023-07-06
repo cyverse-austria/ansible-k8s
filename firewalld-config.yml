@@ -1,0 +1,62 @@
+---
+- hosts: haproxy
+  name: Gather facts from HAProxy hosts
+  # tasks: []
+
+- name: Configure firewalld for Kubernetes
+  hosts: k8s
+  gather_facts: true
+  become: true
+  roles:
+    - firewalld-config
+
+- name: Open up kube-apiserver on control nodes
+  hosts: k8s-control-plane
+  gather_facts: true
+  become: true
+
+  tasks:
+    - name: Enable kube-apiserver service
+      ansible.posix.firewalld:
+        permanent: true
+        immediate: true
+        service: kube-apiserver
+        state: enabled
+
+    - name: Enable https service
+      ansible.posix.firewalld:
+        permanent: true
+        immediate: true
+        service: https
+        state: enabled
+
+- name: Disable SWAP in fstab since kubernetes can't work with swap enabled
+  hosts: k8s-worker
+  gather_facts: true
+  become: true
+
+  tasks:
+
+    - name: Grab the swap space used (in megabytes)
+      ansible.builtin.shell: >
+        set -o pipefail &&
+        free -m |
+        awk '/Swap/{print $2}'
+      register: swap_used
+      failed_when: false
+      check_mode: false
+      # changed_when: snap_installed_result.rc != 0
+      changed_when: (swap_used.stdout_lines[0] | int) > 0
+      args:
+        executable: /bin/bash
+
+    - name: Turn off swap
+      ansible.builtin.shell: "swapoff -a"
+      when: (swap_used.stdout_lines[0] | int) > 0
+
+    - name: Remove from /etc/fstab
+      ansible.builtin.replace:
+        path: /etc/fstab
+        regexp: '^([^#].*?\sswap\s+swap\s+.*)$'
+        replace: '# \1'
+      when: (swap_used.stdout_lines[0] | int) > 0

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ipset type="hash:net">
+  <short>k8s-worker</short>
+{%- for host in groups['k8s-worker'] %}
+  <entry>{{ hostvars[host]['ansible_default_ipv4']['address'] }}</entry>
+{% endfor -%}
+</ipset>

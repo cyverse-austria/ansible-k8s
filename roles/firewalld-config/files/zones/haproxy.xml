@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<zone>
+  <short>haproxy</short>
+  <description>For incoming connections from the haproxy hosts.</description>
+  <source ipset="haproxy"/>
+  <service name="node-ports"/>
+  <masquerade/>
+</zone>

@@ -1,0 +1,8 @@
+---
+
+- name: Reload firewall
+  ansible.builtin.systemd:
+    name: firewalld
+    state: restarted
+    daemon_reload: true
+    enabled: true

@@ -1,0 +1,7 @@
+---
+# tasks file for hosts-file
+- name: Update /etc/hosts file
+  ansible.builtin.blockinfile:
+    dest: /etc/hosts
+    content: "{{ lookup('template', 'templates/etc/hosts.j2') }}"
+    state: present

@@ -1,0 +1,20 @@
+---
+
+- name: k8s-worker-fact-gatherer | restart haproxy
+  ansible.builtin.systemd:
+    daemon_reload: true
+    service: haproxy
+    state: restarted
+    enabled: true
+
+- name: Move example haproxy.cfg
+  ansible.builtin.command:
+    mv /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.example
+  args:
+    creates: /etc/haproxy/haproxy.cfg.example
+
+- name: Activate selinux
+  command: selinux-activate
+
+- name: Reboot and wait
+  ansible.builtin.reboot:

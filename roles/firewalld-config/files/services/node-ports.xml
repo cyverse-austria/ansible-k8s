@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>node-ports</short>
+  <description>Kubernetes Node Ports</description>
+  <port protocol="tcp" port="30000-32767"/>
+</service>

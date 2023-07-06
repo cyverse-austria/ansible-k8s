@@ -1,0 +1,73 @@
+---
+
+- name: Check current Kubernetes controller status
+  ansible.builtin.command: kubeadm token list
+  register: token_list_result
+  # ignore_errors: true
+  failed_when: false
+  check_mode: false
+  changed_when: token_list_result.rc != 0
+
+- name: Initialize Kubernetes controller
+  ansible.builtin.shell: |
+    kubeadm init \
+      --control-plane-endpoint={{ hostvars[groups['kube-apiserver-haproxy'][0]].ansible_default_ipv4.address }}:{{ kubernetes_default_port }} \
+      --upload-certs --pod-network-cidr={{ kubernetes_network }} \
+      --service-cidr={{kubernetes_service_network}}
+      # --ignore-preflight-errors=all
+  args:
+    executable: /bin/bash
+    creates: "/etc/kubernetes/admin.conf"
+  # when: token_list_result.stderr is regex("^failed to")
+  # when: token_list_result.changed == true
+  when: token_list_result.rc != 0
+
+- name: Waiting for configuration to become available
+  ansible.builtin.wait_for:
+    path: /etc/kubernetes/admin.conf
+  when: "'failed' in token_list_result.stderr"
+
+- name: Make .kube directory
+  ansible.builtin.file:
+    path: /root/.kube
+    state: directory
+    owner: root
+    group: root
+    mode: "0700"
+
+- name: Copy Kubernetes config (root)
+  ansible.builtin.copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /root/.kube/config
+    remote_src: true
+    owner: root
+    group: root
+    mode: "0644"
+
+#D, logging actions that would be blocked. ================================ rewritten =============================
+
+#- name: Networking
+#  include_tasks: "{{ kubernetes_default_networking }}.yml"
+
+- name: Get cluster token
+  shell: kubeadm token list | awk 'NR==2{print $1}'
+  register: token_result
+
+- set_fact:
+    token: '{{token_result.stdout_lines}}'
+
+- name: Get cluster ca-cert-hash
+  shell: "openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'"
+  register: cert_result
+
+- set_fact:
+    cert: '{{cert_result.stdout_lines}}'
+
+# using weave addon: https://www.weave.works/docs/net/latest/kubernetes/kube-addon/
+- name: install Pod network
+  become: yes
+  become_user: root
+  shell: kubectl apply -f "https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml" >> pod_setup.txt
+  args:
+    chdir: $HOME
+    creates: pod_setup.txt

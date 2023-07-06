@@ -1,0 +1,10 @@
+---
+
+- name: Install haproxy and setools for CentOS
+  ansible.builtin.yum:
+    name:
+      - haproxy
+      - setools
+    state: present
+  notify:
+    - Move example haproxy.cfg

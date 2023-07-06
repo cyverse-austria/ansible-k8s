@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>kube-controller-mgmt</short>
+  <description>kube-controller-manager API.</description>
+  <port protocol="tcp" port="10252"/>
+</service>

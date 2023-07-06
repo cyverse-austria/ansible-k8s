@@ -1,0 +1,8 @@
+---
+- name: destroy k8s
+  hosts: k8s-worker
+  gather_facts: true
+  become: yes
+
+  roles:
+    - destroy-k8s

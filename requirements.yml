@@ -1,0 +1,14 @@
+---
+
+roles:
+    - name: githubixx.containerd
+
+collections:
+    - name: community.general
+      version: ">=6.4.0"
+
+# - src: https://github.com/githubixx/ansible-role-containerd/archive/0.9.0\+1.7.0.tar.gz
+# - downloading role 'containerd', owned by githubixx
+# - downloading role from https://github.com/githubixx/ansible-role-containerd/archive/0.9.0+1.7.0.tar.gz
+# - extracting githubixx.containerd to /home/mf2601/.ansible/roles/githubixx.containerd
+# - githubixx.containerd (0.9.0+1.7.0) was installed successfully

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<service>
+  <short>kube-scheduler</short>
+  <description>kube-scheduler API.</description>
+  <port protocol="tcp" port="10251"/>
+</service>

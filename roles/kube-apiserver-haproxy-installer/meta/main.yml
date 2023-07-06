@@ -1,0 +1,6 @@
+dependencies:
+  # - { role: k8s-control-plane-fact-gatherer }
+  # roles:
+  - role: gatherer_facts_from
+    vars:
+      role_var: "{{ groups['k8s-control-plane'] }}"

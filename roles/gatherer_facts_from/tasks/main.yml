@@ -1,0 +1,10 @@
+---
+- name: Force fact gathering for the k8s-control-plane group
+  ansible.builtin.setup:
+  delegate_to: "{{ item }}"
+  delegate_facts: true
+  loop: "{{ role_var }}"
+  # loop: "{{groups['k8s-control-plane']}}"
+  # tags:
+  #   - firewall
+  # check_mode: false
