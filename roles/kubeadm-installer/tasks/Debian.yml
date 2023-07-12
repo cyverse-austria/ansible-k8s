@@ -1,0 +1,23 @@
+---
+
+# NOTE: In Debian11 selinux seems to be disabled by default
+#
+- name: Add repo key
+  ansible.builtin.apt_key:
+    url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+    state: present
+
+- name: Add repo
+  ansible.builtin.apt_repository:
+    repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+    filename: kubernetes
+    state: present
+
+- name: Add some packages
+  ansible.builtin.apt:
+    state: present
+    update_cache: true
+    name:
+      - kubelet=1.26.1-00
+      - kubeadm=1.26.1-00
+      - kubectl=1.26.1-00
