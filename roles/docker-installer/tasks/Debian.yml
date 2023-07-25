@@ -1,5 +1,12 @@
 ---
 
+- name: Add gpg
+  ansible.builtin.apt:
+    state: present
+    update_cache: true
+    name:
+      - gpg
+
 - name: Add docker repo key
   ansible.builtin.apt_key:
     url: "https://download.docker.com/linux/debian/gpg"

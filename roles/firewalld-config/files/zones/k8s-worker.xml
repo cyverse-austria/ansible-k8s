@@ -12,5 +12,11 @@
   <service name="node-ports"/>
   <service name="ssh"/>
   <service name="vault"/>
+  <!-- TODO: To test -->
+  <service name="etcd"/>
+  <service name="kube-apiserver"/>
+  <service name="kube-controller-mgmt-api"/>
+  <service name="kube-scheduler-api"/>
+  <!-- TODO: To test -->
   <masquerade/>
 </zone>

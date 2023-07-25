@@ -9,8 +9,8 @@
   <service name="etcd"/>
   <service name="https"/>
   <service name="kube-apiserver"/>
-  <!-- <service name="kube-controller-mgmt-api"/> -->
-  <!-- <service name="kube-scheduler-api"/> -->
+  <service name="kube-controller-mgmt-api"/>
+  <service name="kube-scheduler-api"/>
   <service name="kubelet-api-ro"/>
   <service name="kubelet-api-rw"/>
   <service name="node-ports"/>
