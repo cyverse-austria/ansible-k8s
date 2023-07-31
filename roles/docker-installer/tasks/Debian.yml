@@ -1,0 +1,28 @@
+---
+
+- name: Add gpg
+  ansible.builtin.apt:
+    state: present
+    update_cache: true
+    name:
+      - gpg
+
+- name: Add docker repo key
+  ansible.builtin.apt_key:
+    url: "https://download.docker.com/linux/debian/gpg"
+    state: present
+
+- name: Add docker repo
+  ansible.builtin.apt_repository:
+    repo: "deb https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+    filename: docker
+    state: present
+
+- name: Add some packages
+  ansible.builtin.apt:
+    state: present
+    update_cache: true
+    name:
+      - thin-provisioning-tools
+      - lvm2
+      - containerd.io

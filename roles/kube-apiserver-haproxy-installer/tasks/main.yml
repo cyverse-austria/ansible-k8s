@@ -1,6 +1,7 @@
 ---
 - name: Install haproxy and setools
-  ansible.builtin.include_tasks: "{{ ansible_facts['distribution'] }}.yml"
+  # ansible.builtin.include_tasks: "{{ ansible_facts['distribution'] }}.yml"
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
 
 - name: Force flush handlers
   ansible.builtin.meta: flush_handlers

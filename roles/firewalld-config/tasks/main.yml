@@ -1,9 +1,7 @@
 ---
 
-- name: Install firewalld
-  ansible.builtin.yum:
-    name: firewalld
-    state: present
+- name: Install snapd
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
 
 - name: Enable firewalld
   ansible.builtin.service:
@@ -68,12 +66,8 @@
   notify:
     - Reload firewall
 
-# - name: Restart firewalld
-#   ansible.builtin.service:
-#     name: firewalld
-#     # state: restarted
-#     state: started
-#     enabled: true
+- name: Force flush handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: Enable the consul service in the default zone.
   ansible.posix.firewalld:
