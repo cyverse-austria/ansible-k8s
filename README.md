@@ -1,14 +1,15 @@
-# ansible-k8s-rhel
-Ansible playbooks to deploy kubernetes on Centos7 & Rocky Linux 8.
+# ansible-k8s
 
-`Ansible version: 2.10.8`
+Ansible playbooks to deploy kubernetes cluster on **Centos7, Debian 11 & Rocky Linux 8 and 9**.
+
+`Ansible version: >= 2.10.8`
 
 `kubernetes version: 1.26.1`
 
 ## preq
 
 Be sure to have a reasonably internet connection. Otherwise there could be timeouts during package installation.  
-Remove ansible cache! if you have one.  
+**Remove ansible cache!** if you have one.  
 There has to be as user with passwordless ssh and passwordless sudo access or root is allowed to login without a password.
 
 ### install required ansible roles
@@ -17,32 +18,67 @@ There has to be as user with passwordless ssh and passwordless sudo access or ro
 
 ### Update the inventory
 
-update the [inventory](./inventory\hosts)
+update the [inventory](./inventory/hosts)
 
 ### Ping for ssh connections
 
 ```bash
-ansible -i inventory/ -m ping all --user=<sudo-user>
+ansible -i inventory/ -m ping all --user=<sudo-user> --become 
 ```
 
-## Get Started
+---
 
-### Run playbooks
+## Playbooks
 
-#### setup the firewall
+### firewalld-config.yml
+
+This playbook configures the firewall for Kubernets on nodes that use `firewalld`. The configuration contains four IP
+sets:
+
+| IP Set         | Description                                               |
+| -------        | -----------                                               |
+| overlay        | The CIDR block for the overlay network used by Kubernetes |
+| haproxy        | The nodes where the HAproxy instances are running         |
+| k8s-controller | The Kubernets controller nodes                            |
+| k8s-worker     | The Kubernetes worker nodes                               |
+
+The configuration also contains numerous service definitions:
+
+| Service        | Description                                                       |
+| -------        | -----------                                                       |
+| cni-flannel    | Flannel overlay network                                           |
+| cni-weavenet   | WeaveNet overlay network                                          |
+| consul         | Consul                                                            |
+| etcd           | Etcd, which is used internally by the Kubernetes controller nodes |
+| kube-apiserver | The Kubernetes REST API                                           |
+| kubelet-api-ro | The read-only port for the Kubelet API                            |
+| kubelet-api-rw | The read/write port for the Kubelet API                           |
+| node-ports     | A port range for Kubernetes services defining node ports          |
+| vault          | Vault                                                             |
+
+It also contains four custom zone definitions corresponding to the IP sets mentioned above:
+
+| Zone           | Description                            |
+| ----           | -----------                            |
+| haproxy        | Nodes that will be running haproxy     |
+| k8s-controller | Kubernetes controller nodes            |
+| k8s-worker     | Kubernetes worker nodes                |
+| overlay        | The overlay network used by kubernetes |
 
 ```bash
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./firewalld-config.yml
 ```
 
-#### Provision Nodes 
+### provision-nodes.yml
+
 Install all required dependencies for hosts , Which includes installing the `kube-apiserver-haproxy`.
 
 ```bash
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./provision-nodes.yml
 ```
 
-#### Init Cluster
+### multi-master.yml
+
 This playbook will do the followings:
 * init master node
 * join master node
@@ -53,18 +89,6 @@ This playbook will do the followings:
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./multi-master.yml
 ```
 
-#### Install the vice HAproxy
-
-```bash
-ansible-playbook -i inventory/ --user=<sudo-user> --become ./vice-haproxy-install.yaml
-```
-
-#### Install the (HAproxy) loadbalancer
-
-```bash
-ansible-playbook -i inventory/ --user=<sudo-user> --become ./haproxy-loadbalancer.yml
-```
-
 **OR** run all at once:
 
 ```bash
@@ -73,14 +97,7 @@ for playbook in firewalld-config.yml provision-nodes.yml multi-master.yml vice-h
 done
 ```
 
-**WARNING**
-Destroy the kubernetes cluster.
-
-```bash
-ansible-playbook -i inventory/ destroy.yml --user root
-```
-
-# Extra
+## Extra
 
 ## Tainting and Labeling VICE Worker Nodes
 Once you have your nodes joined the cluster:
@@ -110,17 +127,32 @@ scp root@<MASTER_NODE>:/etc/kubernetes/admin.conf ~/.kube/config
 ```
 
 
-
-# add-hosts playbook
-
-Sometimes when you newely generate vms/resources It takes some time
-the hostnames are available through DNS. To prevent timeouts, the generated hosts "fetching from inventory" are added to every `/etc/hosts` file
-with the following playbook.
+**WARNING**
+Destroy the kubernetes cluster.
 
 ```bash
-ansible-playbook -i inventory/ --user=<sudo-user> --become ./add-hosts.yml
+ansible-playbook -i inventory/ destroy.yml --user root
 ```
 
+---
+
+# Loadbalancers
+
+This ansible repository also have playbooks that will generate and install HAProxy.
+
+**Note:** All HAProxy nodes is a **Debian 11** based.
+
+#### Install the vice HAproxy
+
+```bash
+ansible-playbook -i inventory/ --user=<sudo-user> --become ./vice-haproxy-install.yaml
+```
+
+#### Install the (HAproxy) loadbalancer
+
+```bash
+ansible-playbook -i inventory/ --user=<sudo-user> --become ./haproxy-loadbalancer.yml
+```
 
 # Install & create ssl certificates
 
@@ -129,9 +161,10 @@ For more documentation see the [README](roles/cert_bot/README.md)
 ```bash
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./cert_bot.yaml
 ```
+
 This playbook has an additional variable `var_hosts`. Default ist `'~.*-vice-haproxy\\..*'`. Change this var to the host or group the playbook should run on.
 
 
 ```bash
-ansible-playbook -i inventory/ --user=<sudo-user>  --extra-vars="var_hosts=loadbalancer"--become ./cert_bot.yaml
+ansible-playbook -i inventory/ --user=<sudo-user> --extra-vars="var_hosts=loadbalancer" --become ./cert_bot.yaml
 ```
