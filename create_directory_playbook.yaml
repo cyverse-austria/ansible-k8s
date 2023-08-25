@@ -1,0 +1,7 @@
+---
+- name: Apply the create_directory role to VMs
+  hosts: k8s-workers # without vice-workers
+  become: true
+
+  roles:
+    - role: create_directory

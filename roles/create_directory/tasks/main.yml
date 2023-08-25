@@ -1,0 +1,7 @@
+---
+- name: Create directory
+  file:
+    path: "{{ directory_path }}"
+    state: directory
+  vars:
+    directory_path: /es
