@@ -1,6 +1,6 @@
 ---
 
-- name: Install firewalld
+- name: Install iptables-services
   ansible.builtin.yum:
-    name: firewalld
+    name: iptables-services
     state: present
