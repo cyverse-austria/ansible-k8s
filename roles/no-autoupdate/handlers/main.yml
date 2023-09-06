@@ -1,0 +1,4 @@
+---
+
+- name: Reboot and wait
+  ansible.builtin.reboot:

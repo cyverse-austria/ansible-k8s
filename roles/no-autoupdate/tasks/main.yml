@@ -1,0 +1,51 @@
+---
+- name: Update system
+  ansible.builtin.apt:
+    update_cache: true
+    name: "*"
+    state: latest
+
+- name: Disable autoupdate
+  ansible.builtin.systemd:
+    name: unattended-upgrades
+    state: stopped
+    enabled: false
+    masked: true
+  notify:
+    - Reboot and wait
+
+- name: Disable update
+  ansible.builtin.systemd:
+    name: apt-daily-upgrade
+    state: stopped
+    enabled: false
+    masked: true
+  notify:
+    - Reboot and wait
+
+- name: Disable update-timer
+  ansible.builtin.systemd:
+    name: apt-daily-upgrade.timer
+    state: stopped
+    enabled: false
+    masked: true
+  notify:
+    - Reboot and wait
+
+- name: Disable apt-daily
+  ansible.builtin.systemd:
+    name: apt-daily
+    state: stopped
+    enabled: false
+    masked: true
+  notify:
+    - Reboot and wait
+
+- name: Disable apt-daily-timer
+  ansible.builtin.systemd:
+    name: apt-daily.timer
+    state: stopped
+    enabled: false
+    masked: true
+  notify:
+    - Reboot and wait
