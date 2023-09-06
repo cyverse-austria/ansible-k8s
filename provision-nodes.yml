@@ -14,36 +14,6 @@
   tags:
     - haproxy
 
-# TODO
-# NOTE: is done by role `firewalld-config`
-# it's firewalld not iptables
-#
-# - name: Configure control plane firewalls
-#   hosts: k8s-control-plane
-#   gather_facts: true
-#   become: true
-#   roles:
-#     - control-plane-firewaller
-#   # tasks:
-#   #   - name: reload firewall
-#   #     ansible.builtin.shell: systemctl reload iptables
-#   #     ignore_errors: true
-#   # tags:
-#   #   - firewall
-#
-# - name: Configure worker firewalls
-#   hosts: k8s-worker
-#   gather_facts: true
-#   become: true
-#   roles:
-#     - worker-firewaller
-#   # tasks:
-#   #   - name: reload firewall
-#   #     ansible.builtin.shell: systemctl reload iptables
-#   #     ignore_errors: true
-#   #     tags:
-#   #       - firewall
-
 - name: Install stuff
   hosts: k8s
   gather_facts: true

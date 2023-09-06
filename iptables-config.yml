@@ -3,12 +3,12 @@
   name: Gather facts from HAProxy hosts
   # tasks: []
 
-- name: Configure firewalld for Kubernetes
+- name: Configure iptables for Kubernetes
   hosts: k8s
   gather_facts: true
   become: true
   roles:
-    - firewalld-config
+    - iptables-config
 
 - name: Disable SWAP in fstab since kubernetes can't work with swap enabled
   hosts: k8s-worker

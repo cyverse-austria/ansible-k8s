@@ -30,43 +30,13 @@ ansible -i inventory/ -m ping all --user=<sudo-user> --become
 
 ## Playbooks
 
-### firewalld-config.yml
+### iptables-config.yml
 
-This playbook configures the firewall for Kubernets on nodes that use `firewalld`. The configuration contains four IP
-sets:
-
-| IP Set         | Description                                               |
-| -------        | -----------                                               |
-| overlay        | The CIDR block for the overlay network used by Kubernetes |
-| haproxy        | The nodes where the HAproxy instances are running         |
-| k8s-controller | The Kubernets controller nodes                            |
-| k8s-worker     | The Kubernetes worker nodes                               |
-
-The configuration also contains numerous service definitions:
-
-| Service        | Description                                                       |
-| -------        | -----------                                                       |
-| cni-flannel    | Flannel overlay network                                           |
-| cni-weavenet   | WeaveNet overlay network                                          |
-| consul         | Consul                                                            |
-| etcd           | Etcd, which is used internally by the Kubernetes controller nodes |
-| kube-apiserver | The Kubernetes REST API                                           |
-| kubelet-api-ro | The read-only port for the Kubelet API                            |
-| kubelet-api-rw | The read/write port for the Kubelet API                           |
-| node-ports     | A port range for Kubernetes services defining node ports          |
-| vault          | Vault                                                             |
-
-It also contains four custom zone definitions corresponding to the IP sets mentioned above:
-
-| Zone           | Description                            |
-| ----           | -----------                            |
-| haproxy        | Nodes that will be running haproxy     |
-| k8s-controller | Kubernetes controller nodes            |
-| k8s-worker     | Kubernetes worker nodes                |
-| overlay        | The overlay network used by kubernetes |
+This playbook installs iptables on all k8s-computers and configure it.
+Due to some automatic iptable-rules installation by kubelet/containerd firewalld should not be used in parallel.
 
 ```bash
-ansible-playbook -i inventory/ --user=<sudo-user> --become ./firewalld-config.yml
+ansible-playbook -i inventory/ --user=<sudo-user> --become ./iptables-config.yml
 ```
 
 ### provision-nodes.yml
@@ -92,7 +62,7 @@ ansible-playbook -i inventory/ --user=<sudo-user> --become ./multi-master.yml
 **OR** run all at once:
 
 ```bash
-for playbook in firewalld-config.yml provision-nodes.yml multi-master.yml vice-haproxy-install.yaml;do
+for playbook in iptables-config.yml provision-nodes.yml multi-master.yml vice-haproxy-install.yaml;do
   ansible-playbook --inventory=inventory/ --user=ansible --become ./${playbook}
 done
 ```
