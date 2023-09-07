@@ -1,8 +1,4 @@
 ---
-- hosts: haproxy
-  name: Gather facts from HAProxy hosts
-  # tasks: []
-
 - name: Configure iptables for Kubernetes
   hosts: k8s
   gather_facts: true

@@ -32,8 +32,8 @@ ansible -i inventory/ -m ping all --user=<sudo-user> --become
 
 ### iptables-config.yml
 
-This playbook installs iptables on all k8s-computers and configure it.
-Due to some automatic iptable-rules installation by kubelet/containerd firewalld should not be used in parallel.
+This playbook install iptables and apply the rules on all nodes related to kubernetes cluster `k8s`.
+Due to some automatic iptable-rules installation by kubelet/containerd **firewalld** should not be used in parallel.
 
 ```bash
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./iptables-config.yml

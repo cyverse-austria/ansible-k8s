@@ -26,7 +26,5 @@ k8-vice-w01
 [outward-facing-proxy]
 vice-haproxy-01
 
-[haproxy]
-
 [loadbalancer]
 haproxy-01
