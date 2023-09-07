@@ -2,22 +2,8 @@
 
 - name: Install iptables
   ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
-
-- name: Save firewall-rules
-  ansible.builtin.shell:
-    cmd: "/usr/sbin/netfilter-persistent save"
-    creates: '/etc/iptables/rules.v4'
-
-- name: Force flush handlers
-  ansible.builtin.meta: flush_handlers
-
-- name: Change input policy to DROP
-  ansible.builtin.replace:
-    path: /etc/iptables/rules.v4
-    regexp: '^(:INPUT) ACCEPT (.*)$'
-    replace: '\1 DROP \2'
-    after: '\*filter'
-    before: '\*nat'
+  tags:
+    - firewall
 
 - name: Add firewall rules
   # when: check_for_comment.changed
@@ -28,6 +14,10 @@
     # path: /etc/sysconfig/iptables
     path: /etc/iptables/rules.v4
     block: |
+      *filter
+      :INPUT DROP
+      :FORWARD ACCEPT
+      :OUTPUT ACCEPT
       -A INPUT -m state --state NEW,ESTABLISHED -m tcp -p tcp --dport 22 -j ACCEPT -m comment --comment "access with ssh"
       -A INPUT -m state --state NEW -m tcp -p tcp --dport 6443 -j ACCEPT -m comment --comment "kube-apiserver access"
       -A INPUT -m state --state NEW -m tcp -p tcp --dport 2379:2380 -j ACCEPT -m comment --comment "etcd"
@@ -37,6 +27,26 @@
       -A INPUT -m state --state NEW -m tcp -p tcp --dport 6783 -j ACCEPT -m comment --comment "weavenet tcp"
       -A INPUT -m state --state NEW -m tcp -p tcp --dport 30000:32767 -j ACCEPT
       -A INPUT -m state --state NEW -m udp -p udp --dport 6783:6784 -j ACCEPT -m comment --comment "weavenet udp"
+      COMMIT
+  tags:
+    - firewall
+  notify:
+    - Reload firewall
+
+# - name: Save firewall-rules
+#   ansible.builtin.shell:
+#     cmd: "/usr/sbin/netfilter-persistent save"
+#     creates: '/etc/iptables/rules.v4'
+#   tags:
+#     - firewall
+#   notify:
+#     - Reload firewall
+
+- name: Change input policy to DROP
+  ansible.builtin.replace:
+    path: /etc/iptables/rules.v4
+    regexp: '(\*filter\n)(:INPUT) ACCEPT'
+    replace: '\1\2 DROP'
   tags:
     - firewall
   notify:
