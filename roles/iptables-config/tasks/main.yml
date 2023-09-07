@@ -13,12 +13,16 @@
     marker: "## {mark} Kubernetes"
     # path: /etc/sysconfig/iptables
     path: /etc/iptables/rules.v4
+    create: true
+    owner: root
+    group: root
+    mode: '0664'
     block: |
       *filter
       :INPUT DROP
       :FORWARD ACCEPT
       :OUTPUT ACCEPT
-      -A INPUT -m state --state NEW,ESTABLISHED -m tcp -p tcp --dport 22 -j ACCEPT -m comment --comment "access with ssh"
+      -A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT -m comment --comment "access with ssh"
       -A INPUT -m state --state NEW -m tcp -p tcp --dport 6443 -j ACCEPT -m comment --comment "kube-apiserver access"
       -A INPUT -m state --state NEW -m tcp -p tcp --dport 2379:2380 -j ACCEPT -m comment --comment "etcd"
       -A INPUT -m state --state NEW -m tcp -p tcp --dport 10250 -j ACCEPT -m comment --comment "kubelet api"
@@ -33,7 +37,7 @@
   tags:
     - firewall
   notify:
-    - Save firewall-rules
+    # - Save firewall-rules
     - Reload firewall-rules
       # -A INPUT -p udp -m udp --sport 53 -m state --state ESTABLISHED -j ACCEPT -m comment --comment "dns query"
       # -A INPUT -p tcp -m tcp --sport 53 -m state --state ESTABLISHED -j ACCEPT -m comment --comment "dns query"
@@ -57,5 +61,5 @@
   tags:
     - firewall
   notify:
-    - Save firewall-rules
+    # - Save firewall-rules
     - Reload firewall-rules
