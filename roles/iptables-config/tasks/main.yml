@@ -19,7 +19,7 @@
     mode: '0664'
     block: |
       *filter
-      :INPUT DROP
+      :INPUT ACCEPT
       :FORWARD ACCEPT
       :OUTPUT ACCEPT
       -A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT -m comment --comment "access with ssh"
@@ -53,13 +53,13 @@
 #   notify:
 #     - Reload firewall
 
-- name: Change input policy to DROP
-  ansible.builtin.replace:
-    path: /etc/iptables/rules.v4
-    regexp: '(\*filter\n)(:INPUT) ACCEPT'
-    replace: '\1\2 DROP'
-  tags:
-    - firewall
-  notify:
-    # - Save firewall-rules
-    - Reload firewall-rules
+# - name: Change input policy to DROP
+#   ansible.builtin.replace:
+#     path: /etc/iptables/rules.v4
+#     regexp: '(\*filter\n)(:INPUT) ACCEPT'
+#     replace: '\1\2 DROP'
+#   tags:
+#     - firewall
+#   notify:
+#     # - Save firewall-rules
+#     - Reload firewall-rules
