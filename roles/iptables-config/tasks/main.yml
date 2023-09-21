@@ -34,5 +34,4 @@
   tags:
     - firewall
   notify:
-    # - Save firewall-rules
     - Reload firewall-rules

@@ -2,5 +2,17 @@
 
 - name: Install iptables-services
   ansible.builtin.yum:
-    name: iptables-services
+    name:
+      - nftables
+      - iptables-services
     state: present
+
+- name: Link to old iptables-conf
+  ansible.builtin.file:
+    src: /etc/iptables/rules.v4
+    dest: /etc/sysconfig/iptables
+    state: link
+    force: true
+    follow: false
+  notify:
+    - Reload firewall-rules
