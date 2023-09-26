@@ -5,7 +5,6 @@
     update_cache: true
     state: present
     name:
-      # - "{{ (ansible_lsb.release | int == 12) | ternary('nftables', 'iptables-persistent') }}"
       - nftables
       - iptables-persistent
 
@@ -16,6 +15,3 @@
     enabled: true
     state: started
     daemon_reload: true
-  with_items:
-    - iptables
-    - nftables

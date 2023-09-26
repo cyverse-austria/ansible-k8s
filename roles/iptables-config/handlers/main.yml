@@ -2,7 +2,7 @@
 
 - name: Reload firewall-rules
   ansible.builtin.systemd:
-    name: iptables
+    name: "{{ (ansible_lsb.release | int == 12) | ternary('nftables', 'iptables') }}"
     state: restarted
     daemon_reload: true
     enabled: true

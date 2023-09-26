@@ -33,5 +33,5 @@
       COMMIT
   tags:
     - firewall
-  # notify:
-    # - Reload firewall-rules
+  notify:
+    - Reload firewall-rules
