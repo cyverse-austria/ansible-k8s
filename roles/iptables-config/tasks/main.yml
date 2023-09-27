@@ -1,0 +1,37 @@
+---
+
+- name: Install iptables
+  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
+  tags:
+    - firewall
+
+- name: Add firewall rules
+  ansible.builtin.blockinfile:
+    insertafter: "-A INPUT -j KUBE-FIREWALL"
+    marker: "## {mark} Kubernetes"
+    path: /etc/iptables/rules.v4
+    create: true
+    owner: root
+    group: root
+    mode: '0664'
+    block: |
+      *filter
+      :INPUT ACCEPT
+      :FORWARD ACCEPT
+      :OUTPUT ACCEPT
+      -A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT -m comment --comment "access with ssh"
+      -A INPUT -m state --state NEW -m tcp -p tcp --dport 6443 -j ACCEPT -m comment --comment "kube-apiserver access"
+      -A INPUT -m state --state NEW -m tcp -p tcp --dport 2379:2380 -j ACCEPT -m comment --comment "etcd"
+      -A INPUT -m state --state NEW -m tcp -p tcp --dport 10250 -j ACCEPT -m comment --comment "kubelet api"
+      -A INPUT -m state --state NEW -m tcp -p tcp --dport 10251 -j ACCEPT -m comment --comment "kube-scheduler api"
+      -A INPUT -m state --state NEW -m tcp -p tcp --dport 10252 -j ACCEPT -m comment --comment "kube-controller-manager api"
+      -A INPUT -m state --state NEW -m tcp -p tcp --dport 6783 -j ACCEPT -m comment --comment "weavenet tcp"
+      -A INPUT -m state --state NEW -m tcp -p tcp --dport 30000:32767 -j ACCEPT
+      -A INPUT -m state --state NEW -m udp -p udp --dport 6783:6784 -j ACCEPT -m comment --comment "weavenet udp"
+      -A INPUT -p icmp -m state --state RELATED,ESTABLISHED -j ACCEPT -m comment --comment "ping"
+      -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT -m comment --comment "allow return traffic"
+      COMMIT
+  tags:
+    - firewall
+  notify:
+    - Reload firewall-rules

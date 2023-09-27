@@ -1,34 +1,10 @@
 ---
-- hosts: haproxy
-  name: Gather facts from HAProxy hosts
-  # tasks: []
-
-- name: Configure firewalld for Kubernetes
+- name: Configure iptables for Kubernetes
   hosts: k8s
   gather_facts: true
   become: true
   roles:
-    - firewalld-config
-
-- name: Open up kube-apiserver on control nodes
-  hosts: k8s-control-plane
-  gather_facts: true
-  become: true
-
-  tasks:
-    - name: Enable kube-apiserver service
-      ansible.posix.firewalld:
-        permanent: true
-        immediate: true
-        service: kube-apiserver
-        state: enabled
-
-    - name: Enable https service
-      ansible.posix.firewalld:
-        permanent: true
-        immediate: true
-        service: https
-        state: enabled
+    - iptables-config
 
 - name: Disable SWAP in fstab since kubernetes can't work with swap enabled
   hosts: k8s-worker

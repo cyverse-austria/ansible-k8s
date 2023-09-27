@@ -1,6 +1,0 @@
----
-
-- name: Install firewalld
-  ansible.builtin.yum:
-    name: firewalld
-    state: present

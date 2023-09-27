@@ -1,0 +1,17 @@
+---
+
+- name: Install iptables-persistent
+  ansible.builtin.apt:
+    update_cache: true
+    state: present
+    name:
+      - nftables
+      - iptables-persistent
+
+- name: Enable and start nftables
+  ansible.builtin.systemd:
+    service: "{{ (ansible_distribution_major_version  | int == 12) | ternary('nftables', 'iptables') }}"
+    # service: nftables
+    enabled: true
+    state: started
+    daemon_reload: true

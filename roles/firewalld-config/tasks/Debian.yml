@@ -1,8 +1,0 @@
----
-
-- name: Install firewalld
-  ansible.builtin.apt:
-    update_cache: true
-    state: present
-    name:
-      - firewalld

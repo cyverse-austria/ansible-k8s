@@ -1,8 +1,10 @@
 ---
 
-- name: Gather facts change /etc/hasts
+- name: Gather facts change /etc/hosts
   hosts: all
   gather_facts: true
   become: true
+
   roles:
+    - no-autoupdate
     - hosts-file
