@@ -4,7 +4,7 @@ Ansible playbooks to deploy kubernetes cluster on **Centos7, Debian 11 & Rocky L
 
 `Ansible version: >= 2.10.8`
 
-`kubernetes version: 1.26.1`
+`kubernetes version: 1.28.2`
 
 ## preq
 
