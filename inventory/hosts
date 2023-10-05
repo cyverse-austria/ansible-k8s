@@ -28,3 +28,6 @@ vice-haproxy-01
 
 [loadbalancer]
 haproxy-01
+
+[haproxy01]
+haproxy-01

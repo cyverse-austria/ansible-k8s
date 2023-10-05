@@ -1,0 +1,14 @@
+---
+
+- name: Include tasks only if one of the files exist, otherwise skip the task
+  ansible.builtin.include_tasks:
+    file: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_facts['distribution'] }}.yml"
+    - package.yml
+
+- name: Generate haproxy.cfg
+  ansible.builtin.template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: "0644"
