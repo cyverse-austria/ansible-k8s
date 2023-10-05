@@ -1,6 +1,6 @@
 # ansible-k8s
 
-Ansible playbooks to deploy kubernetes cluster on **Centos7, Debian 11 & Rocky Linux 8 and 9**.
+Ansible playbooks to deploy kubernetes cluster on **Centos7, Debian 11/12 & Rocky Linux 8 and 9**.
 
 `Ansible version: >= 2.10.8`
 
