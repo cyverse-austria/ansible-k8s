@@ -1,5 +1,5 @@
 tls_pem_path: /etc/ssl/certs/cyverse.run.pem
 domain: cyverse.run
 regsub: '\.cyverse\.run$,'
-keycloak: "de.{{ domain }}"
-userportal: "sonora.{{ domain }}"
+de: "de.{{ domain }}"
+sonora: "sonora.{{ domain }}"
