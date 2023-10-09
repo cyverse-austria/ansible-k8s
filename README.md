@@ -118,10 +118,16 @@ This ansible repository also have playbooks that will generate and install HAPro
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./vice-haproxy-install.yaml
 ```
 
-#### Install the (HAproxy) loadbalancer
+#### Install the (HAproxy01) loadbalancer
 
 ```bash
-ansible-playbook -i inventory/ --user=<sudo-user> --become ./haproxy-loadbalancer.yml
+ansible-playbook -i inventory/ --user=<sudo-user> --become ./haproxy01.yml
+```
+
+#### Install the (HAproxy02) loadbalancer
+
+```bash
+ansible-playbook -i inventory/ --user=<sudo-user> --become ./haproxy02.yml
 ```
 
 # Install & create ssl certificates
