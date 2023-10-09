@@ -71,7 +71,6 @@ frontend http
 # main frontend which proxys to the backends
 #---------------------------------------------------------------------
 frontend  localhost
-    option http-use-htx
     bind *:443 ssl crt {{ tls_pem_path }}
 
     acl sonora hdr(host) -i {{ sonora }}
@@ -89,7 +88,6 @@ frontend  localhost
 #---------------------------------------------------------------------
 backend sonora
     mode    http
-    option  http-use-htx
     option  log-health-checks
     option  forwardfor
     http-request add-header X-Forwarded-Proto https
@@ -105,7 +103,6 @@ backend sonora
 #---------------------------------------------------------------------
 backend de-https
     mode    http
-    option  http-use-htx
     option  log-health-checks
     option  forwardfor
     balance roundrobin
