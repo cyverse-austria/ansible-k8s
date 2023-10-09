@@ -1,0 +1,5 @@
+tls_pem_path: /etc/ssl/certs/cyverse.run.pem
+domain: cyverse.run
+regsub: '\.cyverse\.run$,'
+de: "de.{{ domain }}"
+sonora: "sonora.{{ domain }}"
