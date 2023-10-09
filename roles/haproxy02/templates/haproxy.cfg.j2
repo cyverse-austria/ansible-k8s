@@ -77,7 +77,7 @@ frontend  localhost
     acl de hdr(host) -i {{ de }}
     acl oldpath path_beg -i /anon-files/ /dl/ /terrain
 
-    redirect prefix https://de.cyverse.at if sonora
+    redirect prefix https://{{de}} if sonora
 
     use_backend sonora if de !oldpath
     default_backend de-https
@@ -108,5 +108,5 @@ backend de-https
     balance roundrobin
 
 {% for host in groups['k8s-workers'] %}
-    server   s{{ loop.index }} {{ hostvars[host].ansible_fqdn }}:31393 check inter 2500 #ssl ca-file /etc/ssl/certs/ca-bundle.crt
+    server   s{{ loop.index }} {{ hostvars[host].ansible_fqdn }}:31393 check inter 2500
 {% endfor %}
