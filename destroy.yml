@@ -1,6 +1,6 @@
 ---
 - name: destroy k8s
-  hosts: k8s-worker
+  hosts: k8s
   gather_facts: true
   become: yes
 
