@@ -2,7 +2,8 @@
 
 - name: Reload firewall-rules
   ansible.builtin.systemd:
-    name: "{{ (ansible_distribution_major_version | int == 12) | ternary('nftables', 'iptables') }}"
+    name: nftables
+    # name: "{{ (ansible_distribution_major_version | int == 12) | ternary('nftables', 'iptables') }}"
     state: restarted
     daemon_reload: true
     enabled: true
