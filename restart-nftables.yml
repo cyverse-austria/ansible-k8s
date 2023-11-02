@@ -1,0 +1,11 @@
+- name: restart nftables
+  hosts: k8s
+  gather_facts: true
+  become: true
+  tasks:
+    - name: reload iptables
+      ansible.builtin.systemd:
+        name: nftables
+        state: restarted
+        daemon_reload: true
+        enabled: true
