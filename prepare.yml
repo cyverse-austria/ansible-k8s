@@ -7,4 +7,4 @@
 
   roles:
     - no-autoupdate
-    - hosts-file
+    # - hosts-file
