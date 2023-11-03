@@ -1,0 +1,41 @@
+- name: Disable Firewalls
+  hosts: k8s
+  become: yes  # Use sudo to gain root privileges
+
+  tasks:
+    - name: Stop and disable nftables service
+      systemd:
+        name: nftables
+        enabled: no
+        state: stopped
+      ignore_errors: yes  # Ignore errors if nftables is not installed or not running
+
+    - name: Stop and disable iptables service
+      systemd:
+        name: iptables
+        enabled: no
+        state: stopped
+      ignore_errors: yes  # Ignore errors if iptables is not installed or not running
+
+    # update system
+    - name: Update system
+      ansible.builtin.apt:
+        update_cache: true
+        name: "*"
+        state: latest
+
+
+
+    - name: Remove Swap Entry from /etc/fstab
+      lineinfile:
+        path: /etc/fstab
+        state: absent
+        regexp: "^/dev/.*swap.*"
+      notify: Reload Fstab
+
+    - name: Reboot and wait
+      ansible.builtin.reboot:
+
+  handlers:
+    - name: Reload Fstab
+      command: mount -a

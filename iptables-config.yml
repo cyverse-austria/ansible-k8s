@@ -30,9 +30,8 @@
       ansible.builtin.shell: "swapoff -a"
       when: (swap_used.stdout_lines[0] | int) > 0
 
-    - name: Remove from /etc/fstab
-      ansible.builtin.replace:
+    - name: Remove Swap Entry from /etc/fstab
+      lineinfile:
         path: /etc/fstab
-        regexp: '^([^#].*?\sswap\s+swap\s+.*)$'
-        replace: '# \1'
-      when: (swap_used.stdout_lines[0] | int) > 0
+        state: absent
+        regexp: "^/dev/.*swap.*"
