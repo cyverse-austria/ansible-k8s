@@ -1,8 +1,65 @@
 ---
-- name: destroy k8s
+- name: run destroy command
   hosts: k8s
-  gather_facts: true
   become: yes
+  tasks:
+    - name: run destroy.sh
+      command: /usr/bin/kubeadm reset --force
+      ignore_errors: yes
 
-  roles:
-    - destroy-k8s
+- name: remmove packages
+  hosts: k8s
+  become: yes
+  tasks:
+    - name: Remove the kube*
+      apt:
+        name: ['kubeadm', 'kubectl', 'kubelet', 'kubernetes-cni', 'kube*']
+        state: absent
+      ignore_errors: yes
+
+- name: Remove files
+  hosts: k8s
+  become: yes
+  tasks:
+    - name: Remove .kube
+      shell: rm -rf ~/.kube
+    - name: Remove /etc/kubernetes
+      shell: rm -rf /etc/kubernetes
+    - name: Remove /opt/cni
+      shell: rm -rf /opt/cni
+
+- name: Uninstall and Disable Containerd
+  hosts: k8s
+  become: yes
+  tasks:
+    - name: Remove the Containerd package
+      apt:
+        name: ['containerd', 'containerd.io']
+        state: absent
+
+    - name: Stop the Containerd service
+      service:
+        name: containerd
+        state: stopped
+
+    - name: Disable the Containerd service
+      systemd:
+        name: containerd
+        enabled: no
+
+- name: Remove /etc/containerd
+  hosts: k8s
+  become: yes
+  tasks:
+    - name: Remove containerd file
+      shell: rm -rf /etc/containerd
+
+- name: Run apt autoclean and autoremove
+  hosts: k8s
+  become: yes
+  tasks:
+    - name: Run apt autoclean
+      command: apt autoclean
+
+    - name: Run apt autoremove
+      command: apt autoremove
