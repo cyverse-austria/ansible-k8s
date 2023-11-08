@@ -83,6 +83,9 @@ kubectl label nodes <VICE-WORKER-NODES> vice=true
 **To prevent non-VICE pods from running on a node, run this command:**
 ```bash
 kubectl taint nodes <VICE-WORKER-NODES> vice=only:NoSchedule
+
+# if you want to remove the taint run this command
+kubectl taint nodes <VICE-WORKER-NODES> vice=only:NoSchedule-
 ```
 
 **check if labeld**
