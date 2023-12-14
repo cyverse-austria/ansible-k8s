@@ -77,6 +77,8 @@ frontend  localhost
     # userportal backend
     acl userportal hdr(host) -i {{ userportal }}
 
+    # harbor backend
+    acl harbor hdr(host) -i {{ harbor }}
 
     #redirect to HTTPS if ssl_fc is false / off.
     redirect scheme https code 301 if !{ ssl_fc }
@@ -84,6 +86,7 @@ frontend  localhost
     #http-request redirect scheme https if http
 
     use_backend userportal if userportal
+    use_backend harbor if harbor
     default_backend keycloak
 
 
@@ -107,5 +110,14 @@ backend userportal
     option  log-health-checks
     option  forwardfor
 {% for host in groups['k8s-workers'] %}
-    server   s{{ loop.index }} {{ hostvars[host].ansible_fqdn }}:30392 check
+    server   s{{ loop.index }} {{ hostvars[host].ansible_fqdn }}:31399 check
 {% endfor %}
+
+#---------------------------------------------------------------------
+# harbor
+#---------------------------------------------------------------------
+backend harbor
+    balance roundrobin
+    option  log-health-checks
+    option  forwardfor
+    server  s1 127.0.0.1:8008 check

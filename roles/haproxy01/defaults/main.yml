@@ -3,3 +3,4 @@ domain: cyverse.run
 regsub: '\.cyverse\.run$,'
 keycloak: "keycloak.{{ domain }}"
 userportal: "user.{{ domain }}"
+harbor: "harbor.{{ domain }}"
