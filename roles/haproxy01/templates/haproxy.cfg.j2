@@ -110,7 +110,7 @@ backend userportal
     option  log-health-checks
     option  forwardfor
 {% for host in groups['k8s-workers'] %}
-    server   s{{ loop.index }} {{ hostvars[host].ansible_fqdn }}:30392 check
+    server   s{{ loop.index }} {{ hostvars[host].ansible_fqdn }}:31399 check
 {% endfor %}
 
 #---------------------------------------------------------------------
