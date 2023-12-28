@@ -62,12 +62,7 @@ defaults
 # main frontend which proxys to the backends
 #---------------------------------------------------------------------
 frontend  localhost
-    mode http
     bind *:443 ssl crt {{ tls_pem_path }}
-
-    # redirect all HTTP traffic to HTTPS
-    acl is_https ssl_fc
-    http-request redirect scheme https unless is_https
 
     # keycloak
     acl keycloak hdr(host) -i {{ keycloak }}
@@ -79,11 +74,6 @@ frontend  localhost
 
     # harbor backend
     acl harbor hdr(host) -i {{ harbor }}
-
-    #redirect to HTTPS if ssl_fc is false / off.
-    redirect scheme https code 301 if !{ ssl_fc }
-    #redirect scheme https code 301
-    #http-request redirect scheme https if http
 
     use_backend userportal if userportal
     use_backend harbor if harbor
