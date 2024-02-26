@@ -1,0 +1,16 @@
+[Unit]
+Description=crt update after certbot has run
+After=snap.certbot.renew.service
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/sh -c "if \
+    [ {{ tls_pem_path }} -ot /etc/letsencrypt/live/{{ domain }}/privkey.pem ] || \
+    [ {{ tls_pem_path }} -ot /etc/letsencrypt/live/{{ domain }}/fullchain.pem ]; \
+    then \
+    cat /etc/letsencrypt/live/{{ domain }}/fullchain.pem \
+    /etc/letsencrypt/live/{{ domain }}/privkey.pem > {{ tls_pem_path }}; \
+    fi"
+
+[Install]
+WantedBy=snap.certbot.renew.service
