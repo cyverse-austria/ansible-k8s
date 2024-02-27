@@ -1,0 +1,5 @@
+---
+- name: Start snap.certbot.renew
+  ansible.builtin.systemd:
+    service: snap.certbot.renew.service
+    state: restarted

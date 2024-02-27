@@ -60,6 +60,22 @@
     #   ansible.builtin.debug:
     #     var: newcerts
 
+    - name: Autocreate update
+      ansible.builtin.template:
+        src: cat-after-certbot.service.j2
+        dest: /etc/systemd/system/cat-after-certbot.service
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Detect new service
+      ansible.builtin.systemd:
+        daemon_reload: true
+        service: cat-after-certbot
+        enabled: true
+      notify:
+        - Start snap.certbot.renew
+
     - name: Create sum.crt
       shell: >
         cat /etc/letsencrypt/live/{{ domain }}/fullchain.pem
