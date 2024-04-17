@@ -1,0 +1,18 @@
+---
+- name: Configure Kubernetes Repository
+  hosts: all
+  become: true
+  tasks:
+    - name: Add Kubernetes repository
+      shell: echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+      args:
+        executable: /bin/bash
+
+    - name: Download Kubernetes GPG key
+      shell: curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+      args:
+        executable: /bin/bash
+
+    - name: Update APT package lists
+      apt:
+        update_cache: yes
