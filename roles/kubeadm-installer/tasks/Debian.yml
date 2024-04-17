@@ -4,14 +4,15 @@
 #
 - name: Add repo key
   ansible.builtin.apt_key:
-    url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+    url: "https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key"
     state: present
 
 - name: Add repo
   ansible.builtin.apt_repository:
-    repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /"
     filename: kubernetes
     state: present
+    update_cache: yes
 
 - name: Add some packages
   ansible.builtin.apt:
