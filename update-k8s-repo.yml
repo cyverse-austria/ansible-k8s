@@ -1,5 +1,5 @@
 ---
-- name: Configure Kubernetes Repository
+- name: Configure Kubernetes and Docker Repositories
   hosts: all
   become: true
   tasks:
@@ -12,6 +12,17 @@
       shell: curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
       args:
         executable: /bin/bash
+
+    - name: Add Docker GPG key to APT keyring
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+        state: present
+
+    - name: Create Docker repository configuration file
+      lineinfile:
+        path: /etc/apt/sources.list.d/docker.list
+        line: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+        create: yes
 
     - name: Update APT package lists
       apt:
