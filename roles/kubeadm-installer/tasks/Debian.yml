@@ -2,18 +2,15 @@
 
 # NOTE: In Debian11 selinux seems to be disabled by default
 #
-- name: Add repo key
-  get_url:
-    url: "https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key"
-    dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
-    mode: '0644'
-    force: true
-
-- name: Add repo
-  ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /"
+- name: Add Kubernetes apt repository key
+  ansible.builtin.apt_key:
+    url: https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key
     state: present
-    update_cache: yes
+
+- name: Add Kubernetes apt repository
+  ansible.builtin.copy:
+    content: 'deb [signed-by=/etc/apt/trusted.gpg.d/kubernetes-archive-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /'
+    dest: /etc/apt/sources.list.d/kubernetes.list
 
 - name: Add some packages
   ansible.builtin.apt:
