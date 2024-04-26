@@ -20,6 +20,6 @@
     state: present
     update_cache: true
     name:
-      - kubelet=1.28.2-00
-      - kubeadm=1.28.2-00
-      - kubectl=1.28.2-00
+      - "kubelet={{ kube_x_version }}"
+      - "kubeadm={{ kube_x_version }}"
+      - "kubectl={{ kube_x_version }}"
