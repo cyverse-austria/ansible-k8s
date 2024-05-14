@@ -1,8 +1,11 @@
 ---
-- name: Install haproxy
-  ansible.builtin.package:
-    name: haproxy
-    state: present
+
+- name: Include tasks only if one of the files exist, otherwise skip the task
+  ansible.builtin.include_tasks:
+    file: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_facts['distribution'] }}.yml"
+    - package.yml
 
 - name: Generate haproxy.cfg
   ansible.builtin.template:
