@@ -59,7 +59,21 @@
   become: yes
   tasks:
     - name: Run apt autoclean
-      command: apt autoclean
+      ansible.builtin.apt:
+        autoclean: yes
 
-    - name: Run apt autoremove
-      command: apt autoremove
+    - name: Run apt autoremove 
+      ansible.builtin.apt:
+        autoremove: yes
+      
+- name: Update and upgrade system packages
+  hosts: k8s
+  become: yes
+  tasks:
+    - name: Update apt package index
+      apt:
+        update_cache: yes
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
