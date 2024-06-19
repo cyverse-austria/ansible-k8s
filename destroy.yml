@@ -62,21 +62,9 @@
       ansible.builtin.apt:
         autoclean: yes
 
-    - name: Run apt autoremove with timeout and no interaction
+    - name: Run apt autoremove 
       ansible.builtin.apt:
         autoremove: yes
-        purge: true
-      async: 600
-      poll: 5
-      register: autoremove_result
-
-    - name: Check result of apt autoremove
-      ansible.builtin.async_status:
-        jid: "{{ autoremove_result.ansible_job_id }}"
-      register: job_result
-      until: job_result.finished
-      retries: 30
-      delay: 10
       
 - name: Update and upgrade system packages
   hosts: k8s
