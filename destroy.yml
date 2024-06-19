@@ -27,6 +27,8 @@
       shell: rm -rf /etc/kubernetes
     - name: Remove /opt/cni
       shell: rm -rf /opt/cni
+    - name: Remove weave generated file
+      shell: rm -rf ~/pod_setup.txt
 
 - name: Uninstall and Disable Containerd
   hosts: k8s
