@@ -61,5 +61,29 @@
     - name: Run apt autoclean
       command: apt autoclean
 
-    - name: Run apt autoremove
+    - name: Run apt autoremove with timeout
       command: apt autoremove
+      async: 600 # Run for a maximum of 10 minutes (600 seconds)
+      poll: 5
+      register: autoremove_result
+
+    - name: Check result of apt autoremove
+      async_status:
+        jid: "{{ autoremove_result.ansible_job_id }}"
+      register: job_result
+      until: job_result.finished
+      retries: 30
+      delay: 10
+
+      
+- name: Update and upgrade system packages
+  hosts: k8s
+  become: yes
+  tasks:
+    - name: Update apt package index
+      apt:
+        update_cache: yes
+
+    - name: Upgrade all packages
+      apt:
+        upgrade: dist
