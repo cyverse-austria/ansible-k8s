@@ -61,8 +61,8 @@
     - name: Run apt autoclean
       command: apt autoclean
 
-    - name: Run apt autoremove with timeout
-      command: apt autoremove
+    - name: Run apt autoremove with timeout and no interaction
+      command: DEBIAN_FRONTEND=noninteractive apt -y autoremove
       async: 600 # Run for a maximum of 10 minutes (600 seconds)
       poll: 5
       register: autoremove_result
