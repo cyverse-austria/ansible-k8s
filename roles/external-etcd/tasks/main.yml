@@ -1,4 +1,10 @@
 ---
+- name: Ensure etcd certificates directory exists
+  ansible.builtin.file:
+    path: /etc/etcd
+    state: directory
+    mode: "0755"
+
 - name: Generate etcd CA certificate
   ansible.builtin.shell: |
     openssl req -x509 -nodes -newkey rsa:4096 -keyout /etc/etcd/ca.key -out /etc/etcd/ca.crt -days 3650 -subj "/CN=etcd-ca"
@@ -18,12 +24,6 @@
     openssl x509 -req -in /etc/etcd/client.csr -CA /etc/etcd/ca.crt -CAkey /etc/etcd/ca.key -CAcreateserial -out /etc/etcd/client.crt -days 3650
   args:
     creates: /etc/etcd/client.crt
-
-- name: Ensure etcd certificates directory exists
-  ansible.builtin.file:
-    path: /etc/etcd
-    state: directory
-    mode: "0755"
 
 - name: Distribute etcd certificates
   ansible.builtin.copy:
