@@ -1,0 +1,56 @@
+---
+- name: Generate etcd CA certificate
+  ansible.builtin.shell: |
+    openssl req -x509 -nodes -newkey rsa:4096 -keyout /etc/etcd/ca.key -out /etc/etcd/ca.crt -days 3650 -subj "/CN=etcd-ca"
+  args:
+    creates: /etc/etcd/ca.crt
+
+- name: Generate etcd server certificate
+  ansible.builtin.shell: |
+    openssl req -new -keyout /etc/etcd/etcd-server.key -out /etc/etcd/etcd-server.csr -subj "/CN=etcd-server"
+    openssl x509 -req -in /etc/etcd/etcd-server.csr -CA /etc/etcd/ca.crt -CAkey /etc/etcd/ca.key -CAcreateserial -out /etc/etcd/etcd-server.crt -days 3650
+  args:
+    creates: /etc/etcd/etcd-server.crt
+
+- name: Generate etcd client certificate
+  ansible.builtin.shell: |
+    openssl req -new -keyout /etc/etcd/client.key -out /etc/etcd/client.csr -subj "/CN=etcd-client"
+    openssl x509 -req -in /etc/etcd/client.csr -CA /etc/etcd/ca.crt -CAkey /etc/etcd/ca.key -CAcreateserial -out /etc/etcd/client.crt -days 3650
+  args:
+    creates: /etc/etcd/client.crt
+
+- name: Distribute etcd certificates
+  hosts: etcd-nodes
+  become: yes
+  tasks:
+    - name: Copy etcd CA certificate
+      ansible.builtin.copy:
+        src: /etc/etcd/ca.crt
+        dest: /etc/etcd/ca.crt
+        mode: "0644"
+      delegate_to: "{{ item }}"
+      with_items: "{{ groups['etcd-nodes'] }}"
+
+    - name: Copy etcd server certificate
+      ansible.builtin.copy:
+        src: /etc/etcd/etcd-server.crt
+        dest: /etc/etcd/etcd-server.crt
+        mode: "0644"
+      delegate_to: "{{ item }}"
+      with_items: "{{ groups['etcd-nodes'] }}"
+
+    - name: Copy etcd client certificate
+      ansible.builtin.copy:
+        src: /etc/etcd/client.crt
+        dest: /etc/etcd/client.crt
+        mode: "0644"
+      delegate_to: "{{ item }}"
+      with_items: "{{ groups['etcd-nodes'] }}"
+
+    - name: Copy etcd client key
+      ansible.builtin.copy:
+        src: /etc/etcd/client.key
+        dest: /etc/etcd/client.key
+        mode: "0600"
+      delegate_to: "{{ item }}"
+      with_items: "{{ groups['etcd-nodes'] }}"

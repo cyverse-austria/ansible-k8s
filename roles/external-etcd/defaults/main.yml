@@ -1,0 +1,3 @@
+---
+etcd_certificates_dir: "/etc/etcd"
+kubeadm_config_file: "/etc/kubernetes/kubeadm-config.yml"

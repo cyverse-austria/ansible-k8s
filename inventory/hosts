@@ -9,6 +9,10 @@ k8-haproxy
 k8-c01
 k8-c02
 
+[etcd-nodes] # external etcd nodes
+etcd-c01
+etcd-c02
+
 [k8s-storage:children]
 k8s-worker
 
