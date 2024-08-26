@@ -19,38 +19,21 @@
   args:
     creates: /etc/etcd/client.crt
 
+- name: Ensure etcd certificates directory exists
+  ansible.builtin.file:
+    path: /etc/etcd
+    state: directory
+    mode: "0755"
+
 - name: Distribute etcd certificates
-  hosts: etcd-nodes
-  become: yes
-  tasks:
-    - name: Copy etcd CA certificate
-      ansible.builtin.copy:
-        src: /etc/etcd/ca.crt
-        dest: /etc/etcd/ca.crt
-        mode: "0644"
-      delegate_to: "{{ item }}"
-      with_items: "{{ groups['etcd-nodes'] }}"
-
-    - name: Copy etcd server certificate
-      ansible.builtin.copy:
-        src: /etc/etcd/etcd-server.crt
-        dest: /etc/etcd/etcd-server.crt
-        mode: "0644"
-      delegate_to: "{{ item }}"
-      with_items: "{{ groups['etcd-nodes'] }}"
-
-    - name: Copy etcd client certificate
-      ansible.builtin.copy:
-        src: /etc/etcd/client.crt
-        dest: /etc/etcd/client.crt
-        mode: "0644"
-      delegate_to: "{{ item }}"
-      with_items: "{{ groups['etcd-nodes'] }}"
-
-    - name: Copy etcd client key
-      ansible.builtin.copy:
-        src: /etc/etcd/client.key
-        dest: /etc/etcd/client.key
-        mode: "0600"
-      delegate_to: "{{ item }}"
-      with_items: "{{ groups['etcd-nodes'] }}"
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - { src: "/etc/etcd/ca.crt", dest: "/etc/etcd/ca.crt", mode: "0644" }
+    - { src: "/etc/etcd/etcd-server.crt", dest: "/etc/etcd/etcd-server.crt", mode: "0644" }
+    - { src: "/etc/etcd/etcd-server.key", dest: "/etc/etcd/etcd-server.key", mode: "0600" }
+    - { src: "/etc/etcd/client.crt", dest: "/etc/etcd/client.crt", mode: "0644" }
+    - { src: "/etc/etcd/client.key", dest: "/etc/etcd/client.key", mode: "0600" }
+  when: ansible_hostname in groups['etcd-nodes']
