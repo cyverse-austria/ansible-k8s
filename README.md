@@ -147,3 +147,15 @@ This playbook has an additional variable `var_hosts`. Default ist `'~.*-vice-hap
 ```bash
 ansible-playbook -i inventory/ --user=<sudo-user> --extra-vars="var_hosts=loadbalancer" --become ./cert_bot.yaml
 ```
+
+
+
+# ETCD external etcd for kubernetes
+
+* create etcd cluster
+* create kubernetes cluster to use the etcd cluster as external etcd
+
+https://github.com/etcd-io/etcd
+https://github.com/githubixx/ansible-role-etcd
+https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/setup-ha-etcd-with-kubeadm/
+https://www.youtube.com/watch?v=YUrAXr5MJ0c
