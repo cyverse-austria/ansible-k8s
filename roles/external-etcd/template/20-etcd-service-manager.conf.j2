@@ -1,0 +1,5 @@
+# templates/20-etcd-service-manager.conf.j2
+[Service]
+ExecStart=
+ExecStart=/usr/bin/kubelet --config=/etc/systemd/system/kubelet.service.d/kubelet.conf
+Restart=always

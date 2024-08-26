@@ -1,39 +1,61 @@
 ---
-- name: Ensure etcd certificates directory exists
-  ansible.builtin.file:
-    path: /etc/etcd
+# tasks/main.yml
+
+- name: Ensure kubelet service directory exists
+  file:
+    path: /etc/systemd/system/kubelet.service.d
     state: directory
-    mode: "0755"
 
-- name: Generate etcd CA certificate
-  ansible.builtin.shell: |
-    openssl req -x509 -nodes -newkey rsa:4096 -keyout /etc/etcd/ca.key -out /etc/etcd/ca.crt -days 3650 -subj "/CN=etcd-ca"
-  args:
-    creates: /etc/etcd/ca.crt
+- name: Create kubelet configuration
+  template:
+    src: kubelet.conf.j2
+    dest: /etc/systemd/system/kubelet.service.d/kubelet.conf
 
-- name: Generate etcd server certificate
-  ansible.builtin.shell: |
-    openssl req -new -keyout /etc/etcd/etcd-server.key -out /etc/etcd/etcd-server.csr -subj "/CN=etcd-server"
-    openssl x509 -req -in /etc/etcd/etcd-server.csr -CA /etc/etcd/ca.crt -CAkey /etc/etcd/ca.key -CAcreateserial -out /etc/etcd/etcd-server.crt -days 3650
-  args:
-    creates: /etc/etcd/etcd-server.crt
+- name: Create etcd service manager configuration
+  template:
+    src: 20-etcd-service-manager.conf.j2
+    dest: /etc/systemd/system/kubelet.service.d/20-etcd-service-manager.conf
 
-- name: Generate etcd client certificate
-  ansible.builtin.shell: |
-    openssl req -new -keyout /etc/etcd/client.key -out /etc/etcd/client.csr -subj "/CN=etcd-client"
-    openssl x509 -req -in /etc/etcd/client.csr -CA /etc/etcd/ca.crt -CAkey /etc/etcd/ca.key -CAcreateserial -out /etc/etcd/client.crt -days 3650
-  args:
-    creates: /etc/etcd/client.crt
+- name: Reload systemd and restart kubelet
+  systemd:
+    daemon_reload: yes
+    name: kubelet
+    state: restarted
 
-- name: Distribute etcd certificates
-  ansible.builtin.copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    mode: "{{ item.mode }}"
-  loop:
-    - { src: "/etc/etcd/ca.crt", dest: "/etc/etcd/ca.crt", mode: "0644" }
-    - { src: "/etc/etcd/etcd-server.crt", dest: "/etc/etcd/etcd-server.crt", mode: "0644" }
-    - { src: "/etc/etcd/etcd-server.key", dest: "/etc/etcd/etcd-server.key", mode: "0600" }
-    - { src: "/etc/etcd/client.crt", dest: "/etc/etcd/client.crt", mode: "0644" }
-    - { src: "/etc/etcd/client.key", dest: "/etc/etcd/client.key", mode: "0600" }
-  when: ansible_hostname in groups['etcd-nodes']
+- name: Generate kubeadm configuration files
+  template:
+    src: kubeadmcfg.yaml.j2
+    dest: "/tmp/{{ ansible_host }}/kubeadmcfg.yaml"
+  loop: "{{ groups['etcd-nodes'] }}"
+  vars:
+    ansible_host: "{{ item }}"
+
+- name: Create etcd CA
+  command: kubeadm init phase certs etcd-ca
+  delegate_to: "{{ groups['etcd-nodes'][0] }}"
+
+- name: Generate etcd certificates
+  command: kubeadm init phase certs etcd-server --config=/tmp/{{ ansible_host }}/kubeadmcfg.yaml
+  command: kubeadm init phase certs etcd-peer --config=/tmp/{{ ansible_host }}/kubeadmcfg.yaml
+  command: kubeadm init phase certs etcd-healthcheck-client --config=/tmp/{{ ansible_host }}/kubeadmcfg.yaml
+  command: kubeadm init phase certs apiserver-etcd-client --config=/tmp/{{ ansible_host }}/kubeadmcfg.yaml
+  loop: "{{ groups['etcd-nodes'] }}"
+  vars:
+    ansible_host: "{{ item }}"
+
+- name: Clean up non-reusable certificates
+  command: find /etc/kubernetes/pki -not -name ca.crt -not -name ca.key -type f -delete
+  delegate_to: "{{ groups['etcd-nodes'][0] }}"
+
+- name: Copy certificates and configs to hosts
+  synchronize:
+    src: "/tmp/{{ inventory_hostname }}/"
+    dest: "/etc/kubernetes/"
+  delegate_to: "{{ item }}"
+  loop: "{{ groups['etcd-nodes'] }}"
+
+- name: Create static pod manifests
+  command: kubeadm init phase etcd local --config=/tmp/{{ ansible_host }}/kubeadmcfg.yaml
+  loop: "{{ groups['etcd-nodes'] }}"
+  vars:
+    ansible_host: "{{ item }}"
