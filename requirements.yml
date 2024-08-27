@@ -4,7 +4,7 @@ roles:
     - name: githubixx.containerd
       version: "0.9.0+1.7.0" # https://containerd.io/releases/#kubernetes-support
     - name: githubixx.etcd
-
+    - name: githubixx.kubernetes_ca
 collections:
     - name: community.general
       version: ">=6.4.0"

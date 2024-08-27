@@ -4,5 +4,6 @@
   gather_facts: true
   roles:
     # - external-etcd
+    - githubixx.kubernetes_ca
     - githubixx.etcd
 
