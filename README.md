@@ -159,3 +159,4 @@ https://github.com/etcd-io/etcd
 https://github.com/githubixx/ansible-role-etcd
 https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/setup-ha-etcd-with-kubeadm/
 https://www.youtube.com/watch?v=YUrAXr5MJ0c
+https://www.youtube.com/watch?v=dQ5zsJEX47s

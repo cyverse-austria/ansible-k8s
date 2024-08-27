@@ -73,12 +73,15 @@
     enabled: yes
     state: started
 
-- name: Verify Etcd cluster status
+- name: Verify Etcd cluster status on all etcd nodes
   ansible.builtin.command:
-    cmd: ETCDCTL_API=3 etcdctl --endpoints=http://127.0.0.1:2379 member list
+    cmd: "ETCDCTL_API=3 etcdctl --endpoints=http://{{ item }}:2379 member list"
   register: etcd_cluster_status
   become: yes
-  run_once: true
+  loop: "{{ groups['etcd-nodes'] | map('extract', hostvars, 'ansible_default_ipv4.address') | list }}"
+  run_once: true  # Remove this if you want the task to run on all nodes
 
-- debug:
-    var: etcd_cluster_status.stdout_lines
+- name: Display etcd cluster status from all nodes
+  ansible.builtin.debug:
+    msg: "{{ etcd_cluster_status.results | map(attribute='stdout') | list }}"
+  run_once: true  # Only display once after all commands are executed
