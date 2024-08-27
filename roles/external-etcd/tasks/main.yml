@@ -75,7 +75,8 @@
 
 - name: Verify Etcd cluster status
   ansible.builtin.command:
-    cmd: "ETCDCTL_API=3 etcdctl --endpoints=http://{{ hostvars[groups['etcd-nodes'][0]].ansible_default_ipv4.address }}:2379 member list"
+    cmd: "ETCDCTL_API=3 etcdctl --endpoints=http://{{ hostvars[groups['etcd-nodes'][0]]}}:2379 member list"
+    # "ETCDCTL_API=3 etcdctl --endpoints=http://209.38.46.80:2379 member list"
   register: etcd_cluster_status
   become: yes
   run_once: true
