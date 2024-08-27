@@ -73,7 +73,7 @@
     enabled: yes
     state: started
 
-##     # "ETCDCTL_API=3 etcdctl --endpoints=http://209.38.46.80:2379 member list"
+  ### "ETCDCTL_API=3 etcdctl --endpoints=http://209.38.46.80:2379 member list"
 - name: Verify Etcd cluster status
   ansible.builtin.shell:
     cmd: |
