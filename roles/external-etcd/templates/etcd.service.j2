@@ -1,17 +1,16 @@
-# roles/etcd/templates/etcd.service.j2
 [Unit]
 Description=etcd
 
 [Service]
 Type=exec
-ExecStart={{ etcd_bin_dir }}/etcd \\
-  --name {{ etcd_name }} \\
-  --initial-advertise-peer-urls http://{{ ansible_default_ipv4.address }}:2380 \\
-  --listen-peer-urls http://{{ ansible_default_ipv4.address }}:2380 \\
-  --advertise-client-urls http://{{ ansible_default_ipv4.address }}:2379 \\
-  --listen-client-urls http://{{ ansible_default_ipv4.address }}:2379,http://127.0.0.1:2379 \\
-  --initial-cluster-token etcd-cluster-1 \\
-  --initial-cluster {{ etcd_cluster_members }} \\
+ExecStart={{ etcd_bin_dir }}/etcd \
+  --name {{ etcd_name }} \
+  --initial-advertise-peer-urls http://{{ ansible_default_ipv4.address }}:2380 \
+  --listen-peer-urls http://{{ ansible_default_ipv4.address }}:2380 \
+  --advertise-client-urls http://{{ ansible_default_ipv4.address }}:2379 \
+  --listen-client-urls http://{{ ansible_default_ipv4.address }}:2379,http://127.0.0.1:2379 \
+  --initial-cluster-token etcd-cluster-1 \
+  --initial-cluster {{ etcd_cluster_members }} \
   --initial-cluster-state new
 Restart=on-failure
 RestartSec=5
