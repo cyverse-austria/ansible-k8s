@@ -5,5 +5,9 @@
   roles:
     # - external-etcd
     - githubixx.kubernetes_ca
+  vars:
+    k8s_ca_controller_nodes_group: "k8s-control-plane"
+    k8s_ca_etcd_nodes_group: "etcd-nodes"
+    k8s_ca_worker_nodes_group: "k8s-worker"
     - githubixx.etcd
 
