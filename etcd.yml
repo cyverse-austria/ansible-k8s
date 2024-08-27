@@ -3,12 +3,13 @@
   become: yes
   gather_facts: true
   roles:
-    - role: githubixx.kubernetes_ca
+    - role: githubixx.kubernetes_ca # https://github.com/githubixx/ansible-role-kubernetes-ca
       vars:
         k8s_ca_controller_nodes_group: "k8s-control-plane"
         k8s_ca_etcd_nodes_group: "etcd-nodes"
         k8s_ca_worker_nodes_group: "k8s-worker"
-    - role: githubixx.etcd
+        k8s_interface: "{{ ansible_default_ipv4.interface }}"
+    - role: githubixx.etcd # https://github.com/githubixx/ansible-role-etcd
       # vars:
       #   etcd_version: "v3.5.15"
       #   etcd_bin_dir: "/usr/local/bin"
