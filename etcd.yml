@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: etcd-nodes
   become: yes
   gather_facts: true
   roles:
