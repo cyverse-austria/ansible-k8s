@@ -1,3 +1,4 @@
----
-etcd_certificates_dir: "/etc/etcd"
-kubeadm_config_file: "/etc/kubernetes/kubeadm-config.yml"
+# roles/etcd/defaults/main.yml
+etcd_version: "v3.5.15"
+etcd_bin_dir: "/usr/local/bin"
+etcd_name: "{{ ansible_hostname }}"

@@ -1,61 +1,46 @@
----
-# tasks/main.yml
+# roles/etcd/tasks/main.yml
 
-- name: Ensure kubelet service directory exists
-  file:
-    path: /etc/systemd/system/kubelet.service.d
-    state: directory
+- name: Set facts for etcd cluster members
+  ansible.builtin.set_fact:
+    etcd_cluster_members: |
+      {% for host in groups['etcd-nodes'] %}
+      {{ hostvars[host]['ansible_hostname'] }}=http://{{ hostvars[host]['ansible_default_ipv4']['address'] }}:2380{% if not loop.last %},{% endif %}
+      {% endfor %}
 
-- name: Create kubelet configuration
-  template:
-    src: kubelet.conf.j2
-    dest: /etc/systemd/system/kubelet.service.d/kubelet.conf
+- name: Download etcd archive
+  ansible.builtin.get_url:
+    url: "https://github.com/etcd-io/etcd/releases/download/{{ etcd_version }}/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
+    dest: "/tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
 
-- name: Create etcd service manager configuration
-  template:
-    src: 20-etcd-service-manager.conf.j2
-    dest: /etc/systemd/system/kubelet.service.d/20-etcd-service-manager.conf
+- name: Extract etcd archive
+  ansible.builtin.unarchive:
+    src: "/tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
+    dest: "/tmp/"
+    remote_src: yes
 
-- name: Reload systemd and restart kubelet
-  systemd:
+- name: Move etcd binaries to {{ etcd_bin_dir }}
+  ansible.builtin.command:
+    cmd: mv /tmp/etcd-{{ etcd_version }}-linux-amd64/etcd* {{ etcd_bin_dir }}
+  become: yes
+
+- name: Cleanup temporary files
+  ansible.builtin.file:
+    path: "/tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
+    state: absent
+  become: yes
+
+- name: Create etcd systemd service file
+  ansible.builtin.template:
+    src: etcd.service.j2
+    dest: /etc/systemd/system/etcd.service
+  become: yes
+
+- name: Reload systemd
+  ansible.builtin.systemd:
     daemon_reload: yes
-    name: kubelet
-    state: restarted
 
-- name: Generate kubeadm configuration files
-  template:
-    src: kubeadmcfg.yaml.j2
-    dest: "/tmp/{{ ansible_host }}/kubeadmcfg.yaml"
-  loop: "{{ groups['etcd-nodes'] }}"
-  vars:
-    ansible_host: "{{ item }}"
-
-- name: Create etcd CA
-  command: kubeadm init phase certs etcd-ca
-  delegate_to: "{{ groups['etcd-nodes'][0] }}"
-
-- name: Generate etcd certificates
-  command: kubeadm init phase certs etcd-server --config=/tmp/{{ ansible_host }}/kubeadmcfg.yaml
-  command: kubeadm init phase certs etcd-peer --config=/tmp/{{ ansible_host }}/kubeadmcfg.yaml
-  command: kubeadm init phase certs etcd-healthcheck-client --config=/tmp/{{ ansible_host }}/kubeadmcfg.yaml
-  command: kubeadm init phase certs apiserver-etcd-client --config=/tmp/{{ ansible_host }}/kubeadmcfg.yaml
-  loop: "{{ groups['etcd-nodes'] }}"
-  vars:
-    ansible_host: "{{ item }}"
-
-- name: Clean up non-reusable certificates
-  command: find /etc/kubernetes/pki -not -name ca.crt -not -name ca.key -type f -delete
-  delegate_to: "{{ groups['etcd-nodes'][0] }}"
-
-- name: Copy certificates and configs to hosts
-  synchronize:
-    src: "/tmp/{{ inventory_hostname }}/"
-    dest: "/etc/kubernetes/"
-  delegate_to: "{{ item }}"
-  loop: "{{ groups['etcd-nodes'] }}"
-
-- name: Create static pod manifests
-  command: kubeadm init phase etcd local --config=/tmp/{{ ansible_host }}/kubeadmcfg.yaml
-  loop: "{{ groups['etcd-nodes'] }}"
-  vars:
-    ansible_host: "{{ item }}"
+- name: Enable and start etcd service
+  ansible.builtin.systemd:
+    name: etcd
+    enabled: yes
+    state: started
