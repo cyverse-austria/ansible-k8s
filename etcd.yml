@@ -3,4 +3,4 @@
   become: yes
   gather_facts: true
   roles:
-    - external-etcd
+    - githubixx.etcd
