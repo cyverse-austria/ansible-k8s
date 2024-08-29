@@ -4,7 +4,7 @@
     "localhost",
     "127.0.0.1",
     {% for host in groups['etcd-nodes'] %}
-    "{{ hostvars[host]['ansible_host'] }}"{% if not loop.last %},{% endif %}
+    "{{ hostvars[host]['ansible_hostname'] }}"{% if not loop.last %},{% endif %}
     {% endfor %}
   ],
   "key": {
