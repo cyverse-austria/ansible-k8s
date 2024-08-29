@@ -1,14 +1,8 @@
 ---
-- name: Update the OS
-  package:
-    name: '*'
-    state: latest
-
-
-- name: Install necessary packages
-  package:
-    name: openssl
-    state: present
+# - name: Install necessary packages
+#   package:
+#     name: openssl
+#     state: present
 
 - name: Create CA directories
   file:
