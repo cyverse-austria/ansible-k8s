@@ -1,6 +1,0 @@
----
-# Example handler to restart a service
-- name: restart etcd
-  service:
-    name: etcd
-    state: restarted

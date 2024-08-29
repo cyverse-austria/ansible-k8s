@@ -1,17 +1,16 @@
 {
-    "CN": "etcd cluster",
-    "key": {
-      "algo": "rsa",
-      "size": 2048
-    },
-    "names": [
-      {
-        "C": "GB",
-        "L": "England",
-        "O": "Kubernetes",
-        "OU": "ETCD-CA",
-        "ST": "Cambridge"
-      }
-    ]
-  }
-  
+  "CN": "etcd",
+  "key": {
+    "algo": "rsa",
+    "size": 2048
+  },
+  "names": [
+    {
+      "C": "AT",
+      "L": "Vienna",
+      "O": "Kubernetes",
+      "OU": "ETCD-CA",
+      "ST": "Vienna"
+    }
+  ]
+}
