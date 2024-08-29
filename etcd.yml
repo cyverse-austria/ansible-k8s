@@ -29,6 +29,6 @@
         etcd_bin_dir: "/usr/local/bin"
         etcd_name: "{{ ansible_hostname }}"
         etcd_ansible_group: "etcd-nodes"
-        etcd_ca_conf_directory: "{{ '/etc/ssl/myca' | expanduser }}"
+        etcd_ca_conf_directory: "/etc/ssl/myca"
 
 
