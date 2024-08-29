@@ -1,5 +1,45 @@
 ---
-# roles/etcd/tasks/main.yml
+# - name: Remove existing /etc/etcd/pki/ directory if it exists (MAKE IT OPTIONAL)
+#   file:
+#     path: "{{ destination_cert_dir }}"
+#     state: absent
+#   delegate_to: "{{ item }}"
+#   with_items: "{{ groups['etcd-nodes'] }}"
+
+- name: Ensure /etc/etcd/pki/ directory exists on etcd nodes
+  file:
+    path: "{{ destination_cert_dir }}"
+    state: directory
+    mode: '0755'
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['etcd-nodes'] }}"
+
+# COPY files
+# * /etc/ssl/etcd/etcd.pem * /etc/ssl/etcd/ca.pem * /etc/ssl/etcd/etcd-key.pem
+- name: Copy etcd.pem to etcd nodes
+  copy:
+    src: "{{ source_cert_dir }}/etcd.pem"
+    dest: "{{ destination_cert_dir }}/etcd.pem"
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['etcd-nodes'] }}"
+
+- name: Copy ca.pem to etcd nodes
+  copy:
+    src: "{{ source_cert_dir }}/ca.pem"
+    dest: "{{ destination_cert_dir }}/ca.pem"
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['etcd-nodes'] }}"
+
+- name: Copy etcd-key.pem to etcd nodes
+  copy:
+    src: "{{ source_cert_dir }}/etcd-key.pem"
+    dest: "{{ destination_cert_dir }}/etcd-key.pem"
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['etcd-nodes'] }}"
+
+
+
+######################### uncomment ### works 
 
 - name: Download etcd archive
   ansible.builtin.get_url:
@@ -54,7 +94,7 @@
   ansible.builtin.set_fact:
     etcd_cluster_members: |
       {% for host in groups['etcd-nodes'] %}
-      {{ hostvars[host]['ansible_hostname'] }}=http://{{ hostvars[host]['ansible_default_ipv4']['address'] }}:2380{% if not loop.last %},{% endif %}
+      {{ hostvars[host]['ansible_hostname'] }}=https://{{ hostvars[host]['ansible_default_ipv4']['address'] }}:2380{% if not loop.last %},{% endif %}
       {% endfor %}
 
 - name: Create etcd systemd service file
@@ -77,7 +117,11 @@
 - name: Verify Etcd cluster status
   ansible.builtin.shell:
     cmd: |
-      ETCDCTL_API=3 etcdctl --endpoints=http://{{ hostvars[groups['etcd-nodes'][0]].ansible_default_ipv4.address }}:2379 member list
+      ETCDCTL_API=3 etcdctl --endpoints=https://{{ hostvars[groups['etcd-nodes'][0]].ansible_default_ipv4.address }}:2379  \
+      --cacert=/etc/etcd/pki/ca.pem \
+      --cert=/etc/etcd/pki/etcd.pem \
+      --key=/etc/etcd/pki/etcd-key.pem \
+      member list
   register: etcd_cluster_status
   become: yes
   run_once: true
