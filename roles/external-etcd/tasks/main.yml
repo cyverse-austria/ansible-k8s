@@ -1,6 +1,11 @@
 ---
-# COPY files
-# * /etc/ssl/etcd/etcd.pem * /etc/ssl/etcd/ca.pem * /etc/ssl/etcd/etcd-key.pem
+- name: Remove existing /etc/etcd/pki/ directory if it exists (MAKE IT OPTIONAL)
+  file:
+    path: "{{ destination_cert_dir }}"
+    state: absent
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['etcd-nodes'] }}"
+
 - name: Ensure /etc/etcd/pki/ directory exists on etcd nodes
   file:
     path: "{{ destination_cert_dir }}"
@@ -9,6 +14,8 @@
   delegate_to: "{{ item }}"
   with_items: "{{ groups['etcd-nodes'] }}"
 
+# COPY files
+# * /etc/ssl/etcd/etcd.pem * /etc/ssl/etcd/ca.pem * /etc/ssl/etcd/etcd-key.pem
 - name: Copy etcd.pem to etcd nodes
   copy:
     src: "{{ source_cert_dir }}/etcd.pem"

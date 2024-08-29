@@ -35,26 +35,3 @@
     cfssl gencert -ca={{ cert_dir }}/ca.pem -ca-key={{ cert_dir }}/ca-key.pem -config={{ cert_dir }}/ca-config.json -profile=etcd {{ cert_dir }}/etcd-csr.json | cfssljson -bare {{ cert_dir }}/etcd
   args:
     creates: "{{ cert_dir }}/etcd.pem"
-
-##################################################
-
-# - name: Copy CA certificate to etcd nodes
-#   copy:
-#     src: ca.pem
-#     dest: "{{ cert_dir }}/ca.pem"
-#   delegate_to: "{{ item }}"
-#   with_items: "{{ groups['etcd-nodes'] }}"
-
-# - name: Copy etcd certificate to etcd nodes
-#   copy:
-#     src: etcd.pem
-#     dest: "{{ cert_dir }}/etcd.pem"
-#   delegate_to: "{{ item }}"
-#   with_items: "{{ groups['etcd-nodes'] }}"
-
-# - name: Copy etcd key to etcd nodes
-#   copy:
-#     src: etcd-key.pem
-#     dest: "{{ cert_dir }}/etcd-key.pem"
-#   delegate_to: "{{ item }}"
-#   with_items: "{{ groups['etcd-nodes'] }}"
