@@ -2,7 +2,7 @@
 Description=etcd
 
 [Service]
-Type=exec
+Type=notify
 ExecStart={{ etcd_bin_dir }}/etcd \
   --name {{ etcd_name }} \
   --cert-file=/etc/etcd/pki/etcd.pem \
