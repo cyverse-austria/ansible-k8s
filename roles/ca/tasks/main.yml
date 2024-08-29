@@ -17,8 +17,8 @@
 
 - name: Create index.txt and serial files
   copy:
-    content: "{{ item.content }}"
-    dest: "{{ ca_directory }}/{{ item.name }}"
+    content: "{{ item }}"
+    dest: "{{ ca_directory }}/{{ item }}"
   loop:
     - { name: 'index.txt', content: '' }
     - { name: 'serial', content: '01' }
@@ -43,23 +43,27 @@
     -subj "/C={{ ca_country }}/ST={{ ca_state }}/L={{ ca_locality }}/O={{ ca_organization }}/OU={{ ca_organizational_unit }}/CN={{ ca_name }}/emailAddress={{ ca_email }}"
   args:
     creates: "{{ ca_cert_file }}"
+#####################################################################
+##################################################
 
 - name: Generate private key for each etcd node
   openssl_privatekey:
-    path: "{{ ca_directory }}/private/{{ item }}.key"
+    path: "{{ ca_directory }}/private/{{ inventory_hostname }}.key"
     size: 2048
     state: present
-  loop: "{{ groups['etcd-nodes'] | default([]) }}"
+  delegate_to: localhost
+  loop: "{{ groups['etcd-nodes'] }}"
   loop_control:
     label: "{{ item }}"
 
 - name: Generate CSR for each etcd node
   openssl_csr:
-    path: "{{ ca_directory }}/newcerts/{{ item }}.csr"
-    privatekey_path: "{{ ca_directory }}/private/{{ item }}.key"
-    common_name: "{{ item }}"
-    subject_alt_name: "DNS:{{ item }}"
-  loop: "{{ groups['etcd-nodes'] | default([]) }}"
+    path: "{{ ca_directory }}/newcerts/{{ inventory_hostname }}.csr"
+    privatekey_path: "{{ ca_directory }}/private/{{ inventory_hostname }}.key"
+    common_name: "{{ inventory_hostname }}"
+    subject_alt_name: "DNS:{{ inventory_hostname }}"
+  delegate_to: localhost
+  loop: "{{ groups['etcd-nodes'] }}"
   loop_control:
     label: "{{ item }}"
 
@@ -67,36 +71,25 @@
   command: >
     openssl x509
     -req
-    -in {{ ca_directory }}/newcerts/{{ item }}.csr
+    -in {{ ca_directory }}/newcerts/{{ inventory_hostname }}.csr
     -CA {{ ca_cert_file }}
     -CAkey {{ ca_key_file }}
     -CAcreateserial
-    -out {{ ca_directory }}/certs/{{ item }}.crt
+    -out {{ ca_directory }}/certs/{{ inventory_hostname }}.crt
     -days {{ cert_validity_days }}
     -sha256
-  loop: "{{ groups['etcd-nodes'] | default([]) }}"
-  loop_control:
-    label: "{{ item }}"
-
-- name: Check if etcd nodes are reachable
-  wait_for:
-    host: "{{ item }}"
-    port: 22
-    state: started
-  register: check_reachable
-  failed_when: false
-  loop: "{{ groups['etcd-nodes'] | default([]) }}"
+  delegate_to: localhost
+  loop: "{{ groups['etcd-nodes'] }}"
   loop_control:
     label: "{{ item }}"
 
 - name: Distribute certificates and keys to each etcd node
   copy:
-    src: "{{ ca_directory }}/private/{{ item }}.key"
-    dest: "/etc/etcd/ssl/{{ item }}.key"
+    src: "{{ ca_directory }}/private/{{ inventory_hostname }}.key"
+    dest: "/etc/etcd/ssl/{{ inventory_hostname }}.key"
     mode: '0600'
   delegate_to: "{{ item }}"
-  when: check_reachable.results[loop.index0].status == 'started'
-  loop: "{{ groups['etcd-nodes'] | default([]) }}"
+  loop: "{{ groups['etcd-nodes'] }}"
   loop_control:
     label: "{{ item }}"
 
@@ -106,18 +99,16 @@
     dest: "/etc/etcd/ssl/ca.crt"
     mode: '0644'
   delegate_to: "{{ item }}"
-  when: check_reachable.results[loop.index0].status == 'started'
-  loop: "{{ groups['etcd-nodes'] | default([]) }}"
+  loop: "{{ groups['etcd-nodes'] }}"
   loop_control:
     label: "{{ item }}"
 
 - name: Distribute signed certificates to each etcd node
   copy:
-    src: "{{ ca_directory }}/certs/{{ item }}.crt"
-    dest: "/etc/etcd/ssl/{{ item }}.crt"
+    src: "{{ ca_directory }}/certs/{{ inventory_hostname }}.crt"
+    dest: "/etc/etcd/ssl/{{ inventory_hostname }}.crt"
     mode: '0644'
   delegate_to: "{{ item }}"
-  when: check_reachable.results[loop.index0].status == 'started'
-  loop: "{{ groups['etcd-nodes'] | default([]) }}"
+  loop: "{{ groups['etcd-nodes'] }}"
   loop_control:
     label: "{{ item }}"
