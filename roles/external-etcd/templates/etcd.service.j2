@@ -16,7 +16,7 @@ ExecStart={{ etcd_bin_dir }}/etcd \
   --initial-advertise-peer-urls https://{{ ansible_default_ipv4.address }}:2380 \
   --listen-peer-urls https://{{ ansible_default_ipv4.address }}:2380 \
   --advertise-client-urls https://{{ ansible_default_ipv4.address }}:2379 \
-  --listen-client-urls https://{{ ansible_default_ipv4.address }}:2379,http://127.0.0.1:2379 \
+  --listen-client-urls https://{{ ansible_default_ipv4.address }}:2379,https://127.0.0.1:2379 \
   --initial-cluster-token etcd-cluster-1 \
   --initial-cluster {{ etcd_cluster_members }} \
   --initial-cluster-state new
