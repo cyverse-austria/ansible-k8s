@@ -1,38 +1,29 @@
-Role Name
-=========
+# prepare_etcd_certificates
 
-A brief description of the role goes here.
+A role for preparing and distributing TLS certificates for etcd nodes in a Kubernetes cluster or similar environment. This role handles the creation of a Certificate Authority (CA), generates etcd certificates signed by the CA, and distributes these certificates to etcd nodes.
 
-Requirements
-------------
+## Requirements
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+- Ansible 2.9 or higher
+- `cfssl` and `cfssljson` tools must be installed on the control machine where the playbook is run. These tools are used for certificate generation.
+- `githubixx.cfssl` role if needed (defined in `meta/main.yml`)
 
-Role Variables
---------------
+## Role Variables
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+The following variables can be set in `defaults/main.yml` or overridden in your playbook:
 
-Dependencies
-------------
+- `cert_dir`: Directory where certificates and keys are stored. Default is `/etc/ssl/etcd`.
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Example:
+```yaml
+cert_dir: /etc/ssl/etcd
+```
 
-Example Playbook
-----------------
+**This role will generate CA and TLS certs for `etcd-nodes` group. in directory `/etc/ssl/etcd`**
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
+* /etc/ssl/etcd/ca.csr
+* /etc/ssl/etcd/ca-key.pem
+* /etc/ssl/etcd/ca.pem
+* /etc/ssl/etcd/etcd-key.pem
+* /etc/ssl/etcd/etcd.pem
 
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
-
-License
--------
-
-BSD
-
-Author Information
-------------------
-
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).

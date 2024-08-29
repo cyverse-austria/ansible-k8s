@@ -1,87 +1,120 @@
 ---
-# roles/etcd/tasks/main.yml
-
-- name: Download etcd archive
-  ansible.builtin.get_url:
-    url: "https://github.com/etcd-io/etcd/releases/download/{{ etcd_version }}/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
-    dest: "/tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
-    mode: '0644'
-
-- name: Extract etcd archive
-  ansible.builtin.unarchive:
-    src: "/tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
-    dest: "/tmp/"
-    remote_src: yes
-
-- name: List extracted files (for debugging)
-  ansible.builtin.command:
-    cmd: ls -la /tmp/etcd-{{ etcd_version }}-linux-amd64/
-  register: ls_output
-  ignore_errors: yes
-
-- debug:
-    var: ls_output.stdout_lines
-
-- name: Copy etcd binaries to {{ etcd_bin_dir }}
-  ansible.builtin.copy:
-    src: "/tmp/etcd-{{ etcd_version }}-linux-amd64/etcd"
-    dest: "{{ etcd_bin_dir }}/etcd"
-    remote_src: yes
+# COPY files
+# * /etc/ssl/etcd/etcd.pem * /etc/ssl/etcd/ca.pem * /etc/ssl/etcd/etcd-key.pem
+- name: Ensure /etc/etcd/pki/ directory exists on etcd nodes
+  file:
+    path: "{{ destination_cert_dir }}"
+    state: directory
     mode: '0755'
-  become: yes
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['etcd-nodes'] }}"
 
-- name: Copy etcdctl binary to {{ etcd_bin_dir }}
-  ansible.builtin.copy:
-    src: "/tmp/etcd-{{ etcd_version }}-linux-amd64/etcdctl"
-    dest: "{{ etcd_bin_dir }}/etcdctl"
-    remote_src: yes
-    mode: '0755'
-  become: yes
+- name: Copy etcd.pem to etcd nodes
+  copy:
+    src: "{{ source_cert_dir }}/etcd.pem"
+    dest: "{{ destination_cert_dir }}/etcd.pem"
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['etcd-nodes'] }}"
 
-- name: Cleanup extracted etcd directory
-  ansible.builtin.file:
-    path: "/tmp/etcd-{{ etcd_version }}-linux-amd64"
-    state: absent
-  become: yes
+- name: Copy ca.pem to etcd nodes
+  copy:
+    src: "{{ source_cert_dir }}/ca.pem"
+    dest: "{{ destination_cert_dir }}/ca.pem"
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['etcd-nodes'] }}"
 
-- name: Cleanup etcd archive
-  ansible.builtin.file:
-    path: "/tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
-    state: absent
-  become: yes
+- name: Copy etcd-key.pem to etcd nodes
+  copy:
+    src: "{{ source_cert_dir }}/etcd-key.pem"
+    dest: "{{ destination_cert_dir }}/etcd-key.pem"
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['etcd-nodes'] }}"
 
-- name: Set facts for etcd cluster members
-  ansible.builtin.set_fact:
-    etcd_cluster_members: |
-      {% for host in groups['etcd-nodes'] %}
-      {{ hostvars[host]['ansible_hostname'] }}=http://{{ hostvars[host]['ansible_default_ipv4']['address'] }}:2380{% if not loop.last %},{% endif %}
-      {% endfor %}
 
-- name: Create etcd systemd service file
-  ansible.builtin.template:
-    src: etcd.service.j2
-    dest: /etc/systemd/system/etcd.service
-  become: yes
 
-- name: Reload systemd
-  ansible.builtin.systemd:
-    daemon_reload: yes
+######################### uncomment ### works 
 
-- name: Enable and start etcd service
-  ansible.builtin.systemd:
-    name: etcd
-    enabled: yes
-    state: started
+# - name: Download etcd archive
+#   ansible.builtin.get_url:
+#     url: "https://github.com/etcd-io/etcd/releases/download/{{ etcd_version }}/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
+#     dest: "/tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
+#     mode: '0644'
 
-  ### "ETCDCTL_API=3 etcdctl --endpoints=http://209.38.46.80:2379 member list"
-- name: Verify Etcd cluster status
-  ansible.builtin.shell:
-    cmd: |
-      ETCDCTL_API=3 etcdctl --endpoints=http://{{ hostvars[groups['etcd-nodes'][0]].ansible_default_ipv4.address }}:2379 member list
-  register: etcd_cluster_status
-  become: yes
-  run_once: true
+# - name: Extract etcd archive
+#   ansible.builtin.unarchive:
+#     src: "/tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
+#     dest: "/tmp/"
+#     remote_src: yes
 
-- name: Debug Etcd cluster status
-  ansible.builtin.debug:
-    var: etcd_cluster_status.stdout_lines
+# - name: List extracted files (for debugging)
+#   ansible.builtin.command:
+#     cmd: ls -la /tmp/etcd-{{ etcd_version }}-linux-amd64/
+#   register: ls_output
+#   ignore_errors: yes
+
+# - debug:
+#     var: ls_output.stdout_lines
+
+# - name: Copy etcd binaries to {{ etcd_bin_dir }}
+#   ansible.builtin.copy:
+#     src: "/tmp/etcd-{{ etcd_version }}-linux-amd64/etcd"
+#     dest: "{{ etcd_bin_dir }}/etcd"
+#     remote_src: yes
+#     mode: '0755'
+#   become: yes
+
+# - name: Copy etcdctl binary to {{ etcd_bin_dir }}
+#   ansible.builtin.copy:
+#     src: "/tmp/etcd-{{ etcd_version }}-linux-amd64/etcdctl"
+#     dest: "{{ etcd_bin_dir }}/etcdctl"
+#     remote_src: yes
+#     mode: '0755'
+#   become: yes
+
+# - name: Cleanup extracted etcd directory
+#   ansible.builtin.file:
+#     path: "/tmp/etcd-{{ etcd_version }}-linux-amd64"
+#     state: absent
+#   become: yes
+
+# - name: Cleanup etcd archive
+#   ansible.builtin.file:
+#     path: "/tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
+#     state: absent
+#   become: yes
+
+# - name: Set facts for etcd cluster members
+#   ansible.builtin.set_fact:
+#     etcd_cluster_members: |
+#       {% for host in groups['etcd-nodes'] %}
+#       {{ hostvars[host]['ansible_hostname'] }}=http://{{ hostvars[host]['ansible_default_ipv4']['address'] }}:2380{% if not loop.last %},{% endif %}
+#       {% endfor %}
+
+# - name: Create etcd systemd service file
+#   ansible.builtin.template:
+#     src: etcd.service.j2
+#     dest: /etc/systemd/system/etcd.service
+#   become: yes
+
+# - name: Reload systemd
+#   ansible.builtin.systemd:
+#     daemon_reload: yes
+
+# - name: Enable and start etcd service
+#   ansible.builtin.systemd:
+#     name: etcd
+#     enabled: yes
+#     state: started
+
+#   ### "ETCDCTL_API=3 etcdctl --endpoints=http://209.38.46.80:2379 member list"
+# - name: Verify Etcd cluster status
+#   ansible.builtin.shell:
+#     cmd: |
+#       ETCDCTL_API=3 etcdctl --endpoints=http://{{ hostvars[groups['etcd-nodes'][0]].ansible_default_ipv4.address }}:2379 member list
+#   register: etcd_cluster_status
+#   become: yes
+#   run_once: true
+
+# - name: Debug Etcd cluster status
+#   ansible.builtin.debug:
+#     var: etcd_cluster_status.stdout_lines

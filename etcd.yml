@@ -4,13 +4,13 @@
   gather_facts: true
   roles:
     # - role: ca
-    - role: etcd_certificates
+    - role: etcd_certificates # create ca and certs for etcd node
 
-# - hosts: etcd-nodes
-#   become: yes
-#   gather_facts: true
-#   roles:
-#     - role: external-etcd
+- hosts: etcd-nodes
+  become: yes
+  gather_facts: true
+  roles:
+    - role: external-etcd
 
 
     # - role: githubixx.kubernetes_ca # https://github.com/githubixx/ansible-role-kubernetes-ca
@@ -20,16 +20,16 @@
     #     k8s_ca_worker_nodes_group: "k8s-worker"
     #     k8s_interface: "{{ ansible_default_ipv4.interface }}"
 
-- hosts: etcd-nodes
-  become: yes
-  gather_facts: true
-  roles:
-    - role: githubixx.etcd # https://github.com/githubixx/ansible-role-etcd
-      vars:
-        etcd_version: "v3.5.15"
-        etcd_bin_dir: "/usr/local/bin"
-        etcd_name: "{{ ansible_hostname }}"
-        etcd_ansible_group: "etcd-nodes"
-        etcd_ca_conf_directory: "/etc/etcd/certs"
+# - hosts: etcd-nodes
+#   become: yes
+#   gather_facts: true
+#   roles:
+#     - role: githubixx.etcd # https://github.com/githubixx/ansible-role-etcd
+#       vars:
+#         etcd_version: "v3.5.15"
+#         etcd_bin_dir: "/usr/local/bin"
+#         etcd_name: "{{ ansible_hostname }}"
+#         etcd_ansible_group: "etcd-nodes"
+#         etcd_ca_conf_directory: "/etc/etcd/certs"
 
 

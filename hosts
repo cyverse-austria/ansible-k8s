@@ -1,7 +1,7 @@
 [local]
-localhost
+localhost ansible_connection=local
 
 [etcd-nodes]
-web1.example.com
-web2.example.com
-web3.example.com
+etcd1 ansible_host=172.16.16.221
+etcd2 ansible_host=172.16.16.222
+etcd3 ansible_host=172.16.16.223

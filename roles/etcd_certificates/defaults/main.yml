@@ -1,7 +1,3 @@
 ---
-etcd_certificates_dir: "/etc/etcd/certs"
-ca_cert: "ca.crt"
-server_cert: "server.crt"
-server_key: "server.key"
-client_cert: "client.crt"
-client_key: "client.key"
+# Default directory path for certificates
+cert_dir: /etc/ssl/etcd

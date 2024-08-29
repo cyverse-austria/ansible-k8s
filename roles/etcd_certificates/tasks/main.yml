@@ -1,62 +1,60 @@
 ---
-- name: Ensure certificates directory exists
+- name: Ensure cfssl is present
+  include_role:
+    name: githubixx.cfssl
+
+- name: Ensure certificate directory
   file:
-    path: "{{ etcd_certificates_dir }}"
+    path: "{{ cert_dir }}"
     state: directory
-    mode: '0700'
+    mode: '0755'
 
-- name: Generate CA certificate and key
-  shell: |
-    openssl req -x509 -new -nodes -keyout "{{ etcd_certificates_dir }}/ca.key" \
-    -out "{{ etcd_certificates_dir }}/ca.crt" -days 3650 \
-    -subj "/C=US/ST=State/L=Locality/O=Organization/OU=Organizational Unit/CN=etcd-ca"
-  args:
-    creates: "{{ etcd_certificates_dir }}/ca.crt"
+- name: Create CA configuration file
+  copy:
+    src: ca-config.json
+    dest: "{{ cert_dir }}/ca-config.json"
 
-- name: Generate server key
-  shell: |
-    openssl genrsa -out "{{ etcd_certificates_dir }}/server.key" 2048
-  args:
-    creates: "{{ etcd_certificates_dir }}/server.key"
+- name: Create CA CSR file
+  copy:
+    src: ca-csr.json
+    dest: "{{ cert_dir }}/ca-csr.json"
 
-- name: Generate server certificate signing request (CSR)
+- name: Generate CA certificate
   shell: |
-    openssl req -new -key "{{ etcd_certificates_dir }}/server.key" \
-    -out "{{ etcd_certificates_dir }}/server.csr" \
-    -subj "/C=US/ST=State/L=Locality/O=Organization/OU=Organizational Unit/CN=etcd-server"
+    cfssl gencert -initca {{ cert_dir }}/ca-csr.json | cfssljson -bare {{ cert_dir }}/ca
   args:
-    creates: "{{ etcd_certificates_dir }}/server.csr"
+    creates: "{{ cert_dir }}/ca.pem"
 
-- name: Generate server certificate
-  shell: |
-    openssl x509 -req -in "{{ etcd_certificates_dir }}/server.csr" \
-    -CA "{{ etcd_certificates_dir }}/ca.crt" \
-    -CAkey "{{ etcd_certificates_dir }}/ca.key" \
-    -CAcreateserial -out "{{ etcd_certificates_dir }}/server.crt" \
-    -days 365
-  args:
-    creates: "{{ etcd_certificates_dir }}/server.crt"
+- name: Generate etcd CSR file
+  template:
+    src: etcd-csr.json.j2
+    dest: "{{ cert_dir }}/etcd-csr.json"
 
-- name: Generate client key
+- name: Generate etcd certificate
   shell: |
-    openssl genrsa -out "{{ etcd_certificates_dir }}/client.key" 2048
+    cfssl gencert -ca={{ cert_dir }}/ca.pem -ca-key={{ cert_dir }}/ca-key.pem -config={{ cert_dir }}/ca-config.json -profile=etcd {{ cert_dir }}/etcd-csr.json | cfssljson -bare {{ cert_dir }}/etcd
   args:
-    creates: "{{ etcd_certificates_dir }}/client.key"
+    creates: "{{ cert_dir }}/etcd.pem"
 
-- name: Generate client certificate signing request (CSR)
-  shell: |
-    openssl req -new -key "{{ etcd_certificates_dir }}/client.key" \
-    -out "{{ etcd_certificates_dir }}/client.csr" \
-    -subj "/C=US/ST=State/L=Locality/O=Organization/OU=Organizational Unit/CN=etcd-client"
-  args:
-    creates: "{{ etcd_certificates_dir }}/client.csr"
+##################################################
 
-- name: Generate client certificate
-  shell: |
-    openssl x509 -req -in "{{ etcd_certificates_dir }}/client.csr" \
-    -CA "{{ etcd_certificates_dir }}/ca.crt" \
-    -CAkey "{{ etcd_certificates_dir }}/ca.key" \
-    -CAcreateserial -out "{{ etcd_certificates_dir }}/client.crt" \
-    -days 365
-  args:
-    creates: "{{ etcd_certificates_dir }}/client.crt"
+# - name: Copy CA certificate to etcd nodes
+#   copy:
+#     src: ca.pem
+#     dest: "{{ cert_dir }}/ca.pem"
+#   delegate_to: "{{ item }}"
+#   with_items: "{{ groups['etcd-nodes'] }}"
+
+# - name: Copy etcd certificate to etcd nodes
+#   copy:
+#     src: etcd.pem
+#     dest: "{{ cert_dir }}/etcd.pem"
+#   delegate_to: "{{ item }}"
+#   with_items: "{{ groups['etcd-nodes'] }}"
+
+# - name: Copy etcd key to etcd nodes
+#   copy:
+#     src: etcd-key.pem
+#     dest: "{{ cert_dir }}/etcd-key.pem"
+#   delegate_to: "{{ item }}"
+#   with_items: "{{ groups['etcd-nodes'] }}"
