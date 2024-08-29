@@ -3,7 +3,8 @@
   become: yes
   gather_facts: true
   roles:
-    - role: ca  
+    # - role: ca
+    - role: etcd_certificates
 
 # - hosts: etcd-nodes
 #   become: yes
@@ -29,6 +30,6 @@
         etcd_bin_dir: "/usr/local/bin"
         etcd_name: "{{ ansible_hostname }}"
         etcd_ansible_group: "etcd-nodes"
-        etcd_ca_conf_directory: "/etc/ssl/myca"
+        etcd_ca_conf_directory: "/etc/etcd/certs"
 
 

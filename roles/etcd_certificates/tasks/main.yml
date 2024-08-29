@@ -1,0 +1,62 @@
+---
+- name: Ensure certificates directory exists
+  file:
+    path: "{{ etcd_certificates_dir }}"
+    state: directory
+    mode: '0700'
+
+- name: Generate CA certificate and key
+  shell: |
+    openssl req -x509 -new -nodes -keyout "{{ etcd_certificates_dir }}/ca.key" \
+    -out "{{ etcd_certificates_dir }}/ca.crt" -days 3650 \
+    -subj "/C=US/ST=State/L=Locality/O=Organization/OU=Organizational Unit/CN=etcd-ca"
+  args:
+    creates: "{{ etcd_certificates_dir }}/ca.crt"
+
+- name: Generate server key
+  shell: |
+    openssl genrsa -out "{{ etcd_certificates_dir }}/server.key" 2048
+  args:
+    creates: "{{ etcd_certificates_dir }}/server.key"
+
+- name: Generate server certificate signing request (CSR)
+  shell: |
+    openssl req -new -key "{{ etcd_certificates_dir }}/server.key" \
+    -out "{{ etcd_certificates_dir }}/server.csr" \
+    -subj "/C=US/ST=State/L=Locality/O=Organization/OU=Organizational Unit/CN=etcd-server"
+  args:
+    creates: "{{ etcd_certificates_dir }}/server.csr"
+
+- name: Generate server certificate
+  shell: |
+    openssl x509 -req -in "{{ etcd_certificates_dir }}/server.csr" \
+    -CA "{{ etcd_certificates_dir }}/ca.crt" \
+    -CAkey "{{ etcd_certificates_dir }}/ca.key" \
+    -CAcreateserial -out "{{ etcd_certificates_dir }}/server.crt" \
+    -days 365
+  args:
+    creates: "{{ etcd_certificates_dir }}/server.crt"
+
+- name: Generate client key
+  shell: |
+    openssl genrsa -out "{{ etcd_certificates_dir }}/client.key" 2048
+  args:
+    creates: "{{ etcd_certificates_dir }}/client.key"
+
+- name: Generate client certificate signing request (CSR)
+  shell: |
+    openssl req -new -key "{{ etcd_certificates_dir }}/client.key" \
+    -out "{{ etcd_certificates_dir }}/client.csr" \
+    -subj "/C=US/ST=State/L=Locality/O=Organization/OU=Organizational Unit/CN=etcd-client"
+  args:
+    creates: "{{ etcd_certificates_dir }}/client.csr"
+
+- name: Generate client certificate
+  shell: |
+    openssl x509 -req -in "{{ etcd_certificates_dir }}/client.csr" \
+    -CA "{{ etcd_certificates_dir }}/ca.crt" \
+    -CAkey "{{ etcd_certificates_dir }}/ca.key" \
+    -CAcreateserial -out "{{ etcd_certificates_dir }}/client.crt" \
+    -days 365
+  args:
+    creates: "{{ etcd_certificates_dir }}/client.crt"
