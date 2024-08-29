@@ -19,11 +19,16 @@
     #     k8s_ca_worker_nodes_group: "k8s-worker"
     #     k8s_interface: "{{ ansible_default_ipv4.interface }}"
 
-    # - role: githubixx.etcd # https://github.com/githubixx/ansible-role-etcd
-    #   vars:
-    #     etcd_version: "v3.5.15"
-    #     etcd_bin_dir: "/usr/local/bin"
-    #     etcd_name: "{{ ansible_hostname }}"
-    #     etcd_ansible_group: "etcd-nodes"
+- hosts: etcd-nodes
+  become: yes
+  gather_facts: true
+  roles:
+    - role: githubixx.etcd # https://github.com/githubixx/ansible-role-etcd
+      vars:
+        etcd_version: "v3.5.15"
+        etcd_bin_dir: "/usr/local/bin"
+        etcd_name: "{{ ansible_hostname }}"
+        etcd_ansible_group: "etcd-nodes"
+        etcd_ca_conf_directory: "{{ '/etc/ssl/myca' | expanduser }}"
 
 
