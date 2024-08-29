@@ -1,0 +1,5 @@
+---
+- name: Destroy ETCD
+  hosts: all
+  roles:
+    - destroy-etcd

@@ -1,0 +1,107 @@
+---
+# This file contains the main tasks for destroying the etcd setup and certificates
+
+# Tasks to run on localhost
+- name: Destroy Etcd Setup and Certificates (localhost tasks)
+  hosts: localhost
+  tasks:
+    - name: Remove certificate directory and its contents
+      file:
+        path: "{{ cert_dir }}"
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove cfssl package
+      ansible.builtin.package:
+        name: cfssl
+        state: absent
+      when: cfssl_installed.stat.exists
+      ignore_errors: yes
+
+    - name: Ensure cfssl binary is removed
+      stat:
+        path: /usr/local/bin/cfssl
+      register: cfssl_installed
+      ignore_errors: yes
+
+    - name: Clean up any temporary files
+      file:
+        path: /tmp/
+        state: absent
+        recurse: yes
+        force: yes
+      ignore_errors: yes
+
+    - name: Remove temporary etcd files from /tmp
+      ansible.builtin.file:
+        path: "/tmp/etcd-{{ etcd_version }}-linux-amd64*"
+        state: absent
+      become: yes
+      ignore_errors: yes
+
+    - name: Clean up downloaded etcd archive
+      ansible.builtin.file:
+        path: "/tmp/etcd-{{ etcd_version }}-linux-amd64.tar.gz"
+        state: absent
+      become: yes
+      ignore_errors: yes
+
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: yes
+      become: yes
+      ignore_errors: yes
+
+# Tasks to run on etcd-nodes group
+- name: Destroy Etcd Setup (etcd-nodes tasks)
+  hosts: etcd-nodes
+  tasks:
+    - name: Stop and disable etcd service
+      ansible.builtin.systemd:
+        name: etcd
+        state: stopped
+        enabled: no
+      become: yes
+      ignore_errors: yes
+
+    - name: Remove etcd systemd service file
+      ansible.builtin.file:
+        path: /etc/systemd/system/etcd.service
+        state: absent
+      become: yes
+      ignore_errors: yes
+
+    - name: Remove etcdctl binary
+      ansible.builtin.file:
+        path: "{{ etcd_bin_dir }}/etcdctl"
+        state: absent
+      become: yes
+      ignore_errors: yes
+
+    - name: Remove etcd binary
+      ansible.builtin.file:
+        path: "{{ etcd_bin_dir }}/etcd"
+        state: absent
+      become: yes
+      ignore_errors: yes
+
+    - name: Clean up certificate files from etcd nodes
+      file:
+        path: "{{ destination_cert_dir }}/{{ item }}"
+        state: absent
+      with_items:
+        - etcd.pem
+        - ca.pem
+        - etcd-key.pem
+      ignore_errors: yes
+
+    - name: Remove etcd certificate directory
+      file:
+        path: "{{ destination_cert_dir }}"
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove etcd cluster members fact
+      ansible.builtin.set_fact:
+        etcd_cluster_members: ""
+      ignore_errors: yes
