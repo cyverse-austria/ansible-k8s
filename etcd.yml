@@ -1,5 +1,5 @@
 ---
-- hosts: "{{ groups['etcd-nodes'][0] }}"
+- hosts: localhost
   become: yes
   gather_facts: true
   roles:
