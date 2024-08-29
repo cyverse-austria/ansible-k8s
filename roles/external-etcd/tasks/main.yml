@@ -1,11 +1,4 @@
 ---
-# - name: Remove existing /etc/etcd/pki/ directory if it exists (MAKE IT OPTIONAL)
-#   file:
-#     path: "{{ destination_cert_dir }}"
-#     state: absent
-#   delegate_to: "{{ item }}"
-#   with_items: "{{ groups['etcd-nodes'] }}"
-
 - name: Ensure /etc/etcd/pki/ directory exists on etcd nodes
   file:
     path: "{{ destination_cert_dir }}"

@@ -166,5 +166,6 @@ https://github.com/justmeandopensource/kubernetes/tree/master/kubeadm-external-e
 TODO
 
 * https://www.youtube.com/watch?v=gYNEUC9paW8
-* destroy the etcd cluster
+* copy the created `/etc/ssl/etcd/etcd.pem * /etc/ssl/etcd/ca.pem * /etc/ssl/etcd/etcd-key.pem` files to all master nodes.
+
 

@@ -11,13 +11,6 @@
 #   roles:
 #     - restart-haproxy
 
-- name: configure external etcd
-  hosts: etcd-nodes
-  become: yes
-  gather_facts: true
-  roles:
-    - external-etcd
-
 - name: Setup k8s controler main
   hosts: k8s-control-plane[0]
   become: true
