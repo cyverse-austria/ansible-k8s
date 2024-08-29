@@ -1,4 +1,10 @@
 ---
+- name: Update the OS
+  package:
+    name: '*'
+    state: latest
+
+
 - name: Install necessary packages
   package:
     name: openssl
