@@ -1,10 +1,13 @@
 ---
+# Generate certificates for etcd cluster, to location where ansible is running.
 - hosts: localhost
   become: yes
   gather_facts: true
   roles:
     - role: etcd_certificates # create ca and certs for etcd node
 
+# copy the created certificates to the etcd-nodes
+# deploy etcd cluster
 - hosts: etcd-nodes
   become: yes
   gather_facts: true
