@@ -161,3 +161,10 @@ https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/setup-ha-e
 https://www.youtube.com/watch?v=YUrAXr5MJ0c
 https://www.youtube.com/watch?v=dQ5zsJEX47s
 https://github.com/justmeandopensource/kubernetes/tree/master/kubeadm-external-etcd
+
+
+TODO
+
+* https://www.youtube.com/watch?v=gYNEUC9paW8
+* destroy the etcd cluster
+
