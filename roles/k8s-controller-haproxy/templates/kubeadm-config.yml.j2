@@ -9,7 +9,7 @@ etcd:
   external:
     endpoints:
     {% for host in groups['etcd-nodes'] %}
-      - {{ endpoint }}
+      - https://{{ hostvars[host].ansible_hostname }}:2379
     {% endfor %}
     caFile: /etc/kubernetes/pki/etcd/ca.pem
     certFile: /etc/kubernetes/pki/etcd/etcd.pem
