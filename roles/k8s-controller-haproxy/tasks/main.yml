@@ -7,6 +7,13 @@
   check_mode: false
   changed_when: token_list_result.rc != 0
 
+- name: Generate etcd endpoints list
+  set_fact:
+    etcd_endpoints: >
+      {% for host in groups['etcd-nodes'] %}
+      - "https://{{ hostvars[host].ansible_hostname }}:2379"
+      {% endfor %}
+
 - name: Generate kubeadm configuration file
   template:
     src: kubeadm-config.yml.j2
