@@ -167,5 +167,3 @@ TODO
 
 * https://www.youtube.com/watch?v=gYNEUC9paW8
 * copy the created `/etc/ssl/etcd/etcd.pem * /etc/ssl/etcd/ca.pem * /etc/ssl/etcd/etcd-key.pem` files to all master nodes.
-
-
