@@ -8,29 +8,10 @@
   changed_when: token_list_result.rc != 0
 
 - name: Generate kubeadm configuration file
-  shell: |
-    cat <<EOF > /etc/kubernetes/kubeadm-config.yml
-    ---
-    apiVersion: kubeadm.k8s.io/v1beta3
-    kind: ClusterConfiguration
-    kubernetesVersion: stable
-    controlPlaneEndpoint: "{{ hostvars[groups['kube-apiserver-haproxy'][0]].ansible_default_ipv4.address }}:{{ kubernetes_default_port }}"
-    networking:
-      podSubnet: "{{ kubernetes_network }}"
-      serviceSubnet: "{{ kubernetes_service_network }}"
-    etcd:
-      external:
-        endpoints:
-        {% for host in groups['etcd-nodes'] %}
-        - https://{{ hostvars[host].ansible_hostname }}:2379
-        {% endfor %}
-        caFile: /etc/kubernetes/pki/etcd/ca.pem
-        certFile: /etc/kubernetes/pki/etcd/etcd.pem
-        keyFile: /etc/kubernetes/pki/etcd/etcd-key.pem
-    EOF
-  args:
-    executable: /bin/bash
-  
+  template:
+    src: kubeadm-config.yml.j2
+    dest: /etc/kubernetes/kubeadm-config.yml
+
 - name: Initialize Kubernetes controller with external etcd
   ansible.builtin.shell: |
     kubeadm init --config /etc/kubernetes/kubeadm-config.yml --upload-certs
