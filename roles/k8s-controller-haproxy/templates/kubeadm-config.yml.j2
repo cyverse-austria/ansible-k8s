@@ -14,20 +14,3 @@ etcd:
     caFile: /etc/kubernetes/pki/etcd/ca.pem
     certFile: /etc/kubernetes/pki/etcd/etcd.pem
     keyFile: /etc/kubernetes/pki/etcd/etcd-key.pem
-    # Optional: If you use client authentication for etcd
-    # clientCertFile: {{ etcd_client_cert_file | default(omit) }}
-    # clientKeyFile: {{ etcd_client_key_file | default(omit) }}
-# apiServer:
-#   certSANs:
-#     - "{{ api_server_sans }}"
-#   extraArgs:
-#     etcd-servers: "{{ etcd_endpoints | join(',') }}"
-#     etcd-cafile: {{ etcd_ca_file }}
-#     etcd-certfile: {{ etcd_cert_file }}
-#     etcd-keyfile: {{ etcd_key_file }}
-# controllerManager: {}
-# scheduler: {}
-# networking:
-#   dnsDomain: cluster.local
-#   podSubnet: {{ pod_subnet }}
-#   serviceSubnet: {{ service_subnet }}
