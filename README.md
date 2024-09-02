@@ -148,25 +148,40 @@ This playbook has an additional variable `var_hosts`. Default ist `'~.*-vice-hap
 ansible-playbook -i inventory/ --user=<sudo-user> --extra-vars="var_hosts=loadbalancer" --become ./cert_bot.yaml
 ```
 
+# External ETCD cluster
+
+![image info](./images/etcd.jpg)
 
 
 # ETCD external etcd for kubernetes
 
-* create etcd cluster
-* create kubernetes cluster to use the etcd cluster as external etcd
+make sure your inventory has the group `etcd-nodes`, e.g.
+```conf
+[etcd-nodes]
+etcd-c01
+etcd-c02
+etcd-c03
+```
 
-https://github.com/etcd-io/etcd
-https://github.com/githubixx/ansible-role-etcd
-https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/setup-ha-etcd-with-kubeadm/
-https://www.youtube.com/watch?v=YUrAXr5MJ0c
-https://www.youtube.com/watch?v=dQ5zsJEX47s
-https://github.com/justmeandopensource/kubernetes/tree/master/kubeadm-external-etcd
+### etcd.yml
 
+This playbook will do the followings:
 
-TODO
+* Generate selfsigned certs for etcd cluster, [README](roles\etcd_certificates\README.md)
+* Deploy ETCD cluster, [README](roles\external-etcd\README.md)
 
-* https://www.youtube.com/watch?v=gYNEUC9paW8
-* copy the created `/etc/ssl/etcd/etcd.pem * /etc/ssl/etcd/ca.pem * /etc/ssl/etcd/etcd-key.pem` files to all master nodes.
+```bash
+ansible-playbook -i inventory/ --user=<sudo-user> --become ./etcd.yml
+```
 
+### multi-master-etcd.yml
 
-# run etcd branch for iac_k8s / then run k8s-deb branch etcd with ETCD true. and then with ETCD false.
+This playbook will do the followings:
+* init master node
+* join master node
+* join workers nodes
+* install CNI driver
+
+```bash
+ansible-playbook -i inventory/ --user=<sudo-user> --become ./multi-master-etcd.yml
+```
