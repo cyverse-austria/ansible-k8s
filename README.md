@@ -167,8 +167,8 @@ etcd-c03
 
 This playbook will do the followings:
 
-* Generate selfsigned certs for etcd cluster, [README](./roles\etcd_certificates\README.md)
-* Deploy ETCD cluster, [README](./roles\external-etcd\README.md)
+* Generate selfsigned certs for etcd cluster, [README](./roles/etcd_certificates/README.md)
+* Deploy ETCD cluster, [README](./roles/external-etcd/README.md)
 
 ```bash
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./etcd.yml
