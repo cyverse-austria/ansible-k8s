@@ -177,7 +177,7 @@ ansible-playbook -i inventory/ --user=<sudo-user> --become ./etcd.yml
 ### multi-master-etcd.yml
 
 This playbook will do the followings:
-* init master node
+* init master node with external ETCD
 * join master node
 * join workers nodes
 * install CNI driver

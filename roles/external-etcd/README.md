@@ -32,3 +32,11 @@ etcd_version: "v3.5.15"
 To use http only version you will have to change:
 * use template `roles/external-etcd/templates/etcd.service-Witout-https.j2`
 * change urls in `roles/external-etcd/tasks/main.yml` from  `https://` to `http://`
+
+
+## Reference
+
+* [etcd-io](https://github.com/etcd-io/etcd)
+* [etcd kubernetes](https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/setup-ha-etcd-with-kubeadm/)
+* [Youtube tutorial](https://www.youtube.com/watch?v=YUrAXr5MJ0c)
+* [Tutorial github](https://github.com/justmeandopensource/kubernetes/tree/master/kubeadm-external-etcd)
