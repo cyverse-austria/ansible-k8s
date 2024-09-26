@@ -3,6 +3,11 @@
 roles:
     - name: githubixx.containerd
       version: "0.9.0+1.7.0" # https://containerd.io/releases/#kubernetes-support
+    # - name: githubixx.etcd
+    - name: githubixx.cfssl
+      src: https://github.com/githubixx/ansible-role-cfssl.git
+      version: 8.3.0+1.6.5
+
 collections:
     - name: community.general
       version: ">=6.4.0"

@@ -147,3 +147,41 @@ This playbook has an additional variable `var_hosts`. Default ist `'~.*-vice-hap
 ```bash
 ansible-playbook -i inventory/ --user=<sudo-user> --extra-vars="var_hosts=loadbalancer" --become ./cert_bot.yaml
 ```
+
+# External ETCD cluster
+
+![image info](./images/etcd.jpg)
+
+
+# ETCD external etcd for kubernetes
+
+make sure your inventory has the group `etcd-nodes`, e.g.
+```conf
+[etcd-nodes]
+etcd-c01
+etcd-c02
+etcd-c03
+```
+
+### etcd.yml
+
+This playbook will do the followings:
+
+* Generate selfsigned certs for etcd cluster, [README](./roles/etcd_certificates/README.md)
+* Deploy ETCD cluster, [README](./roles/external-etcd/README.md)
+
+```bash
+ansible-playbook -i inventory/ --user=<sudo-user> --become ./etcd.yml
+```
+
+### multi-master-etcd.yml
+
+This playbook will do the followings:
+* init master node with external ETCD
+* join master node with external ETCD
+* join workers nodes
+* install CNI driver
+
+```bash
+ansible-playbook -i inventory/ --user=<sudo-user> --become ./multi-master-etcd.yml
+```

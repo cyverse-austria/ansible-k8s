@@ -1,0 +1,5 @@
+---
+- name: Destroy ETCD
+  hosts: localhost:etcd-nodes
+  roles:
+    - destroy-etcd

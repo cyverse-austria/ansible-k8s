@@ -1,0 +1,29 @@
+[Unit]
+Description=etcd
+
+[Service]
+Type=notify
+ExecStart={{ etcd_bin_dir }}/etcd \
+  --name {{ etcd_name }} \
+  --cert-file=/etc/etcd/pki/etcd.pem \
+  --key-file=/etc/etcd/pki/etcd-key.pem \
+  --peer-cert-file=/etc/etcd/pki/etcd.pem \
+  --peer-key-file=/etc/etcd/pki/etcd-key.pem \
+  --trusted-ca-file=/etc/etcd/pki/ca.pem \
+  --peer-trusted-ca-file=/etc/etcd/pki/ca.pem \
+  --peer-client-cert-auth \
+  --client-cert-auth \
+  --initial-advertise-peer-urls https://{{ ansible_default_ipv4.address }}:2380 \
+  --listen-peer-urls https://{{ ansible_default_ipv4.address }}:2380 \
+  --advertise-client-urls https://{{ ansible_default_ipv4.address }}:2379 \
+  --listen-client-urls https://{{ ansible_default_ipv4.address }}:2379,https://127.0.0.1:2379 \
+  --initial-cluster-token etcd-cluster-1 \
+  --initial-cluster {{ etcd_cluster_members }} \
+  --initial-cluster-state new
+Restart=on-failure
+RestartSec=5
+
+
+[Install]
+WantedBy=multi-user.target
+

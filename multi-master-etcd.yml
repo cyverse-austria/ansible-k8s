@@ -1,0 +1,37 @@
+---
+- name: Gather some facts
+  hosts: kube-apiserver-haproxy[0]
+  gather_facts: true
+
+- name: Setup k8s controler main
+  hosts: k8s-control-plane[0]
+  become: true
+  gather_facts: true
+  roles:
+    - k8s-controller-haproxy-etcd
+
+
+- name: Setup k8s worker
+  hosts:
+    - k8s-worker
+  become: true
+  gather_facts: true
+  strategy: linear
+  roles:
+    - k8s-worker
+
+- name: Setup k8s controller others
+  hosts: k8s-control-plane[1:]
+  become: true
+  gather_facts: true
+
+  roles:
+    - k8s-controller-etcd
+  tags:
+    - multimaster
+
+- name: Change haproxy-conf
+  hosts: kube-apiserver-haproxy
+  become: true
+  roles:
+    - kube-apiserver-haproxy-installer
