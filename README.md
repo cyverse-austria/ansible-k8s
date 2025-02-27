@@ -1,6 +1,6 @@
 # ansible-k8s
 
-Ansible playbooks to deploy kubernetes cluster on **Centos7, Debian 11/12 & Rocky Linux 8 and 9**.
+Ansible playbooks to deploy kubernetes cluster on **Debian 12**.
 
 `Ansible version: >= 2.10.8`
 
@@ -184,4 +184,19 @@ This playbook will do the followings:
 
 ```bash
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./multi-master-etcd.yml
+```
+
+### Interact with ETCD cluster
+After successfully deploying, you can check your etcd cluster information either from within your Kubernetes cluster or directly from the etcd cluster itself.
+
+**Get ETCD info from kubernetes**
+```bash
+kubectl get pod -n kube-system -l component=kube-apiserver -o yaml | grep -i etcd
+```
+
+**Interact with ETCD cluster**
+```bash
+ssh USER@etcd-host
+
+etcdctl version
 ```
