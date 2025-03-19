@@ -164,6 +164,9 @@ etcd-c03
 ```
 
 ### etcd.yml
+The first step is to configure and get the ETCD cluster up and running.
+once the ETCD cluster is configured we could join the kubernetes cluster to it.
+
 
 This playbook will do the followings:
 
