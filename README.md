@@ -4,7 +4,7 @@ Ansible playbooks to deploy kubernetes cluster on **Debian 12**.
 
 `Ansible version: >= 2.10.8`
 
-`kubernetes version: 1.28.2`
+`kubernetes version: v1.32`
 
 ## preq
 
