@@ -39,7 +39,7 @@
 - name: Install kube{let,adm,ctl}
   ansible.builtin.yum:
     name:
-      - kubelet-1.28.2
-      - kubeadm-1.28.2
-      - kubectl-1.28.2
+      - "kubelet={{ kube_x_version }}"
+      - "kubeadm={{ kube_x_version }}"
+      - "kubectl={{ kube_x_version }}"
     state: present
