@@ -1,4 +1,18 @@
 ---
+
+- name: Delete stale nodes from Kubernetes cluster
+  hosts: k8s-control-plane
+  become: yes
+  tasks:
+    - name: Delete cluster nodes that exist in inventory
+      shell: |
+        for node in {{ groups['k8s-worker'] + groups['k8s-control-plane'] | join(' ') }}; do
+          echo "Deleting $node if it exists in the cluster..."
+          kubectl delete node $node || true
+        done
+      when: inventory_hostname == groups['k8s-control-plane'][0]
+      ignore_errors: yes
+      
 - name: run destroy command
   hosts: k8s
   become: yes
