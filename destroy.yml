@@ -3,9 +3,9 @@
   hosts: k8s-control-plane
   become: yes
   tasks:
-    - name: Delete nodes in inventory from Kubernetes cluster
+    - name: Delete all nodes (control-plane + workers) from the Kubernetes cluster
       shell: |
-        for node in {{ (groups['k8s-worker'] + groups['k8s-control-plane']) }}; do
+        for node in {{ (groups['k8s-worker'] + groups['k8s-control-plane'] + groups['vice-workers']) }}; do
           echo "Deleting $node if it exists in the cluster..."
           kubectl delete node $node || true
         done
