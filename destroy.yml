@@ -7,7 +7,7 @@
       command: /usr/bin/kubeadm reset --force
       ignore_errors: yes
 
-- name: remmove packages
+- name: Remove Kubernetes packages
   hosts: k8s
   become: yes
   tasks:
@@ -29,15 +29,15 @@
       shell: rm -rf /opt/cni
     - name: Remove weave generated file
       shell: rm -rf ~/pod_setup.txt
-    - name: Remove /etc/kubernetes/pki
+    - name: Remove /etc/kubernetes/pki directory
       shell: rm -rf /etc/kubernetes/pki
-    - name: Remove /var/lib/kubelet
+    - name: Remove /var/lib/kubelet directory
       shell: rm -rf /var/lib/kubelet
-    - name: Remove /var/lib/cni
+    - name: Remove /var/lib/cni directory
       shell: rm -rf /var/lib/cni
     - name: Remove /etc/cni
       shell: rm -rf /etc/cni
-    - name: Remove /etc/kubernetes/manifests
+    - name: Remove /etc/kubernetes/manifests directory
       shell: rm -rf /etc/kubernetes/manifests
     - name: Remove /etc/systemd/system/kubelet.service.d
       shell: rm -rf /etc/systemd/system/kubelet.service.d
@@ -50,18 +50,16 @@
       apt:
         name: ['containerd', 'containerd.io']
         state: absent
-
     - name: Stop the Containerd service
       service:
         name: containerd
         state: stopped
-
     - name: Disable the Containerd service
       systemd:
         name: containerd
         enabled: no
 
-- name: Remove /etc/containerd
+- name: Remove /etc/containerd directory
   hosts: k8s
   become: yes
   tasks:
@@ -75,11 +73,10 @@
     - name: Run apt autoclean
       ansible.builtin.apt:
         autoclean: yes
-
-    - name: Run apt autoremove 
+    - name: Run apt autoremove
       ansible.builtin.apt:
         autoremove: yes
-      
+
 - name: Update and upgrade system packages
   hosts: k8s
   become: yes
@@ -87,7 +84,6 @@
     - name: Update apt package index
       apt:
         update_cache: yes
-
     - name: Upgrade all packages
       apt:
         upgrade: dist

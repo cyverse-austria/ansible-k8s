@@ -19,8 +19,7 @@ ExecStart={{ etcd_bin_dir }}/etcd \
   --listen-client-urls https://{{ ansible_default_ipv4.address }}:2379,https://127.0.0.1:2379 \
   --initial-cluster-token etcd-cluster-1 \
   --initial-cluster {{ etcd_cluster_members }} \
-  --initial-cluster-state new \
-  --data-dir {{ etcd_data_dir }}
+  --initial-cluster-state new 
 Restart=on-failure
 RestartSec=5
 
