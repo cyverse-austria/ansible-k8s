@@ -103,28 +103,3 @@
     etcd_cluster_members: ""
   ignore_errors: yes
   when: "'etcd-nodes' in group_names"
-
-# Clean up external etcd cluster (removing any references to old nodes)
-- name: Remove old node data from external etcd
-  command: >
-    ETCDCTL_API=3 etcdctl --endpoints={{ etcd_endpoint }} del /registry/nodes/{{ ansible_hostname }}
-  when: "'etcd-nodes' in group_names"
-  ignore_errors: yes
-
-- name: Remove old minion data from external etcd
-  command: >
-    ETCDCTL_API=3 etcdctl --endpoints={{ etcd_endpoint }} del /registry/minions/{{ ansible_hostname }}
-  when: "'etcd-nodes' in group_names"
-  ignore_errors: yes
-
-- name: Remove etcd data from external etcd (if necessary)
-  command: >
-    ETCDCTL_API=3 etcdctl --endpoints={{ etcd_endpoint }} del /registry/pods/{{ ansible_hostname }}
-  when: "'etcd-nodes' in group_names"
-  ignore_errors: yes
-
-- name: Remove any leftover etcd cluster membership information
-  command: >
-    ETCDCTL_API=3 etcdctl --endpoints={{ etcd_endpoint }} del /etcdcluster/member/{{ ansible_hostname }}
-  when: "'etcd-nodes' in group_names"
-  ignore_errors: yes
