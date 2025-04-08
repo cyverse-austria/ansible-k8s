@@ -7,7 +7,7 @@
       command: /usr/bin/kubeadm reset --force
       ignore_errors: yes
 
-- name: Remove Kubernetes packages
+- name: remmove packages
   hosts: k8s
   become: yes
   tasks:
@@ -50,10 +50,12 @@
       apt:
         name: ['containerd', 'containerd.io']
         state: absent
+
     - name: Stop the Containerd service
       service:
         name: containerd
         state: stopped
+
     - name: Disable the Containerd service
       systemd:
         name: containerd
@@ -66,19 +68,6 @@
     - name: Remove containerd directory
       shell: rm -rf /etc/containerd
 
-- name: Ensure kubelet is stopped and disabled
-  hosts: k8s
-  become: yes
-  tasks:
-    - name: Stop kubelet service
-      service:
-        name: kubelet
-        state: stopped
-    - name: Disable kubelet service
-      systemd:
-        name: kubelet
-        enabled: no
-
 - name: Run apt autoclean and autoremove
   hosts: k8s
   become: yes
@@ -86,10 +75,11 @@
     - name: Run apt autoclean
       ansible.builtin.apt:
         autoclean: yes
-    - name: Run apt autoremove
+
+    - name: Run apt autoremove 
       ansible.builtin.apt:
         autoremove: yes
-
+      
 - name: Update and upgrade system packages
   hosts: k8s
   become: yes
@@ -97,6 +87,7 @@
     - name: Update apt package index
       apt:
         update_cache: yes
+
     - name: Upgrade all packages
       apt:
         upgrade: dist
