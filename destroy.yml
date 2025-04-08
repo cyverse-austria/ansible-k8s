@@ -1,30 +1,17 @@
 ---
-- name: Delete cluster nodes that exist in inventory
-  hosts: k8s-control-plane
-  become: yes
-  tasks:
-    - name: Delete all nodes (control-plane + workers) from the Kubernetes cluster
-      shell: |
-        for node in {{ (groups['k8s-worker'] + groups['k8s-control-plane'] + groups['vice-workers']) }}; do
-          echo "Deleting $node if it exists in the cluster..."
-          kubectl delete node $node || true
-        done
-      when: inventory_hostname == groups['k8s-control-plane'][0]
-      ignore_errors: yes
-      
-- name: run destroy command
+- name: Run destroy command
   hosts: k8s
   become: yes
   tasks:
-    - name: run destroy.sh
+    - name: Run kubeadm reset
       command: /usr/bin/kubeadm reset --force
       ignore_errors: yes
 
-- name: remmove packages
+- name: Remove Kubernetes packages
   hosts: k8s
   become: yes
   tasks:
-    - name: Remove the kube*
+    - name: Remove the kube* packages
       apt:
         name: ['kubeadm', 'kubectl', 'kubelet', 'kubernetes-cni', 'kube*']
         state: absent
@@ -34,7 +21,7 @@
   hosts: k8s
   become: yes
   tasks:
-    - name: Remove .kube
+    - name: Remove .kube directory
       shell: rm -rf ~/.kube
     - name: Remove /etc/kubernetes
       shell: rm -rf /etc/kubernetes
@@ -42,8 +29,20 @@
       shell: rm -rf /opt/cni
     - name: Remove weave generated file
       shell: rm -rf ~/pod_setup.txt
+    - name: Remove /etc/kubernetes/pki
+      shell: rm -rf /etc/kubernetes/pki
+    - name: Remove /var/lib/kubelet
+      shell: rm -rf /var/lib/kubelet
+    - name: Remove /var/lib/cni
+      shell: rm -rf /var/lib/cni
+    - name: Remove /etc/cni
+      shell: rm -rf /etc/cni
+    - name: Remove /etc/kubernetes/manifests
+      shell: rm -rf /etc/kubernetes/manifests
+    - name: Remove /etc/systemd/system/kubelet.service.d
+      shell: rm -rf /etc/systemd/system/kubelet.service.d
 
-- name: Uninstall and Disable Containerd
+- name: Uninstall and disable Containerd
   hosts: k8s
   become: yes
   tasks:
@@ -51,12 +50,10 @@
       apt:
         name: ['containerd', 'containerd.io']
         state: absent
-
     - name: Stop the Containerd service
       service:
         name: containerd
         state: stopped
-
     - name: Disable the Containerd service
       systemd:
         name: containerd
@@ -66,8 +63,21 @@
   hosts: k8s
   become: yes
   tasks:
-    - name: Remove containerd file
+    - name: Remove containerd directory
       shell: rm -rf /etc/containerd
+
+- name: Ensure kubelet is stopped and disabled
+  hosts: k8s
+  become: yes
+  tasks:
+    - name: Stop kubelet service
+      service:
+        name: kubelet
+        state: stopped
+    - name: Disable kubelet service
+      systemd:
+        name: kubelet
+        enabled: no
 
 - name: Run apt autoclean and autoremove
   hosts: k8s
@@ -76,11 +86,10 @@
     - name: Run apt autoclean
       ansible.builtin.apt:
         autoclean: yes
-
-    - name: Run apt autoremove 
+    - name: Run apt autoremove
       ansible.builtin.apt:
         autoremove: yes
-      
+
 - name: Update and upgrade system packages
   hosts: k8s
   become: yes
@@ -88,7 +97,6 @@
     - name: Update apt package index
       apt:
         update_cache: yes
-
     - name: Upgrade all packages
       apt:
         upgrade: dist
