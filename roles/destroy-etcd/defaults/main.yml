@@ -3,3 +3,6 @@ cert_dir: "/etc/certs"
 destination_cert_dir: "/etc/etcd/pki"
 etcd_bin_dir: "/usr/local/bin"
 etcd_version: "v3.5.0"
+
+# default data directory
+etcd_data_dir: /var/lib/etcd

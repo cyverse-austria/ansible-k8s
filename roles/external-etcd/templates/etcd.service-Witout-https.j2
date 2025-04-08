@@ -5,6 +5,7 @@ Description=etcd
 Type=exec
 ExecStart={{ etcd_bin_dir }}/etcd \
   --name {{ etcd_name }} \
+  --data-dir {{ etcd_data_dir }} \
   --initial-advertise-peer-urls http://{{ ansible_default_ipv4.address }}:2380 \
   --listen-peer-urls http://{{ ansible_default_ipv4.address }}:2380 \
   --advertise-client-urls http://{{ ansible_default_ipv4.address }}:2379 \
@@ -17,4 +18,3 @@ RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
-

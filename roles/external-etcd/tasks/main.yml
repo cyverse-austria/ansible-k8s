@@ -1,4 +1,11 @@
 ---
+
+- name: Ensure etcd data directory exists
+  file:
+    path: "{{ etcd_data_dir }}"
+    state: directory
+    mode: '0755'
+
 - name: Ensure /etc/etcd/pki/ directory exists on etcd nodes
   file:
     path: "{{ destination_cert_dir }}"

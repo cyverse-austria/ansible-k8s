@@ -106,3 +106,10 @@
     etcd_cluster_members: ""
   ignore_errors: yes
   when: "'etcd-nodes' in group_names"
+
+- name: Remove etcd data directory
+  file:
+    path: "{{ etcd_data_dir }}"
+    state: absent
+  ignore_errors: yes
+  when: "'etcd-nodes' in group_names"

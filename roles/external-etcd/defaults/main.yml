@@ -9,3 +9,6 @@ source_cert_dir: /etc/ssl/etcd
 
 # Default directory on the etcd nodes
 destination_cert_dir: /etc/etcd/pki
+
+# default data directory
+etcd_data_dir: /var/lib/etcd
