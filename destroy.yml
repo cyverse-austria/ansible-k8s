@@ -4,7 +4,7 @@
   become: yes
   tasks:
     - name: Get list of worker nodes
-      shell: kubectl get nodes -l 'node-role.kubernetes.io/worker' -o name
+      shell: kubectl get nodes -o name
       register: kubectl_nodes
       failed_when: false
       changed_when: false
