@@ -1,4 +1,19 @@
 ---
+- name: Delete all worker nodes from Kubernetes cluster
+  hosts: k8s-control-plane
+  become: yes
+  tasks:
+    - name: Get list of worker nodes
+      shell: kubectl get nodes -l 'node-role.kubernetes.io/worker' -o name
+      register: kubectl_nodes
+      failed_when: false
+      changed_when: false
+
+    - name: Delete each worker node from Kubernetes cluster
+      shell: kubectl delete {{ item }}
+      loop: "{{ kubectl_nodes.stdout_lines }}"
+      when: kubectl_nodes.stdout_lines | length > 0
+
 - name: Run destroy command
   hosts: k8s
   become: yes
