@@ -10,7 +10,7 @@
       changed_when: false
 
     - name: Delete each worker node from Kubernetes cluster
-      shell: kubectl delete {{ item }}
+      shell: kubectl delete node {{ item }}
       loop: "{{ kubectl_nodes.stdout_lines }}"
       when: kubectl_nodes.stdout_lines | length > 0
 
