@@ -1,6 +1,6 @@
 ---
 - name: Delete all worker nodes from Kubernetes cluster
-  hosts: k8s-control-plane
+  hosts: k8s-control-plane[0]
   become: yes
   tasks:
     - name: Get list of worker nodes
