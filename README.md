@@ -166,6 +166,14 @@ etcd-c02
 etcd-c03
 ```
 
+## Ports
+**Ports** that need to be opened and allowed for the etcd cluster.
+
+| Port | Protocol | Purpose |
+|------|----------|---------|
+| 2379 | TCP | Main client communication — used by Kubernetes API server to talk to etcd |
+| 2380 | TCP | Peer communication between etcd cluster members |
+
 ### etcd.yml
 The first step is to configure and get the ETCD cluster up and running.
 once the ETCD cluster is configured we could join the kubernetes cluster to it.
