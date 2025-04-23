@@ -1,0 +1,21 @@
+---
+- name: Install HAProxy for external Loadbalancer
+  hosts: outward-facing-proxy
+  gather_facts: true
+  become: true
+  roles:
+    - { role: lb-haproxy-installer }
+
+  # Vars newly added
+  vars:
+    domain: lb.cyverse.at
+    regsub: '\.lb\.cyverse\.at$,'
+    tls_pem_path: "/etc/ssl/certs/{{ domain }}.pem"
+
+  tasks:
+    - name: reload haproxy
+      systemd:
+        daemon_reload: true
+        service: haproxy
+        state: reloaded
+        enabled: true

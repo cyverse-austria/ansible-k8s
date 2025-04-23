@@ -1,0 +1,11 @@
+---
+
+- name: Update apt-cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install haproxy
+  ansible.builtin.apt:
+    name:
+      - haproxy
+    state: present
