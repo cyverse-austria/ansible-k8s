@@ -136,6 +136,11 @@ ansible-playbook -i inventory/ --user=<sudo-user> --become ./haproxy01.yml
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./haproxy02.yml
 ```
 
+#### Install the loadbalancer for 
+```bash
+ansible-playbook -i inventory/ --user=<sudo-user> --become ./lb-haproxy-install.yaml
+```
+
 # Install & create ssl certificates
 
 For more documentation see the [README](roles/cert_bot/README.md) 
