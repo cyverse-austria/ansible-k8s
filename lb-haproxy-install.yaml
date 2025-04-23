@@ -6,10 +6,8 @@
   roles:
     - { role: lb-haproxy-installer }
 
-  # Vars newly added
   vars:
     domain: lb.cyverse.at
-    regsub: '\.lb\.cyverse\.at$,'
     tls_pem_path: "/etc/ssl/certs/{{ domain }}.pem"
 
   tasks:
