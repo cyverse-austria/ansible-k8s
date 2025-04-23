@@ -116,7 +116,7 @@ ansible-playbook -i inventory/ destroy.yml --user root
 
 This ansible repository also have playbooks that will generate and install HAProxy.
 
-**Note:** All HAProxy nodes is a **Debian 11** based.
+**Note:** All HAProxy nodes is a **Debian 12** based.
 
 #### Install the vice HAproxy
 
@@ -136,7 +136,7 @@ ansible-playbook -i inventory/ --user=<sudo-user> --become ./haproxy01.yml
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./haproxy02.yml
 ```
 
-#### Install the loadbalancer for 
+#### Install the loadbalancer for k8s ingress
 ```bash
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./lb-haproxy-install.yaml
 ```
