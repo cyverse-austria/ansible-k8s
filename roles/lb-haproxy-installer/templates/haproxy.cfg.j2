@@ -42,7 +42,7 @@ frontend http-in
     http-request set-header X-Forwarded-Proto https
 
     # Route all subdomains of lb.cyverse.at to the same backend
-    acl is_lb_subdomain hdr_reg(host) -i ^.*\.lb\.cyverse\.at$
+    acl is_lb_subdomain hdr_reg(host) -i ^.*\.{{ domain | regex_escape }}$
     use_backend k8s_ingress if is_lb_subdomain
 
 backend k8s_ingress
