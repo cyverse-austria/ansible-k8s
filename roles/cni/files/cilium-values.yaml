@@ -26,3 +26,7 @@ hubble:
         - secretName: hubble-tls
           hosts:
             - "hubble.mydomain.com"
+
+debug:
+  enabled: false
+  verbose: ""
