@@ -14,18 +14,24 @@ kubeProxyReplacement: "false"
 
 
 hubble:
-  enabled: false
   ui:
     enabled: true
-    baseUrl: "/hubble"
     ingress:
       enabled: true
+      className: nginx
+      ingressClassName: nginx
+      annotations:
+        nginx.ingress.kubernetes.io/rewrite-target: /
+        nginx.ingress.kubernetes.io/ssl-redirect: "false"
       hosts:
-        - "hubble.mydomain.com"
-      tls:
-        - secretName: hubble-tls
-          hosts:
-            - "hubble.mydomain.com"
+        - hubble.lb.cyverse.at
+      path: /
+      pathType: Prefix
+      tls: []  # You can keep this empty because TLS is handled externally
+
+  relay:
+    # -- Enable Hubble Relay (requires hubble.enabled=true)
+    enabled: true
 
 debug:
   enabled: false
