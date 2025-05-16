@@ -8,6 +8,6 @@
   become: yes
   become_user: root
   shell: |
-    helm install cilium cilium/cilium --namespace kube-system --create-namespace -f /tmp/cilium-values.yaml
+    helm install cilium cilium/cilium --namespace kube-system --create-namespace --version "{{ cilium_version }}" -f /tmp/cilium-values.yaml
   args:
     chdir: $HOME
