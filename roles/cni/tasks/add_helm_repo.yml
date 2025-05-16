@@ -1,0 +1,9 @@
+---
+- name: Add Cilium Helm repository
+  become: yes
+  become_user: root
+  shell: |
+    helm repo add cilium https://helm.cilium.io/
+    helm repo update
+  args:
+    chdir: $HOME

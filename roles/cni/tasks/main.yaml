@@ -1,0 +1,9 @@
+---
+- name: Install Helm
+  include_tasks: install_helm.yml
+
+- name: Add Cilium Helm repository
+  include_tasks: add_helm_repo.yml
+
+- name: Install Cilium using Helm chart with custom values.yaml
+  include_tasks: install_cilium.yml

@@ -1,0 +1,28 @@
+ingressController:
+  enabled: false  # Cilium will not manage ingress; you're using nginx
+
+cni:
+  install: true
+  chainingMode: none
+  confPath: /etc/cni/net.d
+  binPath: /opt/cni/bin
+
+# -- Configure the kube-proxy replacement in Cilium BPF datapath
+# Valid options are "true" or "false".
+# ref: https://docs.cilium.io/en/stable/network/kubernetes/kubeproxy-free/
+kubeProxyReplacement: "false"
+
+
+hubble:
+  enabled: false
+  ui:
+    enabled: true
+    baseUrl: "/hubble"
+    ingress:
+      enabled: true
+      hosts:
+        - "hubble.mydomain.com"
+      tls:
+        - secretName: hubble-tls
+          hosts:
+            - "hubble.mydomain.com"
