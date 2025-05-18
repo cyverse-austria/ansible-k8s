@@ -56,7 +56,7 @@ This playbook will do the followings:
 * init master node
 * join master node
 * join workers nodes
-* install CNI driver
+<!-- * install CNI driver -->
 
 ```bash
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./multi-master.yml
@@ -199,7 +199,7 @@ This playbook will do the followings:
 * init master node with external ETCD
 * join master node with external ETCD
 * join workers nodes
-* install CNI driver
+<!-- * install CNI driver -->
 
 ```bash
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./multi-master-etcd.yml
