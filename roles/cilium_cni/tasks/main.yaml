@@ -44,7 +44,7 @@
     - ".sha256sum"
 
 - name: Check if Cilium is already installed
-  command: cilium status --wait
+  command: cilium status
   register: cilium_status
   ignore_errors: yes
   changed_when: false
