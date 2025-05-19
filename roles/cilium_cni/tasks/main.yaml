@@ -1,4 +1,5 @@
 ---
+# docs: https://docs.cilium.io/en/stable/gettingstarted/k8s-install-default/#cilium-quick-installation
 - name: Get system architecture
   set_fact:
     cli_arch: "{{ 'arm64' if ansible_architecture == 'aarch64' else 'amd64' }}"
@@ -9,9 +10,9 @@
     return_content: yes
   register: cilium_cli_version
 
-- name: Set Cilium CLI version
+- name: Set Cilium CLI version (trimmed)
   set_fact:
-    cilium_cli_ver: "{{ cilium_cli_version.content }}"
+    cilium_cli_ver: "{{ cilium_cli_version.content | trim }}"
 
 - name: Download Cilium CLI binary and sha256sum
   get_url:
