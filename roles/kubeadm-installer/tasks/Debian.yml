@@ -24,11 +24,11 @@
       - "kubeadm={{ kube_x_version }}"
       - "kubectl={{ kube_x_version }}"
 
-# - name: Hold Kubernetes packages
-#   ansible.builtin.dpkg_selections:
-#     name: "{{ item }}"
-#     selection: hold
-#   loop:
-#     - kubelet
-#     - kubeadm
-#     - kubectl
+- name: Hold Kubernetes packages
+  ansible.builtin.dpkg_selections:
+    name: "{{ item }}"
+    selection: hold
+  loop:
+    - kubelet
+    - kubeadm
+    - kubectl
