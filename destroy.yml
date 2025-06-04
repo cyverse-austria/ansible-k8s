@@ -69,10 +69,12 @@
       service:
         name: containerd
         state: stopped
+      ignore_errors: yes
     - name: Disable the Containerd service
       systemd:
         name: containerd
         enabled: no
+      ignore_errors: yes
 
 - name: Remove /etc/containerd directory
   hosts: k8s
