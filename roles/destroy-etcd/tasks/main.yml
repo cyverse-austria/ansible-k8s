@@ -103,3 +103,10 @@
     etcd_cluster_members: ""
   ignore_errors: yes
   when: "'etcd-nodes' in group_names"
+
+# TODO: temp until the data-dir is fixed
+- name: Remove etcd data directory
+  file:
+    path: "/{{ inventory_hostname }}.etcd"
+    state: absent
+  ignore_errors: yes
