@@ -107,6 +107,6 @@
 # TODO: temp until the data-dir is fixed
 - name: Remove etcd data directory
   file:
-    path: "/{{ inventory_hostname }}.etcd"
+    path: "/{{ inventory_hostname.split('.')[0] }}.etcd"
     state: absent
   ignore_errors: yes
