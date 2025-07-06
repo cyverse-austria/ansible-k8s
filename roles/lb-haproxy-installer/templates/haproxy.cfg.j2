@@ -41,15 +41,11 @@ frontend reverseproxy_http
 
 # Handle HTTPS traffic and forward to Kubernetes Ingress
 frontend http-in
-    bind *:443 ssl crt {{ tls_pem_path }} ssl-min-ver TLSv1.2 ssl-max-ver TLSv1.3
-    TLSv1.2 ssl-max-ver TLSv1.3 alpn h2,http/1.1
+    bind *:443 ssl crt {{ tls_pem_path }} ssl-min-ver TLSv1.2 ssl-max-ver TLSv1.3 alpn h2,http/1.1
     mode http
     option httplog
     option forwardfor
     http-request set-header X-Forwarded-Proto https
-    http-request set-header X-Forwarded-Port 443
-    http-request del-header Proxy
-    http-request del-header X-Forwarded-For
     http-response set-header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
 
     # Route wildcard subdomains to Kubernetes backend
@@ -65,7 +61,7 @@ backend k8s_ingress
     http-request set-header X-Forwarded-Port 443
     http-request del-header Proxy
     http-request del-header X-Forwarded-For
-    
+
 {% for host in groups['k8s-workers'] %}
     server   {{ hostvars[host].ansible_hostname }} {{ hostvars[host].ansible_fqdn }}:80 check
 {% endfor %}
