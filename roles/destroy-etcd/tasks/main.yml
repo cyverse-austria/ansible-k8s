@@ -104,9 +104,9 @@
   ignore_errors: yes
   when: "'etcd-nodes' in group_names"
 
-# TODO: temp until the data-dir is fixed
 - name: Remove etcd data directory
   file:
-    path: "/{{ inventory_hostname.split('.')[0] }}.etcd"
+    path: "{{ etcd_data_dir }}"
     state: absent
+  become: yes
   ignore_errors: yes
