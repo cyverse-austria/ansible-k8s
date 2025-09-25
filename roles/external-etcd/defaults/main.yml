@@ -1,6 +1,6 @@
 # eg: https://github.com/githubixx/ansible-role-etcd/tree/master
 # roles/etcd/defaults/main.yml
-etcd_version: "v3.5.15"
+etcd_version: "v3.6.5"
 etcd_bin_dir: "/usr/local/bin"
 etcd_name: "{{ ansible_hostname }}"
 

@@ -4,10 +4,9 @@ Ansible playbooks to deploy kubernetes cluster on **Debian 12**.
 
 `Ansible version: >= 2.10.8`
 
-`kubernetes version: v1.28.2`
+`kubernetes version: v1.32.9`
 
-`ETCD version: v3.5.15`
-
+`ETCD version: v3.6.5`
 
 ## preq
 
@@ -157,6 +156,7 @@ ansible-playbook -i inventory/ --user=<sudo-user> --extra-vars="var_hosts=loadba
 ```
 
 # External ETCD cluster
+[Official Repo](https://github.com/etcd-io/etcd/)
 
 ![image info](./images/etcd.jpg)
 
