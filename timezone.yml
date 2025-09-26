@@ -15,10 +15,3 @@
     - name: Print timezone status
       ansible.builtin.debug:
         var: timezone_output.stdout_lines
-
-    - name: Restart kubelet
-      ansible.builtin.systemd:
-        name: kubelet
-        state: restarted
-        enabled: true
-      when: "'kubelet' in ansible_facts.services"
