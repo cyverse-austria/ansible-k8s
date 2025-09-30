@@ -28,7 +28,7 @@
 
   roles:
     - githubixx.containerd
-    - docker-installer # todo remove actual docker installs
+    # - docker-installer # todo remove actual docker installs
     - kubeadm-installer
 
   tasks:
