@@ -53,8 +53,5 @@
   changed_when: false
 
 - name: Install Cilium (if not already installed)
-  command: >
-    cilium install
-    {% if hubble_ui_enabled %} --enable-hubble --enable-hubble-ui {% endif %}
-    --version {{ cilium_version }}
+  command: "cilium install --version {{ cilium_version }}"
   when: cilium_status.rc != 0
