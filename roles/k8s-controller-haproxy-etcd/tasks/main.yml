@@ -21,7 +21,7 @@
 
 - name: Initialize Kubernetes controller with external etcd
   ansible.builtin.shell: |
-    kubeadm init --config /etc/kubernetes/kubeadm-config.yml --upload-certs
+    kubeadm init --config /etc/kubernetes/kubeadm-config.yml --upload-certs --cri-socket unix:///run/containerd/containerd.sock
   args:
     executable: /bin/bash
     creates: "/etc/kubernetes/admin.conf"
