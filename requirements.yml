@@ -2,7 +2,7 @@
 
 roles:
     - name: githubixx.containerd
-      version: "0.15.0+2.1.3"
+      version: "0.9.0+1.7.0"  # todo 0.15.0+2.1.3
     - name: githubixx.cfssl
       src: https://github.com/githubixx/ansible-role-cfssl.git
       version: 8.3.0+1.6.5
