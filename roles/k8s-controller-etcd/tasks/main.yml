@@ -24,7 +24,7 @@
 
 - name: Get get join cert
   ansible.builtin.command:
-    kubeadm init phase upload-certs --upload-certs --config /etc/kubernetes/kubeadm-config.yml
+    kubeadm init phase upload-certs --upload-certs --cri-socket unix:///run/containerd/containerd.sock --config /etc/kubernetes/kubeadm-config.yml
   register: r_certificate
   delegate_to: "{{ groups['k8s-control-plane'][0] }}"
   check_mode: false

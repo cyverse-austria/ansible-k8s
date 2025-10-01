@@ -6,6 +6,10 @@ controlPlaneEndpoint: "{{ hostvars[groups['kube-apiserver-haproxy'][0]].ansible_
 networking:
   podSubnet: "{{ kubernetes_network }}"
   serviceSubnet: "{{ kubernetes_service_network }}"
+  dnsDomain: cluster.local
+containerRuntime:
+  name: containerd
+  socket: unix:///run/containerd/containerd.sock
 etcd:
   external:
     endpoints:
