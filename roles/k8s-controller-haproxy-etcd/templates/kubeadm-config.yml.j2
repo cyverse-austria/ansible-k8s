@@ -21,5 +21,4 @@ kind: InitConfiguration
 nodeRegistration:
   criSocket: unix:///run/containerd/containerd.sock
   kubeletExtraArgs:
-    container-runtime-endpoint: unix:///run/containerd/containerd.sock
-    pod-infra-container-image: registry.k8s.io/pause:3.10
+    pod-infra-container-image: "registry.k8s.io/pause:3.10"
