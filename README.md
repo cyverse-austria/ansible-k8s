@@ -219,3 +219,9 @@ ssh USER@etcd-host
 
 etcdctl version
 ```
+
+
+
+# Changes
+* Containerd V2, kubernetes 1.32, etcd v3.6.5
+* some eg. https://seifrajhi.github.io/blog/kubernetes-containerd-cilium-setup/
