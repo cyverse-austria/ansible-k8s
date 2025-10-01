@@ -9,7 +9,7 @@
   gather_facts: true
   roles:
     - k8s-controller-haproxy-etcd
-    # - cilium_helm
+    - cilium_helm
 
 
 - name: Setup k8s worker
