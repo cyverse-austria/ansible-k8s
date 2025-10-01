@@ -27,7 +27,7 @@
         state: present
 
   roles:
-    - githubixx.containerd
+    - role: githubixx.containerd
       containerd_config: |
         version = 3
         [plugins."io.containerd.cri.v1"]
@@ -44,8 +44,7 @@
             [plugins.'io.containerd.cri.v1.runtime'.cni]
               bin_dir = '/opt/cni/bin'
               conf_dir = '/etc/cni/net.d'
-
-    - kubeadm-installer
+    - role: kubeadm-installer
 
   tasks:
     - name: Start containerd
