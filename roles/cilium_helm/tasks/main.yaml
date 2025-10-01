@@ -36,8 +36,6 @@
     --create-namespace
     --version {{ cilium_helm_version }}
     -f /etc/kubernetes/cilium/cilium-values.yaml
-  environment:
-    KUBECONFIG: /etc/kubernetes/admin.conf
 
 - name: Wait for Cilium pods to be ready
   ansible.builtin.shell: |
