@@ -6,7 +6,6 @@ controlPlaneEndpoint: "{{ hostvars[groups['kube-apiserver-haproxy'][0]].ansible_
 networking:
   podSubnet: "{{ kubernetes_network }}"
   serviceSubnet: "{{ kubernetes_service_network }}"
-  dnsDomain: cluster.local
 etcd:
   external:
     endpoints:
@@ -16,3 +15,11 @@ etcd:
     caFile: /etc/kubernetes/pki/etcd/ca.pem
     certFile: /etc/kubernetes/pki/etcd/etcd.pem
     keyFile: /etc/kubernetes/pki/etcd/etcd-key.pem
+---
+apiVersion: kubeadm.k8s.io/v1beta4
+kind: InitConfiguration
+nodeRegistration:
+  criSocket: unix:///run/containerd/containerd.sock
+  kubeletExtraArgs:
+    container-runtime-endpoint: unix:///run/containerd/containerd.sock
+    pod-infra-container-image: registry.k8s.io/pause:3.10

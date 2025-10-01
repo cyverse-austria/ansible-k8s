@@ -32,14 +32,6 @@
     - kubeadm-installer
 
   tasks:
-    - name: Add some packages
-      ansible.builtin.apt:
-        state: present
-        update_cache: true
-        name:
-          - thin-provisioning-tools
-          - lvm2
-          
     - name: Start containerd
       ansible.builtin.systemd:
         daemon_reload: true
