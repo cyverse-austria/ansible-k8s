@@ -39,7 +39,6 @@
         name:
           - thin-provisioning-tools
           - lvm2
-          - containerd.io
           
     - name: Start containerd
       ansible.builtin.systemd:
