@@ -225,6 +225,9 @@ etcdctl version
 # Changes
 * containerd `v2.1.3`: https://github.com/githubixx/ansible-role-containerd/releases/tag/0.15.0%2B2.1.3
 
+REpo: https://github.com/githubixx/ansible-role-containerd
+
+
 ```bash
 # list containers
 crictl --runtime-endpoint unix:///run/containerd/containerd.sock ps -a
@@ -233,3 +236,4 @@ crictl --runtime-endpoint unix:///run/containerd/containerd.sock ps -a
 * kubernetes 1.32, 
 * etcd v3.6.5
 * some eg. https://seifrajhi.github.io/blog/kubernetes-containerd-cilium-setup/
+* cilium-
