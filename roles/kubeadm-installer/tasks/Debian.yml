@@ -2,6 +2,13 @@
 
 # NOTE: In Debian11 selinux seems to be disabled by default
 #
+
+- name: Ensure /tmp has correct permissions
+  ansible.builtin.file:
+    path: /tmp
+    mode: '1777'
+    state: directory
+
 - name: add Kubernetes apt-key
   get_url:
     url: https://pkgs.k8s.io/core:/stable:/{{ kube_version }}/deb/Release.key
