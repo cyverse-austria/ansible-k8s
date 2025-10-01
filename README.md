@@ -223,5 +223,7 @@ etcdctl version
 
 
 # Changes
-* Containerd V2, kubernetes 1.32, etcd v3.6.5
+* containerd `v2.1.3`: https://github.com/githubixx/ansible-role-containerd/releases/tag/0.15.0%2B2.1.3
+* kubernetes 1.32, 
+* etcd v3.6.5
 * some eg. https://seifrajhi.github.io/blog/kubernetes-containerd-cilium-setup/
