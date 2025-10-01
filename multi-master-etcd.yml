@@ -9,7 +9,7 @@
   gather_facts: true
   roles:
     - k8s-controller-haproxy-etcd
-    - cilium_helm
+    # - cilium_helm
 
 
 - name: Setup k8s worker
@@ -36,3 +36,10 @@
   become: true
   roles:
     - kube-apiserver-haproxy-installer
+
+# - name: Setup Cilium CNI
+#   hosts: k8s-control-plane[0]
+#   become: true
+#   gather_facts: true
+#   roles:
+#     - cilium_helm
