@@ -1,0 +1,50 @@
+---
+- name: Ensure Helm is installed
+  ansible.builtin.shell: |
+    if ! command -v helm &>/dev/null; then
+      curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+    fi
+  args:
+    creates: /usr/local/bin/helm
+
+- name: Add Cilium Helm repository
+  ansible.builtin.command: helm repo add cilium https://helm.cilium.io/
+  register: add_cilium_repo
+  changed_when: "'has been added' in add_cilium_repo.stdout or 'already exists' in add_cilium_repo.stderr"
+
+- name: Update Helm repositories
+  ansible.builtin.command: helm repo update
+
+- name: Ensure directory for Cilium values exists
+  ansible.builtin.file:
+    path: /etc/kubernetes/cilium
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Render Cilium values file with template
+  ansible.builtin.template:
+    src: values.yaml.j2
+    dest: /etc/kubernetes/cilium/cilium-values.yaml
+    mode: '0644'
+
+- name: Install or upgrade Cilium via Helm
+  ansible.builtin.command: >
+    helm upgrade --install cilium cilium/cilium
+    --namespace kube-system
+    --create-namespace
+    --version {{ cilium_helm_version }}
+    -f /etc/kubernetes/cilium/cilium-values.yaml
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+
+- name: Wait for Cilium pods to be ready
+  ansible.builtin.shell: |
+    kubectl wait --for=condition=Ready pods -n kube-system -l k8s-app=cilium --timeout=300s
+  environment:
+    KUBECONFIG: /etc/kubernetes/admin.conf
+  retries: 3
+  delay: 10
+  register: cilium_wait
+  until: cilium_wait.rc == 0
