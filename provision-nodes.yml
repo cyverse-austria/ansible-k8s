@@ -31,17 +31,7 @@
     # - docker-installer # todo remove actual docker installs
     - kubeadm-installer
 
-- name: Add some packages
-  ansible.builtin.apt:
-    state: present
-    update_cache: true
-    name:
-      - thin-provisioning-tools
-      - lvm2
-      - containerd.io
-
   tasks:
-
     - name: Add some packages
       ansible.builtin.apt:
         state: present
