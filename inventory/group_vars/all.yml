@@ -14,7 +14,7 @@ cilium_debug_verbose: ""
 
 
 # k8s-controller-haproxy
-kubernetes_network: 10.244.0.0/16            # Pod network
+kubernetes_network: 10.244.0.0/16            # Pod network # will be overriden by Cilium (10.0.0.0/8)
 kubernetes_service_network: 10.96.0.0/12     # ClusterIP service network
 kubernetes_default_port: 6443
 
