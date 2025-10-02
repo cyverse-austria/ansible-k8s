@@ -1,31 +1,43 @@
-# ansible-k8s
+# 🚀 ansible-k8s
 
-Ansible playbooks to deploy kubernetes cluster on **Debian 12**.
+Ansible playbooks to deploy a **Kubernetes cluster** on **Debian 12**.
 
-`Ansible version: >= 2.10.8`
+---
 
-`kubernetes version: v1.32.9`
+## 📋 Versions
 
-`ETCD version: v3.6.5`
+- **Ansible**: `>= 2.10.8`
+- **[Kubernetes](https://kubernetes.io/releases/)**: `v1.32.9`
+- **[ETCD](https://github.com/etcd-io/etcd/)**: `v3.6.5`
+- **[containerd](https://github.com/githubixx/ansible-role-containerd/releases/)**: `v2.1.3`
+- **[Cilium (CNI)](https://github.com/cilium/cilium)** : `1.18.2`
 
-## preq
 
-Be sure to have a reasonably internet connection. Otherwise there could be timeouts during package installation.  
-**Remove ansible cache!** if you have one.  
-There has to be as user with passwordless ssh and passwordless sudo access or root is allowed to login without a password.
+## ✅ Prerequisites
 
-### install required ansible roles
+### 📦 1. Install Required Ansible Roles
 
-`ansible-galaxy install -r requirements.yml`
-
-### Update the inventory
-
-update the [inventory](./inventory/hosts)
-
-### Ping for ssh connections
+Install the necessary roles listed in the `requirements.yml` file:
 
 ```bash
-ansible -i inventory/ -m ping all --user=<sudo-user> --become 
+ansible-galaxy install -r requirements.yml
+```
+
+### 📝 2. Update the Inventory
+Make sure to update the inventory and shared variables:
+
+* **Inventory file**:
+[inventory/hosts](./inventory/hosts)
+
+* **Global variables** (shared across roles):
+[inventory/group_vars/all.yml](./inventory/group_vars/all.yml)
+
+### 🔗 3. Test SSH Connectivity
+
+Verify SSH access to all hosts in your inventory:
+
+```bash
+ansible -i inventory/ -m ping all --user=<sudo-user> --become
 ```
 
 ---
@@ -222,18 +234,9 @@ etcdctl version
 
 
 
-# Changes
-* containerd `v2.1.3`: https://github.com/githubixx/ansible-role-containerd/releases/tag/0.15.0%2B2.1.3
-
-REpo: https://github.com/githubixx/ansible-role-containerd
-
+# Containerd
 
 ```bash
 # list containers
 crictl --runtime-endpoint unix:///run/containerd/containerd.sock ps -a
 ```
-
-* kubernetes 1.32, 
-* etcd v3.6.5
-* some eg. https://seifrajhi.github.io/blog/kubernetes-containerd-cilium-setup/
-* cilium-
