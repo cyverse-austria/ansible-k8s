@@ -1,3 +1,0 @@
----
-# Default directory path for certificates
-cert_dir: /etc/ssl/etcd

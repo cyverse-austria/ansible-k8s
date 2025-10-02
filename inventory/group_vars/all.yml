@@ -1,0 +1,35 @@
+---
+
+# cilium_helm
+cilium_helm_version: "1.18.2"
+
+cilium_kubeproxy_replacement: "false"
+cilium_ingress_class: "nginx"
+cilium_hubble_ui_enabled: false
+cilium_hubble_ui_ingress_enabled: false
+cilium_ingress_host: "hubble.example.com"
+cilium_debug_enabled: false
+cilium_debug_verbose: ""
+
+
+
+# k8s-controller-haproxy
+kubernetes_network: 10.0.10.0/24
+kubernetes_service_network: 10.0.10.0/24
+kubernetes_default_port: 6443
+
+# k8s version
+## kubeadm-installer
+kube_x_version: 1.32.9-1.1
+kube_version: v1.32
+
+
+# etcd
+etcd_version: "v3.6.5"
+cert_dir: "/etc/certs"
+etcd_bin_dir: "/usr/local/bin"
+etcd_name: "{{ ansible_hostname }}"
+source_cert_dir: /etc/ssl/etcd
+destination_cert_dir: /etc/etcd/pki
+etcd_data_dir: "/var/lib/etcd"
+
