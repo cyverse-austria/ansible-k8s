@@ -20,7 +20,7 @@ kubernetes_default_port: 6443
 
 # k8s version
 ## kubeadm-installer
-kube_x_version: 1.34.1-0.0  # not needed for kubeadmn
+# kube_x_version: 1.34.1-0.0  # not needed for kubeadmn
 kube_version: v1.34
 
 
