@@ -27,6 +27,6 @@
     state: present
     update_cache: true
     name:
-      - "kubelet={{ kube_x_version }}"
-      - "kubeadm={{ kube_x_version }}"
-      - "kubectl={{ kube_x_version }}"
+      - "kubelet"
+      - "kubeadm"
+      - "kubectl"

@@ -7,7 +7,7 @@ Ansible playbooks to deploy a **Kubernetes cluster** on **Debian 12**.
 ## 📋 Versions
 
 - **Ansible**: `>= 2.10.8`
-- **[Kubernetes](https://kubernetes.io/releases/)**: `v1.32.9`
+- **[Kubernetes](https://kubernetes.io/releases/)**: `v1.34`
 - **[ETCD](https://github.com/etcd-io/etcd/)**: `v3.6.5`
 - **[containerd](https://github.com/githubixx/ansible-role-containerd/releases/)**: `v2.1.3`
 - **[Cilium (CNI)](https://github.com/cilium/cilium)** : `1.18.2`

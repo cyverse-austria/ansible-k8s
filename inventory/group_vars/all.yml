@@ -14,14 +14,14 @@ cilium_debug_verbose: ""
 
 
 # k8s-controller-haproxy
-kubernetes_network: 10.0.10.0/24
-kubernetes_service_network: 10.0.10.0/24
+kubernetes_network: 10.244.0.0/16            # Pod network
+kubernetes_service_network: 10.96.0.0/12     # ClusterIP service network
 kubernetes_default_port: 6443
 
 # k8s version
 ## kubeadm-installer
-kube_x_version: 1.32.9-1.1
-kube_version: v1.32
+kube_x_version: 1.34.1-0.0  # not needed for kubeadmn
+kube_version: v1.34
 
 
 # etcd
