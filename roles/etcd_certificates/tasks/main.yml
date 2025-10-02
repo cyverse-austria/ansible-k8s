@@ -5,33 +5,33 @@
 
 - name: Ensure certificate directory
   file:
-    path: "{{ cert_dir }}"
+    path: "{{ source_cert_dir }}"
     state: directory
     mode: '0755'
 
 - name: Create CA configuration file
   copy:
     src: ca-config.json
-    dest: "{{ cert_dir }}/ca-config.json"
+    dest: "{{ source_cert_dir }}/ca-config.json"
 
 - name: Create CA CSR file
   copy:
     src: ca-csr.json
-    dest: "{{ cert_dir }}/ca-csr.json"
+    dest: "{{ source_cert_dir }}/ca-csr.json"
 
 - name: Generate CA certificate
   shell: |
-    cfssl gencert -initca {{ cert_dir }}/ca-csr.json | cfssljson -bare {{ cert_dir }}/ca
+    cfssl gencert -initca {{ source_cert_dir }}/ca-csr.json | cfssljson -bare {{ source_cert_dir }}/ca
   args:
-    creates: "{{ cert_dir }}/ca.pem"
+    creates: "{{ source_cert_dir }}/ca.pem"
 
 - name: Generate etcd CSR file
   template:
     src: etcd-csr.json.j2
-    dest: "{{ cert_dir }}/etcd-csr.json"
+    dest: "{{ source_cert_dir }}/etcd-csr.json"
 
 - name: Generate etcd certificate
   shell: |
-    cfssl gencert -ca={{ cert_dir }}/ca.pem -ca-key={{ cert_dir }}/ca-key.pem -config={{ cert_dir }}/ca-config.json -profile=etcd {{ cert_dir }}/etcd-csr.json | cfssljson -bare {{ cert_dir }}/etcd
+    cfssl gencert -ca={{ source_cert_dir }}/ca.pem -ca-key={{ source_cert_dir }}/ca-key.pem -config={{ source_cert_dir }}/ca-config.json -profile=etcd {{ source_cert_dir }}/etcd-csr.json | cfssljson -bare {{ source_cert_dir }}/etcd
   args:
-    creates: "{{ cert_dir }}/etcd.pem"
+    creates: "{{ source_cert_dir }}/etcd.pem"
