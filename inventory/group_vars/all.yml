@@ -30,6 +30,7 @@ cert_dir: "/etc/certs"
 etcd_bin_dir: "/usr/local/bin"
 etcd_name: "{{ ansible_hostname }}"
 source_cert_dir: /etc/ssl/etcd
+certificates_cert_dir: /etc/ssl/etcd
 destination_cert_dir: /etc/etcd/pki
 etcd_data_dir: "/var/lib/etcd"
 
