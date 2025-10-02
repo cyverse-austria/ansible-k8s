@@ -53,32 +53,29 @@ Due to some automatic iptable-rules installation by kubelet/containerd **firewal
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./iptables-config.yml
 ```
 
-### provision-nodes.yml
+### 🧰 provision-nodes.yml
 
-Install all required dependencies for hosts , Which includes installing the `kube-apiserver-haproxy`.
+Installs all required dependencies on the cluster nodes, including the HAProxy-based kube-apiserver load balancer.
 
 ```bash
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./provision-nodes.yml
 ```
 
-### multi-master.yml
+### 🧠 `multi-master-etcd.yml`
 
-This playbook will do the followings:
-* init master node
-* join master node
-* join workers nodes
-* install CNI driver
+Bootstraps the Kubernetes control plane using an **external ETCD cluster**.
+
+This playbook performs:
+
+- Initializes the **first master node** with external ETCD
+- Joins **additional master nodes** using external ETCD
+- Joins **worker nodes**
+- Installs the **CNI plugin**
+
+**Run the playbook:**
 
 ```bash
-ansible-playbook -i inventory/ --user=<sudo-user> --become ./multi-master.yml
-```
-
-**OR** run all at once:
-
-```bash
-for playbook in iptables-config.yml provision-nodes.yml multi-master.yml vice-haproxy-install.yaml;do
-  ansible-playbook --inventory=inventory/ --user=ansible --become ./${playbook}
-done
+ansible-playbook -i inventory/ --user=<sudo-user> --become ./multi-master-etcd.yml
 ```
 
 ## Extra
@@ -205,17 +202,6 @@ This playbook will do the followings:
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./etcd.yml
 ```
 
-### multi-master-etcd.yml
-
-This playbook will do the followings:
-* init master node with external ETCD
-* join master node with external ETCD
-* join workers nodes
-* install CNI driver
-
-```bash
-ansible-playbook -i inventory/ --user=<sudo-user> --become ./multi-master-etcd.yml
-```
 
 ### Interact with ETCD cluster
 After successfully deploying, you can check your etcd cluster information either from within your Kubernetes cluster or directly from the etcd cluster itself.
