@@ -1,4 +1,0 @@
----
-
-- name: Install snapd
-  ansible.builtin.include_tasks: "{{ ansible_os_family }}.yml"
