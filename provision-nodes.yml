@@ -1,13 +1,11 @@
 ---
 - name: Configure kube-apiserver haproxy
   hosts: kube-apiserver-haproxy
-  # gather_facts: true
   become: true
   tasks:
     - name: Put SELinux in permissive mode
       ansible.posix.selinux:
         policy: "{{ (ansible_facts['distribution'] == 'Debian') | ternary('default', 'targeted') }}"
-        # policy: targeted
         state: permissive
   roles:
     - kube-apiserver-haproxy-installer
@@ -20,16 +18,33 @@
   become: true
 
   pre_tasks:
-    - name: Install socat
-      # ansible.builtin.yum:
-      ansible.builtin.package:
-        name: socat
+    - name: Install socat and runc
+      ansible.builtin.apt:
+        name:
+          - socat
+          - runc  # required by containerd
         state: present
+        update_cache: yes
 
   roles:
-    - githubixx.containerd
-    - docker-installer # todo remove actual docker installs
-    - kubeadm-installer
+    - role: githubixx.containerd
+      containerd_config: |
+        version = 3
+        [plugins."io.containerd.cri.v1"]
+          sandbox_image = "registry.k8s.io/pause:3.10"
+          [plugins.'io.containerd.cri.v1.runtime']
+            [plugins.'io.containerd.cri.v1.runtime'.containerd]
+              default_runtime_name = 'runc'
+              [plugins.'io.containerd.cri.v1.runtime'.containerd.runtimes]
+                [plugins.'io.containerd.cri.v1.runtime'.containerd.runtimes.runc]
+                  runtime_type = 'io.containerd.runc.v2'
+                  [plugins.'io.containerd.cri.v1.runtime'.containerd.runtimes.runc.options]
+                    BinaryName = '/usr/sbin/runc'
+                    SystemdCgroup = true
+            [plugins.'io.containerd.cri.v1.runtime'.cni]
+              bin_dir = '/opt/cni/bin'
+              conf_dir = '/etc/cni/net.d'
+    - role: kubeadm-installer
 
   tasks:
     - name: Start containerd

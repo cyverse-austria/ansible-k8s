@@ -1,32 +1,43 @@
-# ansible-k8s
+# 🚀 ansible-k8s
 
-Ansible playbooks to deploy kubernetes cluster on **Debian 12**.
+Ansible playbooks to deploy a **Kubernetes cluster** on **Debian 12**.
 
-`Ansible version: >= 2.10.8`
+---
 
-`kubernetes version: v1.28.2`
+## 📋 Versions
 
-`ETCD version: v3.5.15`
+- **Ansible**: `>= 2.10.8`
+- **[Kubernetes](https://kubernetes.io/releases/)**: `v1.34`
+- **[ETCD](https://github.com/etcd-io/etcd/)**: `v3.6.5`
+- **[containerd](https://github.com/githubixx/ansible-role-containerd/releases/)**: `v2.1.3`
+- **[Cilium (CNI)](https://github.com/cilium/cilium)** : `1.18.2`
 
 
-## preq
+## ✅ Prerequisites
 
-Be sure to have a reasonably internet connection. Otherwise there could be timeouts during package installation.  
-**Remove ansible cache!** if you have one.  
-There has to be as user with passwordless ssh and passwordless sudo access or root is allowed to login without a password.
+### 📦 1. Install Required Ansible Roles
 
-### install required ansible roles
-
-`ansible-galaxy install -r requirements.yml`
-
-### Update the inventory
-
-update the [inventory](./inventory/hosts)
-
-### Ping for ssh connections
+Install the necessary roles listed in the `requirements.yml` file:
 
 ```bash
-ansible -i inventory/ -m ping all --user=<sudo-user> --become 
+ansible-galaxy install -r requirements.yml
+```
+
+### 📝 2. Update the Inventory
+Make sure to update the inventory and shared variables:
+
+* **Inventory file**:
+[inventory/hosts](./inventory/hosts)
+
+* **Global variables** (shared across roles):
+[inventory/group_vars/all.yml](./inventory/group_vars/all.yml)
+
+### 🔗 3. Test SSH Connectivity
+
+Verify SSH access to all hosts in your inventory:
+
+```bash
+ansible -i inventory/ -m ping all --user=<sudo-user> --become
 ```
 
 ---
@@ -42,32 +53,29 @@ Due to some automatic iptable-rules installation by kubelet/containerd **firewal
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./iptables-config.yml
 ```
 
-### provision-nodes.yml
+### 🧰 provision-nodes.yml
 
-Install all required dependencies for hosts , Which includes installing the `kube-apiserver-haproxy`.
+Installs all required dependencies on the cluster nodes, including the HAProxy-based kube-apiserver load balancer.
 
 ```bash
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./provision-nodes.yml
 ```
 
-### multi-master.yml
+### 🧠 `multi-master-etcd.yml`
 
-This playbook will do the followings:
-* init master node
-* join master node
-* join workers nodes
-* install CNI driver
+Bootstraps the Kubernetes control plane using an **external ETCD cluster**.
+
+This playbook performs:
+
+- Initializes the **first master node** with external ETCD
+- Joins **additional master nodes** using external ETCD
+- Joins **worker nodes**
+- Installs the **CNI plugin**
+
+**Run the playbook:**
 
 ```bash
-ansible-playbook -i inventory/ --user=<sudo-user> --become ./multi-master.yml
-```
-
-**OR** run all at once:
-
-```bash
-for playbook in iptables-config.yml provision-nodes.yml multi-master.yml vice-haproxy-install.yaml;do
-  ansible-playbook --inventory=inventory/ --user=ansible --become ./${playbook}
-done
+ansible-playbook -i inventory/ --user=<sudo-user> --become ./multi-master-etcd.yml
 ```
 
 ## Extra
@@ -157,6 +165,7 @@ ansible-playbook -i inventory/ --user=<sudo-user> --extra-vars="var_hosts=loadba
 ```
 
 # External ETCD cluster
+[Official Repo](https://github.com/etcd-io/etcd/)
 
 ![image info](./images/etcd.jpg)
 
@@ -193,17 +202,6 @@ This playbook will do the followings:
 ansible-playbook -i inventory/ --user=<sudo-user> --become ./etcd.yml
 ```
 
-### multi-master-etcd.yml
-
-This playbook will do the followings:
-* init master node with external ETCD
-* join master node with external ETCD
-* join workers nodes
-* install CNI driver
-
-```bash
-ansible-playbook -i inventory/ --user=<sudo-user> --become ./multi-master-etcd.yml
-```
 
 ### Interact with ETCD cluster
 After successfully deploying, you can check your etcd cluster information either from within your Kubernetes cluster or directly from the etcd cluster itself.
@@ -218,4 +216,36 @@ kubectl get pod -n kube-system -l component=kube-apiserver -o yaml | grep -i etc
 ssh USER@etcd-host
 
 etcdctl version
+```
+
+
+
+# Containerd
+
+```bash
+  roles:
+    - role: githubixx.containerd
+      containerd_config: |
+        version = 3
+        [plugins."io.containerd.cri.v1"]
+          sandbox_image = "registry.k8s.io/pause:3.10"  # make sure to change for newer k8s versions
+          [plugins.'io.containerd.cri.v1.runtime']
+            [plugins.'io.containerd.cri.v1.runtime'.containerd]
+              default_runtime_name = 'runc'
+              [plugins.'io.containerd.cri.v1.runtime'.containerd.runtimes]
+                [plugins.'io.containerd.cri.v1.runtime'.containerd.runtimes.runc]
+                  runtime_type = 'io.containerd.runc.v2'
+                  [plugins.'io.containerd.cri.v1.runtime'.containerd.runtimes.runc.options]
+                    BinaryName = '/usr/sbin/runc'   # Make sure the path matches to installed runc
+                    SystemdCgroup = true
+            [plugins.'io.containerd.cri.v1.runtime'.cni]
+              bin_dir = '/opt/cni/bin'
+              conf_dir = '/etc/cni/net.d'
+```
+
+## Commands
+
+```bash
+# list containers
+crictl --runtime-endpoint unix:///run/containerd/containerd.sock ps -a
 ```

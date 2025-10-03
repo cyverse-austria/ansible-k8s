@@ -1,0 +1,10 @@
+---
+- name: Check Kubernetes versions
+  import_tasks: check_version.yml
+
+- name: Print upgrade requirement
+  debug:
+    msg: >
+      Upgrade needed on {{ inventory_hostname }}: {{ upgrade_needed }}.
+      Current: kubeadm={{ kubeadm_version_clean }}, kubelet={{ kubelet_version_clean }}
+      Target: {{ kube_x_version }}

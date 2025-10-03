@@ -1,0 +1,33 @@
+---
+- name: Get kubeadm version
+  command: kubeadm version -o short
+  register: kubeadm_version
+  changed_when: false
+
+- name: Get kubelet version
+  command: kubelet --version
+  register: kubelet_version
+  changed_when: false
+
+- name: Get kubectl client version
+  command: kubectl version --client --short
+  register: kubectl_version
+  changed_when: false
+  ignore_errors: yes  # some worker nodes may not have kubectl
+
+- name: Normalize versions
+  set_fact:
+    kubeadm_version_clean: "{{ kubeadm_version.stdout | regex_search('([0-9]+\\.[0-9]+\\.[0-9]+\\-[0-9]+\\.[0-9]+)') | default('unknown') }}"
+    kubelet_version_clean: "{{ kubelet_version.stdout | regex_search('([0-9]+\\.[0-9]+\\.[0-9]+\\-[0-9]+\\.[0-9]+)') | default('unknown') }}"
+    kubectl_version_clean: "{{ (kubectl_version.stdout | default('')) | regex_search('([0-9]+\\.[0-9]+\\.[0-9]+\\-[0-9]+\\.[0-9]+)') | default('N/A') }}"
+
+- name: Show detected versions
+  debug:
+    msg:
+      - "kubeadm: {{ kubeadm_version_clean }}"
+      - "kubelet: {{ kubelet_version_clean }}"
+      - "kubectl: {{ kubectl_version_clean }}"
+
+- name: Compare with desired kube_x_version
+  set_fact:
+    upgrade_needed: "{{ kubeadm_version_clean != kube_x_version or kubelet_version_clean != kube_x_version }}"

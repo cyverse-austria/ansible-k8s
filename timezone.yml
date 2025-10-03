@@ -1,0 +1,17 @@
+---
+- name: Set timezone to Europe/Vienna on all nodes
+  hosts: all
+  become: yes
+  tasks:
+
+    - name: Set timezone to Europe/Vienna
+      ansible.builtin.command:
+        cmd: timedatectl set-timezone Europe/Vienna
+
+    - name: Confirm timezone is set
+      ansible.builtin.command: timedatectl
+      register: timezone_output
+
+    - name: Print timezone status
+      ansible.builtin.debug:
+        var: timezone_output.stdout_lines

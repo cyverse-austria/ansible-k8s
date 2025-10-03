@@ -17,14 +17,6 @@
   when: cfssl_installed.stat.exists
   ignore_errors: yes
 
-- name: Clean up any temporary files
-  file:
-    path: /tmp/
-    state: absent
-    recurse: yes
-    force: yes
-  ignore_errors: yes
-
 - name: Remove temporary etcd files from /tmp
   ansible.builtin.file:
     path: "/tmp/etcd-{{ etcd_version }}-linux-amd64*"

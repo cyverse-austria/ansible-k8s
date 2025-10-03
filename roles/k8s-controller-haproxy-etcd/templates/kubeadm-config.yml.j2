@@ -1,5 +1,5 @@
 ---
-apiVersion: kubeadm.k8s.io/v1beta3
+apiVersion: kubeadm.k8s.io/v1beta4
 kind: ClusterConfiguration
 kubernetesVersion: stable
 controlPlaneEndpoint: "{{ hostvars[groups['kube-apiserver-haproxy'][0]].ansible_default_ipv4.address }}:{{ kubernetes_default_port }}"
