@@ -22,7 +22,7 @@
       ansible.builtin.apt:
         name:
           - socat
-          - runc
+          - runc  # required by containerd
         state: present
         update_cache: yes
 

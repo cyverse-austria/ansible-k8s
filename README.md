@@ -223,6 +223,29 @@ etcdctl version
 # Containerd
 
 ```bash
+  roles:
+    - role: githubixx.containerd
+      containerd_config: |
+        version = 3
+        [plugins."io.containerd.cri.v1"]
+          sandbox_image = "registry.k8s.io/pause:3.10"  # make sure to change for newer k8s versions
+          [plugins.'io.containerd.cri.v1.runtime']
+            [plugins.'io.containerd.cri.v1.runtime'.containerd]
+              default_runtime_name = 'runc'
+              [plugins.'io.containerd.cri.v1.runtime'.containerd.runtimes]
+                [plugins.'io.containerd.cri.v1.runtime'.containerd.runtimes.runc]
+                  runtime_type = 'io.containerd.runc.v2'
+                  [plugins.'io.containerd.cri.v1.runtime'.containerd.runtimes.runc.options]
+                    BinaryName = '/usr/sbin/runc'   # Make sure the path matches to installed runc
+                    SystemdCgroup = true
+            [plugins.'io.containerd.cri.v1.runtime'.cni]
+              bin_dir = '/opt/cni/bin'
+              conf_dir = '/etc/cni/net.d'
+```
+
+## Commands
+
+```bash
 # list containers
 crictl --runtime-endpoint unix:///run/containerd/containerd.sock ps -a
 ```
