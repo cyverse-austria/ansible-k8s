@@ -1,0 +1,61 @@
+---
+- name: Ensure Helm is installed
+  ansible.builtin.shell: |
+    if ! command -v helm &>/dev/null; then
+      curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+    fi
+  args:
+    creates: /usr/local/bin/helm
+
+- name: Add Kyverno Helm repository
+  ansible.builtin.command: helm repo add kyverno https://kyverno.github.io/kyverno/
+  register: add_kyverno_repo
+  changed_when: "'has been added' in add_kyverno_repo.stdout or 'already exists' in add_kyverno_repo.stderr"
+
+- name: Update Helm repositories
+  ansible.builtin.command: helm repo update
+
+- name: Ensure directory for Kyverno values exists
+  ansible.builtin.file:
+    path: /etc/kubernetes/kyverno
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Render Kyverno values file with template
+  ansible.builtin.template:
+    src: kyverno.yaml.j2
+    dest: /etc/kubernetes/kyverno/kyverno-values.yaml
+    mode: '0644'
+
+- name: Render Kyverno-policies values file with template
+  ansible.builtin.template:
+    src: Kyverno-policies.yaml.j2
+    dest: /etc/kubernetes/kyverno/kyverno-policies-values.yaml
+    mode: '0644'
+
+- name: Install or upgrade Kyverno via Helm
+  ansible.builtin.command: >
+    helm upgrade --install kyverno kyverno/kyverno
+    --namespace kyverno
+    --create-namespace
+    --version {{ kyverno_helm_version }}
+    -f /etc/kubernetes/kyverno/kyverno-values.yaml
+
+- name: Install or upgrade Kyverno-policies via Helm
+  ansible.builtin.command: >
+    helm upgrade --install kyverno-policies kyverno/kyverno-policies
+    --namespace kyverno
+    --create-namespace
+    --version {{ kyverno_policies_helm_version }}
+    -f /etc/kubernetes/kyverno/kyverno-policies-values.yaml
+
+
+- name: Wait for Kyverno pods to be ready
+  ansible.builtin.shell: |
+    kubectl wait --for=condition=Ready pods -n kyverno -l k8s-app=kyverno --timeout=300s
+  retries: 3
+  delay: 10
+  register: kyverno_wait
+  until: kyverno_wait.rc == 0
