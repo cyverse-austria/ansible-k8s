@@ -40,3 +40,9 @@ ipam:
   operator:
     # k8s=10.0.0.0/8 / k3s=10.42.0.0/16
     clusterPoolIPv4PodCIDRList: ["{{ cilium_clusterPoolIPv4PodCIDRList }}"] 
+
+operator:
+  # -- Enable the cilium-operator component (required).
+  enabled: true
+  # atleast 2 for prod and 1 for k3s singlenode
+  replicas: {{ cilium_operator_replicas }}
