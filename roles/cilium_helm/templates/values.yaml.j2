@@ -33,3 +33,10 @@ hubble:
 debug:
   enabled: {{ cilium_debug_enabled | lower }}
   verbose: "{{ cilium_debug_verbose }}"
+
+
+
+ipam:
+  operator:
+    # k8s=10.0.0.0/8 / k3s=10.42.0.0/16
+    clusterPoolIPv4PodCIDRList: ["{{ cilium_clusterPoolIPv4PodCIDRList }}"] 
