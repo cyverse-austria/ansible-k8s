@@ -7,5 +7,5 @@ cilium_hubble_ui_ingress_enabled: false
 cilium_ingress_host: "hubble.example.com"
 cilium_debug_enabled: false
 cilium_debug_verbose: ""
-cilium_clusterPoolIPv4PodCIDRList: "10.0.0.0/8" # for k3s
+cilium_clusterPoolIPv4PodCIDRList: "10.0.0.0/8"
 cilium_operator_replicas: 2
