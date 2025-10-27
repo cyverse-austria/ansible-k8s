@@ -1,2 +1,4 @@
 kyverno_helm_version: 3.5.2
 kyverno_policies_helm_version: 3.5.2
+kyverno_validationFailureAction: Audit
+kyverno_podSecurityStandard: baseline

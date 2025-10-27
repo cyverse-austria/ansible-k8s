@@ -1,3 +1,18 @@
+
+# [Kyverno](https://github.com/kyverno/kyverno)
+
+Cloud Native Policy Management
+
+**About Kyverno**: 
+
+Kyverno is a **Kubernetes-native policy engine designed for platform engineering teams**. It enables security, compliance, automation, and governance through policy-as-code. Kyverno can:
+
+* **Validate**, **mutate**, **generate**, and **clean up** resources using Kubernetes admission controls and background scans.
+* Verify container image signatures for supply chain security.
+* Operate with tools you already use — like kubectl, kustomize, and Git.
+
+---
+
 # Kyverno Restricted policies
 
 See also [Pod Security](https://kyverno.io/policies/pod-security)
@@ -94,3 +109,7 @@ validationFailureActionOverrides:
         - argocd
 
 ```
+
+---
+
+# [High availability](https://github.com/kyverno/kyverno/tree/main/charts/kyverno#high-availability)
