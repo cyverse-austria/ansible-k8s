@@ -17,23 +17,47 @@ Kyverno is a **Kubernetes-native policy engine designed for platform engineering
 
 See also [Pod Security](https://kyverno.io/policies/pod-security)
 
-## Disallow Capabilities (Strict)
+## 1.  Disallow Capabilities (Strict)
 Adding capabilities other than `NET_BIND_SERVICE` is disallowed. In addition, all containers must explicitly drop `ALL` capabilities.
 
-## Disallow Privilege Escalation
+## 2.  Disallow Privilege Escalation
 Privilege escalation, such as via set-user-ID or set-group-ID file mode, should not be allowed. This policy ensures the `allowPrivilegeEscalation` field is set to `false`.
 
-## Require Run As Non-Root User
+## 3. Require Run As Non-Root User
 Containers must be required to run as non-root users. This policy ensures `runAsUser` is either unset or set to a number greater than zero.
 
-## Require runAsNonRoot
+## 4. Require runAsNonRoot
 Containers must be required to run as non-root users. This policy ensures `runAsNonRoot` is set to `true`. A known issue prevents a policy such as this using `anyPattern` from being persisted properly in Kubernetes 1.23.0-1.23.2.
 
-## Restrict Seccomp (Strict)
+## 5. Restrict Seccomp (Strict)
 The seccomp profile in the Restricted group must not be explicitly set to Unconfined but additionally must also not allow an unset value. This policy, requiring Kubernetes v1.19 or later, ensures that seccomp is set to `RuntimeDefault` or `Localhost`. A known issue prevents a policy such as this using `anyPattern` from being persisted properly in Kubernetes 1.23.0-1.23.2.
 
-## Restrict Volume Types
+## 6. Restrict Volume Types
 In addition to restricting HostPath volumes, the restricted pod security profile limits usage of non-core volume types to those defined through PersistentVolumes. This policy blocks any other type of volume other than those in the allow list.
+
+
+-- TODO:
+```bash
+# write like above for all...
+# kubectl get cpol  ## Get cluster policies
+disallow-capabilities            true        true         True    4m3s   Ready
+disallow-capabilities-strict     true        true         True    4m3s   Ready
+disallow-host-namespaces         true        true         True    4m3s   Ready
+disallow-host-path               true        true         True    4m3s   Ready
+disallow-host-ports              true        true         True    4m3s   Ready
+disallow-host-process            true        true         True    4m3s   Ready
+disallow-privilege-escalation    true        true         True    4m3s   Ready
+disallow-privileged-containers   true        true         True    4m3s   Ready
+disallow-proc-mount              true        true         True    4m3s   Ready
+disallow-selinux                 true        true         True    4m3s   Ready
+require-run-as-non-root-user     true        true         True    4m3s   Ready
+require-run-as-nonroot           true        true         True    4m3s   Ready
+restrict-apparmor-profiles       true        true         True    4m3s   Ready
+restrict-seccomp                 true        true         True    4m3s   Ready
+restrict-seccomp-strict          true        true         True    4m3s   Ready
+restrict-sysctls                 true        true         True    4m3s   Ready
+restrict-volume-types            true        true         True    4m3s   Ready
+```
 
 ## E.G
 ```yaml
@@ -108,6 +132,18 @@ validationFailureActionOverrides:
       namespaces:
         - argocd
 
+```
+
+## Change validationFailureAction
+Change `validationFailureAction` for specific policy.
+
+```bash
+# -- Define validationFailureActionByPolicy for specific policies.
+# Override the defined `validationFailureAction` with a individual validationFailureAction for individual Policies.
+validationFailureActionByPolicy: {}
+#  disallow-capabilities-strict: enforce
+#  disallow-host-path: enforce
+#  disallow-host-ports: audit
 ```
 
 ---
