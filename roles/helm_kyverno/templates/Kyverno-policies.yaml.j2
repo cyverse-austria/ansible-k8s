@@ -1,3 +1,9 @@
+# https://github.com/kyverno/kyverno/blob/main/charts/kyverno-policies/values.yaml
+
+# -- Pod Security Standard profile (`baseline`, `restricted`, `privileged`, `custom`).
+# For more info https://kyverno.io/policies/pod-security.
+podSecurityStandard: restricted
+
 # -- Validation failure action (`Audit`, `Enforce`).
 # For more info https://kyverno.io/docs/policy-types/cluster-policy/validate.
 validationFailureAction: Enforce

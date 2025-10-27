@@ -50,3 +50,6 @@
     --version {{ kyverno_policies_helm_version }}
     -f /etc/kubernetes/kyverno/kyverno-policies-values.yaml
 
+
+
+# TODO: ARGO: https://github.com/kyverno/policies/tree/main/argo
