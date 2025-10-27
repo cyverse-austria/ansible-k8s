@@ -146,6 +146,12 @@ validationFailureActionByPolicy: {}
 #  disallow-host-ports: audit
 ```
 
+## add [other](https://github.com/kyverno/kyverno/tree/main/charts/kyverno-policies) avalible policies (require-non-root-groups)
+```bash
+# -- Additional policies to include from `other`.
+includeOtherPolicies: []
+# - require-non-root-groups
+```
 ---
 
 # [High availability](https://github.com/kyverno/kyverno/tree/main/charts/kyverno#high-availability)
