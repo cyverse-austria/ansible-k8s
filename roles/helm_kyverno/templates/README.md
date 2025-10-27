@@ -19,3 +19,78 @@ The seccomp profile in the Restricted group must not be explicitly set to Unconf
 
 ## Restrict Volume Types
 In addition to restricting HostPath volumes, the restricted pod security profile limits usage of non-core volume types to those defined through PersistentVolumes. This policy blocks any other type of volume other than those in the allow list.
+
+## E.G
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ok-restricted-deployment
+  namespace: testing
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ok-restricted
+  template:
+    metadata:
+      labels:
+        app: ok-restricted
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: app
+          image: busybox
+          command: ["sleep", "3600"]
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000   
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+```
+
+## Conclusion
+
+* No root
+* No privilege escalation
+* Drop all capabilities
+* Use RuntimeDefault seccomp
+* Disallow host access
+* Restrict SELinux, AppArmor, etc.
+
+
+## Exception to some ns
+
+These could be added to the `values.yaml` to allow certain policies.
+
+```bash
+validationFailureActionOverrides:
+  all: []
+  # all:
+  #   - action: audit
+  #     namespaces:
+  #       - ingress-nginx
+  # disallow-host-path:
+  #   - action: audit
+  #     namespaces:
+  #       - fluent
+
+# Example: allow Argo CD to deploy
+validationFailureActionOverrides:
+  all:
+    - action: audit
+      namespaces:
+        - argocd
+
+# Example: only allow runAsNonRoot exceptions
+validationFailureActionOverrides:
+  require-run-as-nonroot:
+    - action: audit
+      namespaces:
+        - argocd
+
+```
