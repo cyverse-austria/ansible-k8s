@@ -9,3 +9,4 @@ cilium_debug_enabled: false
 cilium_debug_verbose: ""
 cilium_clusterPoolIPv4PodCIDRList: "10.0.0.0/8"
 cilium_operator_replicas: 2
+cilium_enforce_mode: "default"

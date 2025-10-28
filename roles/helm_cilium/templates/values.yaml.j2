@@ -52,9 +52,4 @@ operator:
 # -- The agent can be put into one of the three policy enforcement modes:
 # default, always and never.
 # ref: https://docs.cilium.io/en/stable/security/policy/intro/#policy-enforcement-modes
-policyEnforcementMode: "default"
-# @schema
-# type: [null, string, array]
-# @schema
-# -- policyCIDRMatchMode is a list of entities that may be selected by CIDR selector.
-# The possible value is "nodes".
+policyEnforcementMode: "{{ cilium_enforce_mode }}"
