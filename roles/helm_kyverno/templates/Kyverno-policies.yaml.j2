@@ -8,7 +8,7 @@ podSecurityStandard: {{ kyverno_podSecurityStandard }}
 # For more info https://kyverno.io/docs/policy-types/cluster-policy/validate.
 validationFailureAction: {{ kyverno_validationFailureAction }}
 
-
+# TODO: try disabling this and see what is not working...
 validationFailureActionOverrides:
   all:
     - action: audit
