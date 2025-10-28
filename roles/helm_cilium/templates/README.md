@@ -20,5 +20,23 @@ With always mode, policy enforcement is enabled on all endpoints even if no rule
 
 If you want to configure health entity to check cluster-wide connectivity when you start cilium-agent with enable-policy: always, you will likely want to enable communications to and from the health endpoint. See Example: Add Health Endpoint.
 
+```yaml
+# kubectl apply -f add-health.yaml
+apiVersion: "cilium.io/v2"
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: "cilium-health-checks"
+spec:
+  endpointSelector:
+    matchLabels:
+      'reserved:health': ''
+  ingress:
+    - fromEntities:
+      - remote-node
+  egress:
+    - toEntities:
+      - remote-node
+```
+
 ### never
 With never mode, policy enforcement is disabled on all endpoints, even if rules do select specific endpoints. In other words, all traffic is allowed from any source (on ingress) or destination (on egress).
