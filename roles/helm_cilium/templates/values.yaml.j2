@@ -1,3 +1,4 @@
+# https://github.com/cilium/cilium/tree/main/install/kubernetes/cilium
 ingressController:
   enabled: false  # Cilium will not manage ingress; you're using nginx
 
@@ -46,3 +47,14 @@ operator:
   enabled: true
   # atleast 2 for prod and 1 for k3s singlenode
   replicas: {{ cilium_operator_replicas }}
+
+
+# -- The agent can be put into one of the three policy enforcement modes:
+# default, always and never.
+# ref: https://docs.cilium.io/en/stable/security/policy/intro/#policy-enforcement-modes
+policyEnforcementMode: "default"
+# @schema
+# type: [null, string, array]
+# @schema
+# -- policyCIDRMatchMode is a list of entities that may be selected by CIDR selector.
+# The possible value is "nodes".
