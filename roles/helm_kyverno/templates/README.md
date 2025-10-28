@@ -155,3 +155,4 @@ includeOtherPolicies: []
 ---
 
 # [High availability](https://github.com/kyverno/kyverno/tree/main/charts/kyverno#high-availability)
+# [Cilium and kyverno](https://github.com/adobeSlash/cilium-kyverno)
