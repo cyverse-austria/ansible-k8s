@@ -1,0 +1,229 @@
+  relay:
+    # -- Enable Hubble Relay (requires hubble.enabled=true)
+    enabled: false
+    # -- Roll out Hubble Relay pods automatically when configmap is updated.
+    rollOutPods: false
+    # -- Hubble-relay container image.
+    image:
+      # @schema
+      # type: [null, string]
+      # @schema
+      override: ~
+      repository: "quay.io/cilium/hubble-relay-ci"
+      tag: "latest"
+      # hubble-relay-digest
+      digest: ""
+      useDigest: false
+      pullPolicy: "Always"
+    # -- Specifies the resources for the hubble-relay pods
+    resources: {}
+    # -- Number of replicas run for the hubble-relay deployment.
+    replicas: 1
+    # -- Affinity for hubble-replay
+    affinity:
+      podAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          - topologyKey: kubernetes.io/hostname
+            labelSelector:
+              matchLabels:
+                k8s-app: cilium
+    # -- Pod topology spread constraints for hubble-relay
+    topologySpreadConstraints: []
+    #   - maxSkew: 1
+    #     topologyKey: topology.kubernetes.io/zone
+    #     whenUnsatisfiable: DoNotSchedule
+
+    # -- Node labels for pod assignment
+    # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector
+    nodeSelector:
+      kubernetes.io/os: linux
+    # -- Node tolerations for pod assignment on nodes with taints
+    # ref: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+    tolerations: []
+    # -- Additional hubble-relay environment variables.
+    extraEnv: []
+    # -- Annotations to be added to all top-level hubble-relay objects (resources under templates/hubble-relay)
+    annotations: {}
+    # -- Annotations to be added to hubble-relay pods
+    podAnnotations: {}
+    # -- Labels to be added to hubble-relay pods
+    podLabels: {}
+    # PodDisruptionBudget settings
+    podDisruptionBudget:
+      # -- enable PodDisruptionBudget
+      # ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+      enabled: false
+      # @schema
+      # type: [null, integer, string]
+      # @schema
+      # -- Minimum number/percentage of pods that should remain scheduled.
+      # When it's set, maxUnavailable must be disabled by `maxUnavailable: null`
+      minAvailable: null
+      # @schema
+      # type: [null, integer, string]
+      # @schema
+      # -- Maximum number/percentage of pods that may be made unavailable
+      maxUnavailable: 1
+      # @schema
+      # type: [null, string]
+      # @schema
+      # -- How are unhealthy, but running, pods counted for eviction
+      unhealthyPodEvictionPolicy: null
+    # -- The priority class to use for hubble-relay
+    priorityClassName: ""
+    # -- Configure termination grace period for hubble relay Deployment.
+    terminationGracePeriodSeconds: 1
+    # -- hubble-relay update strategy
+    updateStrategy:
+      type: RollingUpdate
+      rollingUpdate:
+        # @schema
+        # type: [integer, string]
+        # @schema
+        maxUnavailable: 1
+    # -- Additional hubble-relay volumes.
+    extraVolumes: []
+    # -- Additional hubble-relay volumeMounts.
+    extraVolumeMounts: []
+    # -- hubble-relay pod security context
+    podSecurityContext:
+      fsGroup: 65532
+      seccompProfile:
+        type: RuntimeDefault
+    # -- hubble-relay container security context
+    securityContext:
+      # readOnlyRootFilesystem: true
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true
+      runAsUser: 65532
+      runAsGroup: 65532
+      seccompProfile:
+        type: RuntimeDefault
+      capabilities:
+        drop:
+          - ALL
+    # -- hubble-relay service configuration.
+    service:
+      # --- The type of service used for Hubble Relay access, either ClusterIP, NodePort or LoadBalancer.
+      type: ClusterIP
+      # --- The port to use when the service type is set to NodePort.
+      nodePort: 31234
+    # -- Host to listen to. Specify an empty string to bind to all the interfaces.
+    listenHost: ""
+    # -- Port to listen to.
+    listenPort: "4245"
+    # -- TLS configuration for Hubble Relay
+    tls:
+      # -- The hubble-relay client certificate and private key.
+      # This keypair is presented to Hubble server instances for mTLS
+      # authentication and is required when hubble.tls.enabled is true.
+      # These values need to be set manually if hubble.tls.auto.enabled is false.
+      client:
+        # -- Name of the Secret containing the certificate and key for the Hubble metrics server.
+        # If specified, cert and key are ignored.
+        existingSecret: ""
+        # -- base64 encoded PEM values for the Hubble relay client certificate (deprecated).
+        # Use existingSecret instead.
+        cert: ""
+        # -- base64 encoded PEM values for the Hubble relay client key (deprecated).
+        # Use existingSecret instead.
+        key: ""
+      # -- The hubble-relay server certificate and private key
+      server:
+        # When set to true, enable TLS on for Hubble Relay server
+        # (ie: for clients connecting to the Hubble Relay API).
+        enabled: false
+        # When set to true enforces mutual TLS between Hubble Relay server and its clients.
+        # False allow non-mutual TLS connections.
+        # This option has no effect when TLS is disabled.
+        mtls: false
+        # -- Name of the Secret containing the certificate and key for the Hubble relay server.
+        # If specified, cert and key are ignored.
+        existingSecret: ""
+        # -- base64 encoded PEM values for the Hubble relay server certificate (deprecated).
+        # Use existingSecret instead.
+        cert: ""
+        # -- base64 encoded PEM values for the Hubble relay server key (deprecated).
+        # Use existingSecret instead.
+        key: ""
+        # -- extra DNS names added to certificate when its auto gen
+        extraDnsNames: []
+        # -- extra IP addresses added to certificate when its auto gen
+        extraIpAddresses: []
+        # DNS name used by the backend to connect to the relay
+        # This is a simple workaround as the relay certificates are currently hardcoded to
+        # *.hubble-relay.cilium.io
+        # See https://github.com/cilium/cilium/pull/28709#discussion_r1371792546
+        # For GKE Dataplane V2 this should be set to relay.kube-system.svc.cluster.local
+        relayName: "ui.hubble-relay.cilium.io"
+    # @schema
+    # type: [null, string]
+    # @schema
+    # -- Backoff duration to retry connecting to the local hubble instance in case of failure (e.g. "30s").
+    retryTimeout: ~
+    # @schema
+    # type: [null, integer]
+    # @schema
+    # -- (int) Max number of flows that can be buffered for sorting before being sent to the
+    # client (per request) (e.g. 100).
+    sortBufferLenMax: ~
+    # @schema
+    # type: [null, string]
+    # @schema
+    # -- When the per-request flows sort buffer is not full, a flow is drained every
+    # time this timeout is reached (only affects requests in follow-mode) (e.g. "1s").
+    sortBufferDrainTimeout: ~
+    # -- Port to use for the k8s service backed by hubble-relay pods.
+    # If not set, it is dynamically assigned to port 443 if TLS is enabled and to
+    # port 80 if not.
+    # servicePort: 80
+
+    # -- Enable prometheus metrics for hubble-relay on the configured port at
+    # /metrics
+    prometheus:
+      enabled: false
+      port: 9966
+      serviceMonitor:
+        # -- Enable service monitors.
+        # This requires the prometheus CRDs to be available (see https://github.com/prometheus-operator/prometheus-operator/blob/main/example/prometheus-operator-crd/monitoring.coreos.com_servicemonitors.yaml)
+        enabled: false
+        # -- Labels to add to ServiceMonitor hubble-relay
+        labels: {}
+        # -- Annotations to add to ServiceMonitor hubble-relay
+        annotations: {}
+        # -- Interval for scrape metrics.
+        interval: "10s"
+        # @schema
+        # type: [null, string]
+        # @schema
+        # -- Timeout after which scrape is considered to be failed.
+        scrapeTimeout: ~
+        # -- Specify the Kubernetes namespace where Prometheus expects to find
+        # service monitors configured.
+        # namespace: ""
+        # @schema
+        # type: [null, array]
+        # @schema
+        # -- Relabeling configs for the ServiceMonitor hubble-relay
+        relabelings: ~
+        # @schema
+        # type: [null, array]
+        # @schema
+        # -- Metrics relabeling configs for the ServiceMonitor hubble-relay
+        metricRelabelings: ~
+    gops:
+      # -- Enable gops for hubble-relay
+      enabled: true
+      # -- Configure gops listen port for hubble-relay
+      port: 9893
+    pprof:
+      # -- Enable pprof for hubble-relay
+      enabled: false
+      # -- Configure pprof listen address for hubble-relay
+      address: localhost
+      # -- Configure pprof listen port for hubble-relay
+      port: 6062
+      # -- Enable mutex contention profiling for hubble-relay and set the fraction of sampled events (set to 1 to sample all events)
+      mutexProfileFraction: 0
+      # -- Enable goroutine blocking profiling for hubble-relay and set the rate of sampled events in nanoseconds (set to 1 to sample all events [warning: performance overhead])
+      blockProfileRate: 0

@@ -29,28 +29,7 @@ hubble:
       tls: []  # TLS handled externally
 
   relay:
-    enabled: true
-
-    podSecurityContext:
-      fsGroup: 65532
-      seccompProfile:
-        type: RuntimeDefault
-      capabilities:
-        drop:
-          - ALL
-
-    securityContext:
-      runAsNonRoot: true
-      runAsUser: 65532
-      runAsGroup: 65532
-      allowPrivilegeEscalation: false
-      readOnlyRootFilesystem: true
-      seccompProfile:
-        type: RuntimeDefault
-      capabilities:
-        drop:
-          - ALL
-
+    enabled: false # true  # does not work with kyverno
 
 debug:
   enabled: {{ cilium_debug_enabled | lower }}
