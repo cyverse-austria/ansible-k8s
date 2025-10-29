@@ -12,8 +12,6 @@ cni:
 # Valid options: "true", "false", "partial", "strict"
 kubeProxyReplacement: "{{ cilium_kubeproxy_replacement }}"
 
-enableIPv4Masquerade: true
-
 hubble:
   ui:
     enabled: {{ cilium_hubble_ui_enabled | lower }}
