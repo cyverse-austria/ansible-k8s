@@ -2,8 +2,8 @@
 
 - name: Add ingress-nginx Helm repository
   ansible.builtin.command: helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-  register: add_ingress-nginx
-  changed_when: "'has been added' in add_ingress-nginx.stdout or 'already exists' in add_ingress-nginx.stderr"
+  register: add_ingress_nginx_repo
+  changed_when: "'has been added' in add_ingress_nginx_repo.stdout or 'already exists' in add_ingress_nginx_repo.stderr"
 
 - name: Update Helm repositories
   ansible.builtin.command: helm repo update
