@@ -1,0 +1,13 @@
+# https://github.com/kyverno/policy-reporter/blob/main/charts/policy-reporter/values.yaml
+
+ingress:
+  enabled: {{ kyverno_reporter_ingress_enabled | lower }}
+  className: "{{ kyverno_reporter_ingress_class }}"
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  hosts:
+    - "{{ kyverno_reporter_ingress_host }}"
+  path: /
+  pathType: Prefix
+  tls: []

@@ -12,6 +12,12 @@
   register: add_kyverno_repo
   changed_when: "'has been added' in add_kyverno_repo.stdout or 'already exists' in add_kyverno_repo.stderr"
 
+- name: Add Kyverno reporter Helm repository
+  ansible.builtin.command: helm repo add policy-reporter https://kyverno.github.io/policy-reporter
+  register: add_kyverno_reporter_repo
+  changed_when: "'has been added' in add_kyverno_reporter_repo.stdout or 'already exists' in add_kyverno_reporter_repo.stderr"
+  when: kyverno_reporter | default(false) | bool
+
 - name: Update Helm repositories
   ansible.builtin.command: helm repo update
 
@@ -35,6 +41,13 @@
     dest: /etc/kubernetes/kyverno/kyverno-policies-values.yaml
     mode: '0644'
 
+- name: Render Kyverno-reporter values file with template
+  ansible.builtin.template:
+    src: Kyverno-policy-reporter.yaml.j2
+    dest: /etc/kubernetes/kyverno/Kyverno-policy-reporter.yaml
+    mode: '0644'
+  when: kyverno_reporter | default(false) | bool
+
 - name: Install or upgrade Kyverno via Helm
   ansible.builtin.command: >
     helm upgrade --install kyverno kyverno/kyverno
@@ -50,6 +63,13 @@
     --version {{ kyverno_policies_helm_version }}
     -f /etc/kubernetes/kyverno/kyverno-policies-values.yaml
 
+- name: Install or upgrade Kyverno-reporter via Helm
+  ansible.builtin.command: >
+    helm upgrade --install policy-reporter policy-reporter/policy-reporter
+    --namespace policy-reporter
+    --create-namespace
+    -f /etc/kubernetes/kyverno/Kyverno-policy-reporter.yaml
+  when: kyverno_reporter | default(false) | bool
 
 
 # TODO: ARGO: https://github.com/kyverno/policies/tree/main/argo
