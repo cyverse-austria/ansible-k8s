@@ -8,6 +8,7 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
    - host: "{{ kyverno_reporter_ingress_host }}"
-     path: /
-     pathType: Prefix
+     paths:
+       - path: /
+         pathType: Prefix
   tls: []
