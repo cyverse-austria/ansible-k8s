@@ -75,7 +75,7 @@
   ansible.builtin.shell: |
     kubectl wait --for=condition=Ready pod \
       -n kyverno \
-      -l app.kubernetes.io/name=kyverno \
+      -l app.kubernetes.io/instance=kyverno \
       --timeout=300s
   register: kyverno_wait
   retries: 3
