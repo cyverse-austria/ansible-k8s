@@ -15,3 +15,11 @@ validationFailureActionOverrides:
       namespaces:
         - kube-system
         - nfs-provisioner
+  disallow-capabilities-strict:
+    - action: audit
+      namespaces:
+        - vault
+  restrict-seccomp-strict:
+    - action: audit
+      namespaces:
+        - vault
