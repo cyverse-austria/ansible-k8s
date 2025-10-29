@@ -5,7 +5,7 @@ controller:
   kind: Deployment
   service:
     type: {{ ingress_nginx_service_type }}
-{% if service_type == "NodePort" %}
+{% if ingress_nginx_service_type == "NodePort" %}
     nodePorts:
       http: {{ ingress_nginx_node_port_http }}
       https: {{ ingress_nginx_node_port_https }}
