@@ -30,10 +30,13 @@
     --version {{ ingress_nginx_helm_version }}
     -f /etc/kubernetes/ingress-nginx/ingress-nginx-values.yaml
 
-- name: Wait for ingress-nginx pods to be ready
+- name: Wait for ingress-nginx controller pods to be ready
   ansible.builtin.shell: |
-    kubectl wait --for=condition=Ready pods -n ingress-nginx -l k8s-app=ingress-nginx --timeout=300s
+    kubectl wait --for=condition=Ready pod \
+      -n ingress-nginx \
+      -l app.kubernetes.io/component=controller \
+      --timeout=300s
+  register: ingress_nginx_wait
   retries: 3
   delay: 10
-  register: ingress_nginx_wait
   until: ingress_nginx_wait.rc == 0
