@@ -4,7 +4,7 @@ kyverno_validationFailureAction: Audit
 kyverno_podSecurityStandard: baseline
 
 ## reporter
-kyverno_reporter: false
-kyverno_reporter_ingress_enabled: false
+kyverno_reporter: true
+kyverno_reporter_ingress_enabled: true
 kyverno_reporter_ingress_class: nginx
-kyverno_reporter_ingress_host: kyverno-report.domain.com
+kyverno_reporter_ingress_host: kyverno-report.cyverse.at
