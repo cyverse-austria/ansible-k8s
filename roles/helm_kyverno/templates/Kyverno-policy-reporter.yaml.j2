@@ -7,7 +7,7 @@ ingress:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
-    - "{{ kyverno_reporter_ingress_host }}"
-  path: /
-  pathType: Prefix
+   - host: "{{ kyverno_reporter_ingress_host }}"
+     path: /
+     pathType: Prefix
   tls: []
