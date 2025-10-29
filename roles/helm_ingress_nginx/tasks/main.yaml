@@ -35,5 +35,5 @@
     kubectl wait --for=condition=Ready pods -n ingress-nginx -l k8s-app=ingress-nginx --timeout=300s
   retries: 3
   delay: 10
-  register: ingress-nginx_wait
-  until: ingress-nginx_wait.rc == 0
+  register: ingress_nginx_wait
+  until: ingress_nginx_wait.rc == 0
