@@ -2,3 +2,4 @@
 # nfs_provisioner_helm_version: 
 nfs_server_host: localhost  # IP where nfs server is running
 nfs_server_path: /nfs-storage
+nfs_reclaimPolicy: Delete
