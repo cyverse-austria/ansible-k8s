@@ -1,0 +1,18 @@
+# https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner/blob/master/charts/nfs-subdir-external-provisioner/values.yaml
+
+nfs:
+  server: {{ nfs_server_host }}
+  path: {{ nfs_server_path }}
+  mountOptions:
+  volumeName: nfs-subdir-external-provisioner-root
+
+  # Reclaim policy for the main nfs volume
+  reclaimPolicy: Retain
+
+# For creating the StorageClass automatically:
+storageClass:
+  create: true
+  defaultClass: true
+  name: nfs-client
+  allowVolumeExpansion: true
+  reclaimPolicy: Delete
