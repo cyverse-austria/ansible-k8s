@@ -66,7 +66,7 @@
 - name: Install or upgrade Kyverno-reporter via Helm
   ansible.builtin.command: >
     helm upgrade --install policy-reporter policy-reporter/policy-reporter
-    --namespace kyverno
+    --namespace policy-reporter
     --create-namespace
     -f /etc/kubernetes/kyverno/Kyverno-policy-reporter.yaml
   when: kyverno_reporter | default(false) | bool
