@@ -1,0 +1,39 @@
+---
+
+- name: Add ingress-nginx Helm repository
+  ansible.builtin.command: helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+  register: add_ingress-nginx
+  changed_when: "'has been added' in add_ingress.stdout or 'already exists' in add_ingress.stderr"
+
+- name: Update Helm repositories
+  ansible.builtin.command: helm repo update
+
+- name: Ensure directory for ingress-nginx values exists
+  ansible.builtin.file:
+    path: /etc/kubernetes/ingress-nginx
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+
+- name: Render ingress-nginx values file with template
+  ansible.builtin.template:
+    src: values.yaml.j2
+    dest: /etc/kubernetes/ingress-nginx/ingress-nginx-values.yaml
+    mode: '0644'
+
+- name: Install or upgrade ingress-nginx via Helm
+  ansible.builtin.command: >
+    helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx
+    --namespace ingress-nginx
+    --create-namespace
+    --version {{ ingress_nginx_helm_version }}
+    -f /etc/kubernetes/ingress-nginx/ingress-nginx-values.yaml
+
+- name: Wait for ingress-nginx pods to be ready
+  ansible.builtin.shell: |
+    kubectl wait --for=condition=Ready pods -n ingress-nginx -l k8s-app=ingress-nginx --timeout=300s
+  retries: 3
+  delay: 10
+  register: ingress-nginx_wait
+  until: ingress-nginx_wait.rc == 0

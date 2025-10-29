@@ -1,0 +1,5 @@
+ingress_nginx_helm_version: 4.13.3 
+ingress_nginx_service_type: NodePort  # LoadBalancer
+# IF NOT NODEPORT THE FOLLWING WILL NOT B SET
+ingress_nginx_node_port_http: 30080
+ingress_nginx_node_port_https: 30443
