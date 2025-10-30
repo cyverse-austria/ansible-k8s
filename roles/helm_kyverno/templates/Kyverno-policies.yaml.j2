@@ -19,7 +19,17 @@ validationFailureActionOverrides:
     - action: audit
       namespaces:
         - vault
+        - argocd
   restrict-seccomp-strict:
     - action: audit
       namespaces:
         - vault
+        - argocd
+  disallow-privilege-escalation:
+    - action: audit
+      namespaces:
+        - argocd
+  require-run-as-nonroot:
+    - action: audit
+      namespaces:
+        - argocd
