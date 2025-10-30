@@ -29,11 +29,11 @@
     group: root
     mode: '0755'
 
-# - name: Render Kyverno values file with template
-#   ansible.builtin.template:
-#     src: kyverno.yaml.j2
-#     dest: /etc/kubernetes/kyverno/kyverno-values.yaml
-#     mode: '0644'
+- name: Render Kyverno values file with template
+  ansible.builtin.template:
+    src: kyverno.yaml.j2
+    dest: /etc/kubernetes/kyverno/kyverno-values.yaml
+    mode: '0644'
 
 - name: Render Kyverno-policies values file with template
   ansible.builtin.template:
@@ -54,6 +54,7 @@
     --namespace kyverno
     --create-namespace
     --version {{ kyverno_helm_version }}
+    -f /etc/kubernetes/kyverno/kyverno-values.yaml
 
 - name: Install or upgrade Kyverno-policies via Helm
   ansible.builtin.command: >
