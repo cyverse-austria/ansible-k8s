@@ -20,16 +20,36 @@ validationFailureActionOverrides:
       namespaces:
         - vault
         - argocd
+        - monitoring # kube-prometheus-stack
   restrict-seccomp-strict:
     - action: audit
       namespaces:
         - vault
         - argocd
+        - monitoring
   disallow-privilege-escalation:
     - action: audit
       namespaces:
         - argocd
+        - monitoring
   require-run-as-nonroot:
     - action: audit
       namespaces:
         - argocd
+        - monitoring
+  disallow-host-namespaces:
+    - action: audit
+      namespaces:
+        - monitoring
+  disallow-host-path:
+    - action: audit
+      namespaces:
+        - monitoring
+  restrict-volume-types:
+    - action: audit
+      namespaces:
+        - monitoring
+  require-run-as-non-root-user:
+    - action: audit
+      namespaces:
+        - monitoring
