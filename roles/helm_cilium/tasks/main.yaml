@@ -1,11 +1,11 @@
 ---
-- name: Ensure Helm is installed
-  ansible.builtin.shell: |
-    if ! command -v helm &>/dev/null; then
-      curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-    fi
-  args:
-    creates: /usr/local/bin/helm
+# - name: Ensure Helm is installed
+#   ansible.builtin.shell: |
+#     if ! command -v helm &>/dev/null; then
+#       curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+#     fi
+#   args:
+#     creates: /usr/local/bin/helm
 
 - name: Add Cilium Helm repository
   ansible.builtin.command: helm repo add cilium https://helm.cilium.io/
@@ -19,8 +19,6 @@
   ansible.builtin.file:
     path: /etc/kubernetes/cilium
     state: directory
-    owner: root
-    group: root
     mode: '0755'
 
 - name: Render Cilium values file with template

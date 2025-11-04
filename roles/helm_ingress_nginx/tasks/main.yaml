@@ -12,8 +12,6 @@
   ansible.builtin.file:
     path: /etc/kubernetes/ingress-nginx
     state: directory
-    owner: root
-    group: root
     mode: '0755'
 
 - name: Render ingress-nginx values file with template
