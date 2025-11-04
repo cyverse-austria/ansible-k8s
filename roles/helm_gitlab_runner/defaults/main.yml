@@ -1,0 +1,5 @@
+gitlab_runner_url: "https://gitlab.com/"
+
+# runners 
+gitlab_runner_a: "rdm"
+gitlab_runner_a_token: ""

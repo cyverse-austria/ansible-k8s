@@ -1,0 +1,63 @@
+# https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml?ref_type=heads
+
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  privileged: false
+  capabilities:
+    drop: ["ALL"]
+
+
+
+gitlabUrl: "{{ gitlab_runner_url }}"
+
+
+## The Runner Token for adding new Runners to the GitLab Server. This must
+## be retrieved from your GitLab instance. It is the token of an already registered runner.
+## ref: (we don't have docs for that yet, but we want to use an existing token)
+##
+runnerToken: "{{ gitlab_runner_a_token }}"
+#
+
+
+## Unregister all runners before termination
+##
+## Updating the runner's chart version or configuration will cause the runner container
+## to be terminated and created again. This may cause your Gitlab instance to reference
+## non-existant runners. Un-registering the runner before termination mitigates this issue.
+## ref: https://docs.gitlab.com/runner/commands/index.html#gitlab-runner-unregister
+##
+## This property ensures that all the Runners present in the local config.toml are unregistered when the chart is uninstalled
+## - If the token is prefixed with `glrt-` (meaning the runner was created in the UI or API),
+##   the unregisterRunners property deletes the runner manager, not the runner.
+##   The runner manager is identified by the runner and the machine that contains the config.toml.
+unregisterRunners: true
+
+
+## Configuration for the Pods that the runner launches for each new job
+##
+runners:
+
+  ## Which executor should be used
+  ##
+  # executor: kubernetes
+
+  ## Specify the name for the runner.
+  ##
+  # name: ""
+
+
+
+## Configure resource requests and limits
+## ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+##
+resources: {}
+  # limits:
+  #   memory: 256Mi
+  #   cpu: 200m
+  #   ephemeral-storage: 512Mi
+  # requests:
+  #   memory: 128Mi
+  #   cpu: 100m
+  #   ephemeral-storage: 256Mi

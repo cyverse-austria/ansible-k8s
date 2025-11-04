@@ -11,8 +11,6 @@
   ansible.builtin.file:
     path: /etc/kubernetes/nfs-provisioner
     state: directory
-    owner: root
-    group: root
     mode: '0755'
 
 - name: Render NFS Provisioner values file with template
