@@ -21,7 +21,7 @@
 
 - name: Install or upgrade Gitlab Runner {{ gitlab_runner_a }} via Helm
   ansible.builtin.command: >
-    helm upgrade --install {{ gitlab_runner_a }} gitlab/gitlab-runner
+    helm upgrade --install gitlab-runner gitlab/gitlab-runner
     --namespace gitlab-runner
     --create-namespace
     -f /etc/kubernetes/gitlab-runner/gitlab-runner-a-values.yaml
