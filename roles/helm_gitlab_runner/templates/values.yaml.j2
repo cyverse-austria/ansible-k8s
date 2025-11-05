@@ -86,48 +86,37 @@ runners:
       [runners.kubernetes]
         namespace = "gitlab-runner"
         image = "alpine"
-        # Pod Security Context
         [runners.kubernetes.pod_security_context]
-          run_as_non_root = true  # Ensure pod runs as non-root user
+          run_as_non_root = true
           seccomp_profile = "RuntimeDefault"  # Set seccomp profile to RuntimeDefault
-
-        # Build Container Security Context
         [runners.kubernetes.build_container_security_context]
           run_as_user = 1000
           run_as_group = 1000
           allow_privilege_escalation = false
-          seccomp_profile = "RuntimeDefault"  # Explicitly set seccomp profile for build container
+          seccomp_profile = "RuntimeDefault"
           [runners.kubernetes.build_container_security_context.capabilities]
             drop = ["ALL"]
-
-        # Helper Container Security Context
         [runners.kubernetes.helper_container_security_context]
           run_as_user = 1000
           run_as_group = 1000
           allow_privilege_escalation = false
-          seccomp_profile = "RuntimeDefault"  # Explicitly set seccomp profile for helper container
+          seccomp_profile = "RuntimeDefault"
           [runners.kubernetes.helper_container_security_context.capabilities]
             drop = ["ALL"]
-
-        # Init Permissions Container Security Context
         [runners.kubernetes.init_permissions_container_security_context]
           run_as_user = 1000
           run_as_group = 1000
           allow_privilege_escalation = false
-          seccomp_profile = "RuntimeDefault"  # Explicitly set seccomp profile for init permissions container
+          seccomp_profile = "RuntimeDefault"
           [runners.kubernetes.init_permissions_container_security_context.capabilities]
             drop = ["ALL"]
-
-        # Security Context for Service Container (optional, depending on your needs)
         [runners.kubernetes.service_container_security_context]
           run_as_user = 1000
           run_as_group = 1000
           allow_privilege_escalation = false
-          seccomp_profile = "RuntimeDefault"  # Explicitly set seccomp profile for service container
+          seccomp_profile = "RuntimeDefault"
           [runners.kubernetes.service_container_security_context.capabilities]
             drop = ["ALL"]
-
-        # Ensure all containers use the defined seccomp profile
         [runners.kubernetes.container_security_context]
           seccomp_profile = "RuntimeDefault"
 
