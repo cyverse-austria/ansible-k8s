@@ -126,6 +126,9 @@ runners:
         [runners.kubernetes.container_security_context]
           seccomp_profile = "RuntimeDefault"
 
+        builds_dir = "/tmp"
+        environment = ["HOME=/tmp"]
+
 ## Configure resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 ##
