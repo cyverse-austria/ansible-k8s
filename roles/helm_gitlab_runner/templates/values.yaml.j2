@@ -45,13 +45,22 @@ runners:
   executor: "shell"
 
   # Helm templates this string into config.toml inside the runner pod
+  # config: |
+  #   [[runners]]
+  #     name = "non-k8s-shell-runner"
+  #     executor = "shell"
+  #     shell = "bash"
+  #     [runners.custom_build_dir]
+
   config: |
     [[runners]]
-      name = "non-k8s-shell-runner"
-      executor = "shell"
-      shell = "bash"
-      [runners.custom_build_dir]
-
+      name = "docker-runner"
+      executor = "docker"
+      [runners.docker]
+        image = "alpine:latest"
+        privileged = false
+        disable_cache = false
+        
 
 ## Configure resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
