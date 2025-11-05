@@ -1,9 +1,12 @@
 # https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml?ref_type=heads
 
-serviceAccount:
-  ## Specifies whether a ServiceAccount should be created
-  create: false
-
+rbac:
+  create: true
+  clusterWideAccess: false # ensures Helm creates a Role (namespace-scoped) instead of a ClusterRole (cluster-scoped).
+  rules:
+    - apiGroups: [""]
+      resources: ["pods"]
+      verbs: ["create", "get", "list", "watch", "delete"]
 
 securityContext:
   allowPrivilegeEscalation: false
@@ -45,16 +48,16 @@ unregisterRunners: true
 ##
 runners:
 
-  # Shell EXECUTER
-  name: "shell-runner"
-  executor: "shell"
-  config: |
-    [[runners]]
-      name = "non-k8s-shell-runner"
-      executor = "shell"
-      shell = "bash"
-      [runners.custom_build_dir]
-        path = "/tmp/builds"
+  # # Shell EXECUTER
+  # name: "shell-runner"
+  # executor: "shell"
+  # config: |
+  #   [[runners]]
+  #     name = "non-k8s-shell-runner"
+  #     executor = "shell"
+  #     shell = "bash"
+  #     [runners.custom_build_dir]
+  #       path = "/tmp/builds"
 
   # # Docker EXECUTER
   # name: "docker-runner"
@@ -68,15 +71,18 @@ runners:
   #       privileged = false
   #       disable_cache = false
 
+  # kubernetes EXECUTER
+  executor: kubernetes
+
 ## Configure resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 ##
-resources: {}
-  # limits:
-  #   memory: 256Mi
-  #   cpu: 200m
-  #   ephemeral-storage: 512Mi
-  # requests:
-  #   memory: 128Mi
-  #   cpu: 100m
-  #   ephemeral-storage: 256Mi
+resources:
+  limits:
+    memory: 256Mi
+    cpu: 200m
+    ephemeral-storage: 512Mi
+  requests:
+    memory: 128Mi
+    cpu: 100m
+    ephemeral-storage: 256Mi
