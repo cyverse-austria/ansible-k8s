@@ -86,7 +86,7 @@ runners:
       [runners.kubernetes]
         namespace = "gitlab-runner"
         image = "alpine"
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy = "IfNotPresent"
         [runners.kubernetes.pod_security_context]
           run_as_non_root = true
           seccomp_profile = "RuntimeDefault"
