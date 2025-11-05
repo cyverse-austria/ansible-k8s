@@ -79,6 +79,7 @@ runners:
   #       disable_cache = false
 
   # kubernetes EXECUTER
+  # https://docs.gitlab.com/runner/executors/kubernetes/
   executor: kubernetes
   config: |
     [[runners]]
@@ -87,11 +88,27 @@ runners:
         image = "alpine"
         [runners.kubernetes.pod_security_context]
           run_as_non_root = true
+          seccomp_profile = "RuntimeDefault"
+
         [runners.kubernetes.build_container_security_context]
           run_as_user = 1000
           run_as_group = 1000
           allow_privilege_escalation = false
           [runners.kubernetes.build_container_security_context.capabilities]
+            drop = ["ALL"]
+
+        [runners.kubernetes.helper_container_security_context]
+          run_as_user = 1000
+          run_as_group = 1000
+          allow_privilege_escalation = false
+          [runners.kubernetes.helper_container_security_context.capabilities]
+            drop = ["ALL"]
+
+        [runners.kubernetes.init_permissions_container_security_context]
+          run_as_user = 1000
+          run_as_group = 1000
+          allow_privilege_escalation = false
+          [runners.kubernetes.init_permissions_container_security_context.capabilities]
             drop = ["ALL"]
 
 ## Configure resource requests and limits
