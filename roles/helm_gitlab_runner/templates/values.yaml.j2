@@ -83,10 +83,19 @@ runners:
   executor: kubernetes
   config: |
     [[runners]]
+        environment = ["HOME=/tmp"]
+        builds_dir = "/tmp"
+        privileged = "false"
+
       [runners.kubernetes]
         namespace = "gitlab-runner"
         image = "alpine"
         imagePullPolicy = "IfNotPresent"
+
+        # CPU and Memory Limits
+        cpu_limit = "500m"         # 500m CPU limit (half a CPU core)
+        memory_limit = "1Gi"       # 1Gi memory limit
+        
         [runners.kubernetes.pod_security_context]
           run_as_non_root = true
           seccomp_profile = "RuntimeDefault"
@@ -126,14 +135,6 @@ runners:
         [runners.kubernetes.container_security_context]
           seccomp_profile = "RuntimeDefault"
 
-        # Set the builds directory to /tmp
-        builds_dir = "/tmp"
-
-        # Set HOME and CONFIG_PATH_FOR_INIT environment variables to avoid permission issues
-        environment = [
-          "HOME=/tmp",
-          "CONFIG_PATH_FOR_INIT=/tmp/.gitlab-runner"
-        ]
 
 ## Configure resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
