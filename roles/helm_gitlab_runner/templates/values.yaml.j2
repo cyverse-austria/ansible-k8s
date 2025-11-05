@@ -86,46 +86,50 @@ runners:
       [runners.kubernetes]
         namespace = "gitlab-runner"
         image = "alpine"
-      # Pod Security Context
-      [runners.kubernetes.pod_security_context]
-        run_as_non_root = true  # Ensure the pod runs as a non-root user
-        seccomp_profile = "RuntimeDefault"  # Use default seccomp profile for security
+        # Pod Security Context
+        [runners.kubernetes.pod_security_context]
+          run_as_non_root = true
+          seccomp_profile = "RuntimeDefault"  # Ensure it matches the expected value
 
-      # Build Container Security Context
-      [runners.kubernetes.build_container_security_context]
-        run_as_user = 1000  # Set user ID for the build container
-        run_as_group = 1000  # Set group ID for the build container
-        allow_privilege_escalation = false  # Disable privilege escalation
-        [runners.kubernetes.build_container_security_context.capabilities]
-          drop = ["ALL"]  # Drop all capabilities for the build container
+        # Build Container Security Context
+        [runners.kubernetes.build_container_security_context]
+          run_as_user = 1000
+          run_as_group = 1000
+          allow_privilege_escalation = false
+          seccomp_profile = "RuntimeDefault"  # Explicitly set seccomp profile for build container
+          [runners.kubernetes.build_container_security_context.capabilities]
+            drop = ["ALL"]
 
-      # Helper Container Security Context
-      [runners.kubernetes.helper_container_security_context]
-        run_as_user = 1000  # Set user ID for the helper container
-        run_as_group = 1000  # Set group ID for the helper container
-        allow_privilege_escalation = false  # Disable privilege escalation
-        [runners.kubernetes.helper_container_security_context.capabilities]
-          drop = ["ALL"]  # Drop all capabilities for the helper container
+        # Helper Container Security Context
+        [runners.kubernetes.helper_container_security_context]
+          run_as_user = 1000
+          run_as_group = 1000
+          allow_privilege_escalation = false
+          seccomp_profile = "RuntimeDefault"  # Explicitly set seccomp profile for helper container
+          [runners.kubernetes.helper_container_security_context.capabilities]
+            drop = ["ALL"]
 
-      # Init Permissions Container Security Context
-      [runners.kubernetes.init_permissions_container_security_context]
-        run_as_user = 1000  # Set user ID for the init permissions container
-        run_as_group = 1000  # Set group ID for the init permissions container
-        allow_privilege_escalation = false  # Disable privilege escalation
-        [runners.kubernetes.init_permissions_container_security_context.capabilities]
-          drop = ["ALL"]  # Drop all capabilities for the init permissions container
+        # Init Permissions Container Security Context
+        [runners.kubernetes.init_permissions_container_security_context]
+          run_as_user = 1000
+          run_as_group = 1000
+          allow_privilege_escalation = false
+          seccomp_profile = "RuntimeDefault"  # Explicitly set seccomp profile for init permissions container
+          [runners.kubernetes.init_permissions_container_security_context.capabilities]
+            drop = ["ALL"]
 
-      # Security Context for Service Container (optional, depending on your needs)
-      [runners.kubernetes.service_container_security_context]
-        run_as_user = 1000  # Set user ID for the service container
-        run_as_group = 1000  # Set group ID for the service container
-        allow_privilege_escalation = false  # Disable privilege escalation
-        [runners.kubernetes.service_container_security_context.capabilities]
-          drop = ["ALL"]  # Drop all capabilities for the service container
+        # Security Context for Service Container (optional, depending on your needs)
+        [runners.kubernetes.service_container_security_context]
+          run_as_user = 1000
+          run_as_group = 1000
+          allow_privilege_escalation = false
+          seccomp_profile = "RuntimeDefault"  # Explicitly set seccomp profile for service container
+          [runners.kubernetes.service_container_security_context.capabilities]
+            drop = ["ALL"]
 
-      # Ensure all containers use the defined seccomp profile
-      [runners.kubernetes.container_security_context]
-        seccomp_profile = "RuntimeDefault"  # Apply the seccomp profile to all containers
+        # Ensure all containers use the defined seccomp profile
+        [runners.kubernetes.container_security_context]
+          seccomp_profile = "RuntimeDefault"
 
 ## Configure resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
