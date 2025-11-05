@@ -39,12 +39,10 @@ unregisterRunners: true
 ## Configuration for the Pods that the runner launches for each new job
 ##
 runners:
-  name: "docker-runner"
 
-  # Set the executor to shell, not Kubernetes
-  executor: "docker"
-
-  # Helm templates this string into config.toml inside the runner pod
+  # # Shell EXECUTER
+  # name: "shell-runner"
+  # executor: "shell"
   # config: |
   #   [[runners]]
   #     name = "non-k8s-shell-runner"
@@ -52,6 +50,9 @@ runners:
   #     shell = "bash"
   #     [runners.custom_build_dir]
 
+  # Docker EXECUTER
+  name: "docker-runner"
+  executor: "docker"
   config: |
     [[runners]]
       name = "docker-runner"
@@ -60,7 +61,6 @@ runners:
         image = "alpine:latest"
         privileged = false
         disable_cache = false
-        
 
 ## Configure resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
