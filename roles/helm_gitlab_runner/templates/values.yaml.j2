@@ -1,12 +1,19 @@
 # https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml?ref_type=heads
 
+
 rbac:
-  create: true
+  create: true  # this will create a SA `gitlab-runner`
   clusterWideAccess: false # ensures Helm creates a Role (namespace-scoped) instead of a ClusterRole (cluster-scoped).
   rules:
     - apiGroups: [""]
       resources: ["pods"]
       verbs: ["create", "get", "list", "watch", "delete"]
+    - apiGroups: [""]
+      resources: ["secrets"]
+      verbs: ["get", "create", "update", "delete"]
+    # - apiGroups: [""] # interactive attach or exec
+    #   resources: ["pods/attach", "pods/exec"]
+    #   verbs: ["create", "get"]
 
 securityContext:
   allowPrivilegeEscalation: false
