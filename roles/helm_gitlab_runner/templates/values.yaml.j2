@@ -83,7 +83,7 @@ runners:
   config: |
     [[runners]]
       [runners.kubernetes]
-        namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
+        namespace = "gitlab-runner"
         image = "alpine"
         [runners.kubernetes.security_context]
           run_as_non_root = true
