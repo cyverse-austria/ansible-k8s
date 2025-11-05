@@ -85,7 +85,7 @@ runners:
     [[runners]]
       [runners.kubernetes]
         namespace = "gitlab-runner"
-        image = "alpine"
+        image = "mbwali/alpine:gitlab-runner"
         imagePullPolicy = "IfNotPresent"
         [runners.kubernetes.pod_security_context]
           run_as_non_root = true
