@@ -50,3 +50,5 @@ kubectl get role,rolebinding -n gitlab-runner
 kubectl get rolebinding gitlab-runner-rolebinding -n gitlab-runner -o yaml
 
 ```
+
+image used by: https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blame/main/values.yaml?ref_type=heads#L20

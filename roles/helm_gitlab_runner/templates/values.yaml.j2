@@ -80,6 +80,17 @@ runners:
 
   # kubernetes EXECUTER
   executor: kubernetes
+  config: |
+    [[runners]]
+      [runners.kubernetes]
+        namespace = "{{ default .Release.Namespace .Values.runners.jobNamespace }}"
+        image = "alpine"
+        [runners.kubernetes.security_context]
+          run_as_non_root = true
+          run_as_user = 1000
+          allow_privilege_escalation = false
+          seccomp_profile.type = "RuntimeDefault"
+          capabilities.drop = ["ALL"]
 
 ## Configure resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
