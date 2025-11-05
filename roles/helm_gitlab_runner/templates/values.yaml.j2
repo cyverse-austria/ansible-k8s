@@ -11,9 +11,9 @@ rbac:
     - apiGroups: [""]
       resources: ["secrets"]
       verbs: ["get", "create", "update", "delete"]
-    # - apiGroups: [""] # interactive attach or exec
-    #   resources: ["pods/attach", "pods/exec"]
-    #   verbs: ["create", "get"]
+    - apiGroups: [""] # interactive attach or exec
+      resources: ["pods/attach", "pods/exec"]
+      verbs: ["create", "get"]
 
 securityContext:
   allowPrivilegeEscalation: false
