@@ -1,5 +1,20 @@
 # https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml?ref_type=heads
 
+
+rbac:
+  create: true  # this will create a SA `gitlab-runner`
+  clusterWideAccess: false # ensures Helm creates a Role (namespace-scoped) instead of a ClusterRole (cluster-scoped).
+  rules:
+    - apiGroups: [""]
+      resources: ["pods"]
+      verbs: ["create", "get", "list", "watch", "delete"]
+    - apiGroups: [""]
+      resources: ["secrets"]
+      verbs: ["get", "create", "update", "delete"]
+    - apiGroups: [""] # interactive attach or exec
+      resources: ["pods/attach", "pods/exec"]
+      verbs: ["create", "get"]
+
 securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: false
@@ -38,27 +53,98 @@ unregisterRunners: true
 
 ## Configuration for the Pods that the runner launches for each new job
 ##
-# runners:
+runners:
 
-  ## Which executor should be used
-  ##
-  # executor: kubernetes
+  # # Shell EXECUTER
+  # name: "shell-runner"
+  # executor: "shell"
+  # config: |
+  #   [[runners]]
+  #     name = "non-k8s-shell-runner"
+  #     executor = "shell"
+  #     shell = "bash"
+  #     [runners.custom_build_dir]
+  #       path = "/tmp/builds"
 
-  ## Specify the name for the runner.
-  ##
-  # name: ""
+  # # Docker EXECUTER
+  # name: "docker-runner"
+  # executor: "docker"
+  # config: |
+  #   [[runners]]
+  #     name = "docker-runner"
+  #     executor = "docker"
+  #     [runners.docker]
+  #       image = "alpine:latest"
+  #       privileged = false
+  #       disable_cache = false
 
+  # kubernetes EXECUTER
+  # https://docs.gitlab.com/runner/executors/kubernetes/
+  executor: kubernetes
+  config: |
+    [[runners]]
+        environment = ["HOME=/tmp"]
+        builds_dir = "/tmp"
+        privileged = "false"
+
+      [runners.kubernetes]
+        namespace = "gitlab-runner"
+        image = "alpine"
+        imagePullPolicy = "IfNotPresent"
+
+        # CPU and Memory Limits
+        cpu_limit = "500m"
+        memory_limit = "1Gi"
+        
+        [runners.kubernetes.pod_security_context]
+          run_as_non_root = true
+          seccomp_profile = "RuntimeDefault"
+          fsGroup = 1000
+        [runners.kubernetes.build_container_security_context]
+          run_as_user = 1000
+          run_as_group = 1000
+          fsGroup = 1000
+          allow_privilege_escalation = false
+          seccomp_profile = "RuntimeDefault"
+          [runners.kubernetes.build_container_security_context.capabilities]
+            drop = ["ALL"]
+        [runners.kubernetes.helper_container_security_context]
+          run_as_user = 1000
+          run_as_group = 1000
+          fsGroup = 1000
+          allow_privilege_escalation = false
+          seccomp_profile = "RuntimeDefault"
+          [runners.kubernetes.helper_container_security_context.capabilities]
+            drop = ["ALL"]
+        [runners.kubernetes.init_permissions_container_security_context]
+          run_as_user = 1000
+          run_as_group = 1000
+          fsGroup = 1000
+          allow_privilege_escalation = false
+          seccomp_profile = "RuntimeDefault"
+          [runners.kubernetes.init_permissions_container_security_context.capabilities]
+            drop = ["ALL"]
+        [runners.kubernetes.service_container_security_context]
+          run_as_user = 1000
+          run_as_group = 1000
+          fsGroup = 1000
+          allow_privilege_escalation = false
+          seccomp_profile = "RuntimeDefault"
+          [runners.kubernetes.service_container_security_context.capabilities]
+            drop = ["ALL"]
+        [runners.kubernetes.container_security_context]
+          seccomp_profile = "RuntimeDefault"
 
 
 ## Configure resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 ##
-resources: {}
-  # limits:
-  #   memory: 256Mi
-  #   cpu: 200m
-  #   ephemeral-storage: 512Mi
-  # requests:
-  #   memory: 128Mi
-  #   cpu: 100m
-  #   ephemeral-storage: 256Mi
+resources:
+  limits:
+    memory: 256Mi
+    cpu: 200m
+    ephemeral-storage: 512Mi
+  requests:
+    memory: 128Mi
+    cpu: 100m
+    ephemeral-storage: 256Mi
