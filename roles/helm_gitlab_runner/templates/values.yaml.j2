@@ -1,5 +1,10 @@
 # https://gitlab.com/gitlab-org/charts/gitlab-runner/-/blob/main/values.yaml?ref_type=heads
 
+serviceAccount:
+  ## Specifies whether a ServiceAccount should be created
+  create: false
+
+
 securityContext:
   allowPrivilegeEscalation: false
   readOnlyRootFilesystem: false
