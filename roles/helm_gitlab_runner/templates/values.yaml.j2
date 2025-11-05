@@ -90,9 +90,11 @@ runners:
         [runners.kubernetes.pod_security_context]
           run_as_non_root = true
           seccomp_profile = "RuntimeDefault"
+          fsGroup = 1000  # Make sure that the runner has access to write to shared volumes
         [runners.kubernetes.build_container_security_context]
           run_as_user = 1000
           run_as_group = 1000
+          fsGroup = 1000  # Ensure the group has access to volumes
           allow_privilege_escalation = false
           seccomp_profile = "RuntimeDefault"
           [runners.kubernetes.build_container_security_context.capabilities]
@@ -100,6 +102,7 @@ runners:
         [runners.kubernetes.helper_container_security_context]
           run_as_user = 1000
           run_as_group = 1000
+          fsGroup = 1000
           allow_privilege_escalation = false
           seccomp_profile = "RuntimeDefault"
           [runners.kubernetes.helper_container_security_context.capabilities]
@@ -107,6 +110,7 @@ runners:
         [runners.kubernetes.init_permissions_container_security_context]
           run_as_user = 1000
           run_as_group = 1000
+          fsGroup = 1000
           allow_privilege_escalation = false
           seccomp_profile = "RuntimeDefault"
           [runners.kubernetes.init_permissions_container_security_context.capabilities]
@@ -114,6 +118,7 @@ runners:
         [runners.kubernetes.service_container_security_context]
           run_as_user = 1000
           run_as_group = 1000
+          fsGroup = 1000
           allow_privilege_escalation = false
           seccomp_profile = "RuntimeDefault"
           [runners.kubernetes.service_container_security_context.capabilities]
