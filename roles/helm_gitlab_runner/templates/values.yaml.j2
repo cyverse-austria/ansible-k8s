@@ -88,8 +88,8 @@ runners:
         image = "alpine"
         # Pod Security Context
         [runners.kubernetes.pod_security_context]
-          run_as_non_root = true
-          seccomp_profile = "RuntimeDefault"  # Ensure it matches the expected value
+          run_as_non_root = true  # Ensure pod runs as non-root user
+          seccomp_profile = "RuntimeDefault"  # Set seccomp profile to RuntimeDefault
 
         # Build Container Security Context
         [runners.kubernetes.build_container_security_context]
