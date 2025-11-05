@@ -85,12 +85,16 @@ runners:
       [runners.kubernetes]
         namespace = "gitlab-runner"
         image = "alpine"
-        [runners.kubernetes.security_context]
+        [runners.kubernetes.pod_security_context]
           run_as_non_root = true
+          seccomp_profile = "RuntimeDefault"
+
+        [runners.kubernetes.build_container_security_context]
           run_as_user = 1000
+          run_as_group = 1000
           allow_privilege_escalation = false
-          seccomp_profile.type = "RuntimeDefault"
-          capabilities.drop = ["ALL"]
+          [runners.kubernetes.build_container_security_context.capabilities]
+            drop = ["ALL"]
 
 ## Configure resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
