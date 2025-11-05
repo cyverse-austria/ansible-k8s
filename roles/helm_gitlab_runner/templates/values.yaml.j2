@@ -38,16 +38,19 @@ unregisterRunners: true
 
 ## Configuration for the Pods that the runner launches for each new job
 ##
-# runners:
+runners:
+  name: "non-k8s-shell-runner"
 
-  ## Which executor should be used
-  ##
-  # executor: kubernetes
+  # Set the executor to shell, not Kubernetes
+  executor: "shell"
 
-  ## Specify the name for the runner.
-  ##
-  # name: ""
-
+  # Helm templates this string into config.toml inside the runner pod
+  config: |
+    [[runners]]
+      name = "non-k8s-shell-runner"
+      executor = "shell"
+      shell = "bash"
+      [runners.custom_build_dir]
 
 
 ## Configure resource requests and limits
