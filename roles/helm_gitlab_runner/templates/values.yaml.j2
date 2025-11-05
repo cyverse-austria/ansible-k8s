@@ -126,8 +126,14 @@ runners:
         [runners.kubernetes.container_security_context]
           seccomp_profile = "RuntimeDefault"
 
+        # Set the builds directory to /tmp
         builds_dir = "/tmp"
-        environment = ["HOME=/tmp"]
+
+        # Set HOME and CONFIG_PATH_FOR_INIT environment variables to avoid permission issues
+        environment = [
+          "HOME=/tmp",
+          "CONFIG_PATH_FOR_INIT=/tmp/.gitlab-runner"
+        ]
 
 ## Configure resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
