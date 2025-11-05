@@ -40,27 +40,28 @@ unregisterRunners: true
 ##
 runners:
 
-  # # Shell EXECUTER
-  # name: "shell-runner"
-  # executor: "shell"
-  # config: |
-  #   [[runners]]
-  #     name = "non-k8s-shell-runner"
-  #     executor = "shell"
-  #     shell = "bash"
-  #     [runners.custom_build_dir]
-
-  # Docker EXECUTER
-  name: "docker-runner"
-  executor: "docker"
+  # Shell EXECUTER
+  name: "shell-runner"
+  executor: "shell"
   config: |
     [[runners]]
-      name = "docker-runner"
-      executor = "docker"
-      [runners.docker]
-        image = "alpine:latest"
-        privileged = false
-        disable_cache = false
+      name = "non-k8s-shell-runner"
+      executor = "shell"
+      shell = "bash"
+      [runners.custom_build_dir]
+        path = "/tmp/builds"
+
+  # # Docker EXECUTER
+  # name: "docker-runner"
+  # executor: "docker"
+  # config: |
+  #   [[runners]]
+  #     name = "docker-runner"
+  #     executor = "docker"
+  #     [runners.docker]
+  #       image = "alpine:latest"
+  #       privileged = false
+  #       disable_cache = false
 
 ## Configure resource requests and limits
 ## ref: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
