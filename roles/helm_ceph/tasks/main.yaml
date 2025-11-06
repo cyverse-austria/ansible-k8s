@@ -1,0 +1,32 @@
+---
+- name: Add Ceph CSI Helm repository
+  ansible.builtin.command: helm repo add ceph-csi https://ceph.github.io/csi-charts
+  register: ceph_csi
+  changed_when: "'has been added' in ceph_csi.stdout or 'already exists' in ceph_csi.stderr"
+
+- name: Update Helm repositories
+  ansible.builtin.command: helm repo update
+
+- name: Ensure directory for Gitlab Runner values exists
+  ansible.builtin.file:
+    path: /etc/kubernetes/ceph-csi
+    state: directory
+    mode: '0755'
+
+- name: Render Ceph CSI RBD values file with template
+  ansible.builtin.template:
+    src: values-rbd.yaml.j2
+    dest: /etc/kubernetes/ceph-csi/values-rbd.yaml
+    mode: '0644'
+
+- name: Install or upgrade Ceph CSI RBD via Helm
+  ansible.builtin.command: >
+    helm upgrade --install ceph-csi-rbd ceph-csi/ceph-csi-rbd
+    --namespace ceph-csi-rbd
+    --version {{ ceph_csi_helm_version }}
+    --create-namespace
+    -f /etc/kubernetes/ceph-csi/values-rbd.yaml
+
+# TODO
+# - name: Wait for ceph-csi pods to be ready
+

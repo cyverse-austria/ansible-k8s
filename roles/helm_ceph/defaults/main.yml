@@ -1,0 +1,6 @@
+ceph_csi_helm_version: "3.15.0"
+ceph_csi_subnet: "192.27.128"
+ceph_csi_cluster_id: "<ceph-cluster-id>"
+
+ceph_csi_rbd_user_id: "<ceph-user-id>"
+ceph_csi_rbd_user_key: "<ceph-user-key>"

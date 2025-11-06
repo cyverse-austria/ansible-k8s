@@ -1,0 +1,67 @@
+# https://github.com/ceph/ceph-csi/blob/release-v3.13/charts/ceph-csi-rbd/values.yaml
+csiConfig:
+  - clusterID: "{{ ceph_csi_cluster_id }}" # "<your-ceph-cluster-id>" 
+    monitors:
+      - "{{ ceph_csi_subnet }}.154:6789"
+      - "{{ ceph_csi_subnet }}.155:6789"
+      - "{{ ceph_csi_subnet }}.156:6789"
+
+storageClass:
+  create: true
+  name: ceph-rbd
+  clusterID: "{{ ceph_csi_cluster_id }}" #"<your-ceph-cluster-id>"
+  pool: "{{ ceph_csi_rbd_user_key }}"
+  imageFeatures: "layering"
+  provisionerSecret: csi-rbd-secret
+  nodeStageSecret: csi-rbd-secret
+  controllerExpandSecret: csi-rbd-secret
+
+  # namespace where secrets are located
+  provisionerSecretNamespace: "ceph-csi-rbd"
+  controllerExpandSecretNamespace: "ceph-csi-rbd"
+  nodeStageSecretNamespace: "ceph-csi-rbd"
+
+
+  fstype: ext4
+  reclaimPolicy: Retain
+  allowVolumeExpansion: true  # the pvc size can later be expanded/increased
+
+# this secret is created by default in namespace "ceph-csi-rbd"
+secret:
+  create: true
+  name: csi-rbd-secret
+  userID: "{{ ceph_csi_rbd_user_id }}" # "rdmkube"
+  userKey: "{{ ceph_csi_rbd_user_key }}" # "<ceph-user-key>"    # ceph auth get-key client.kube
+
+cephconf: |
+  [global]
+    auth_cluster_required = cephx
+    auth_service_required = cephx
+    auth_client_required = cephx
+
+readAffinity:
+  # Recommended to set to true if running kernel 5.8 or newer.
+  enabled: true
+
+provisioner:
+
+  replicaCount: 1
+  provisioner:
+    args:
+      #   # httpEndpointPort specifies the http server port for
+      #   # diagnostics, health checks and metrics.
+      #   # Uncomment below line to enable the `http-endpoint` arg for sidecar
+      httpEndpointPort: 8090
+  resizer:
+    args:
+      httpEndpointPort: 8091
+
+  attacher:
+    args:
+      httpEndpointPort: 8093
+  snapshotter:
+      args:
+        # httpEndpointPort specifies the http server port for
+        # diagnostics, health checks and metrics.
+        # Uncomment below line to enable the `http-endpoint` arg for sidecar
+        httpEndpointPort: 8092
