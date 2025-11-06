@@ -11,7 +11,7 @@ storageClass:
   create: true
   name: ceph-rbd
   clusterID: "{{ ceph_csi_cluster_id }}" #"<your-ceph-cluster-id>"
-  pool: "{{ ceph_csi_rbd_user_key }}"
+  pool: "{{ ceph_csi_rbd_user_id }}"
   imageFeatures: "layering"
   provisionerSecret: csi-rbd-secret
   nodeStageSecret: csi-rbd-secret
