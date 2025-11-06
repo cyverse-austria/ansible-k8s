@@ -89,7 +89,7 @@ runners:
 
       [runners.kubernetes]
         namespace = "gitlab-runner"
-        image = "alpine"
+        image = "{{ gitlab_runner_image }}"
         imagePullPolicy = "IfNotPresent"
 
         # CPU and Memory Limits
