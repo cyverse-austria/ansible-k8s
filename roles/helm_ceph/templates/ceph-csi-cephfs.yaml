@@ -1,0 +1,83 @@
+# https://github.com/ceph/ceph-csi/blob/release-v3.15/charts/ceph-csi-cephfs/values.yaml
+## helm upgrade --install --namespace  ceph-csi-cephfs ceph-csi-cephfs --version 3.15.0 ceph-csi-cephfs/ceph-csi-cephfs -f cephfs.yaml
+
+csiConfig:
+  - clusterID: "${DEV_CEPH_CLUSTER_ID}" # "<your-ceph-cluster-id>"
+    monitors:
+      - "${DEV_CEPH_SUBNET}.154:6789"
+      - "${DEV_CEPH_SUBNET}.155:6789"
+      - "${DEV_CEPH_SUBNET}.156:6789"
+
+    cephFS:
+      subvolumeGroup: "rdmprodcsi"
+      netNamespaceFilePath: "{{ .kubeletDir }}/plugins/{{ .driverName }}/net"
+      radosNamespace: "csi"
+
+storageClass:
+  create: true
+  name: ceph-fs
+  fsName: cephfs_kube
+  clusterID: "${DEV_CEPH_CLUSTER_ID}" #"<your-ceph-cluster-id>"
+  # (optional) Ceph pool into which volume data shall be stored
+  # pool: <cephfs-data-pool>
+  # For eg:
+  # pool: "replicapool"
+  pool: ""
+  provisionerSecret: csi-cephfs-secret
+  nodeStageSecret: csi-cephfs-secret
+  controllerExpandSecret: csi-cephfs-secret
+  subvolumeMountPath: /volumes/rdmprodcsi
+
+  # namespace where secrets are located
+  provisionerSecretNamespace: "ceph-csi-cephfs"
+  controllerExpandSecretNamespace: "ceph-csi-cephfs"
+  nodeStageSecretNamespace: "ceph-csi-cephfs"
+
+  reclaimPolicy: Retain # for now testing..
+  allowVolumeExpansion: true
+
+# this secret is created by default in namespace "ceph-csi-rbd"
+secret:
+  create: true
+  name: csi-cephfs-secret
+  adminID: "rdmprodkubefs"
+  adminKey: "${DEV_CEPHFS_USER_KEY}"
+  userID: "rdmprodkubefs" # "<ceph-user>"         # e.g. client.kube   - without the client.
+  userKey: "${DEV_CEPHFS_USER_KEY}" # "<ceph-user-key>"    # ceph auth get-key client.kube
+
+
+cephconf: |
+  [global]
+    auth_cluster_required = cephx
+    auth_service_required = cephx
+    auth_client_required = cephx
+
+    # ceph-fuse which uses libfuse2 by default has write buffer size of 2KiB
+    # adding 'fuse_big_writes = true' option by default to override this limit
+    # see https://github.com/ceph/ceph-csi/issues/1928
+    fuse_big_writes = true
+
+readAffinity:
+  # Recommended to set to true if running kernel 5.8 or newer.
+  enabled: true
+
+provisioner:
+  replicaCount: 1
+  provisioner:
+    args:
+      #   # httpEndpointPort specifies the http server port for
+      #   # diagnostics, health checks and metrics.
+      #   # Uncomment below line to enable the `http-endpoint` arg for sidecar
+      httpEndpointPort: 8090
+  resizer:
+    args:
+      httpEndpointPort: 8091
+  snapshotter:
+      args:
+        # httpEndpointPort specifies the http server port for
+        # diagnostics, health checks and metrics.
+        # Uncomment below line to enable the `http-endpoint` arg for sidecar
+        httpEndpointPort: 8092
+
+encryptionKMSConfig:
+  encryptionKMSType: ""

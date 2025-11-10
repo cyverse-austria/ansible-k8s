@@ -58,31 +58,38 @@ defaults
     timeout check           10s
     maxconn                 3000
 
-#---------------------------------------------------------------------
-# main frontend which proxys to the backends
-#---------------------------------------------------------------------
-frontend  localhost
+frontend localhost
+    bind *:80
+    redirect scheme https
+
+frontend http2-ssl
     bind *:443 ssl crt {{ tls_pem_path }}
 
-    # keycloak
+    acl portal hdr(host) -i {{ userportal }}
     acl keycloak hdr(host) -i {{ keycloak }}
+    acl de hdr(host) -i {{ de_hostname }}
+
+
+    # HSTS (63072000 seconds)
+    http-response set-header Strict-Transport-Security max-age=63072000
+
+    use_backend discoenv if portal
+    use_backend discoenv if de
+    use_backend keycloak if keycloak
+    default_backend discoenv
+
+backend discoenv
+    option log-health-checks
+    option forwardfor
 
     http-request add-header X-Forwarded-Proto https
 
-    # userportal backend
-    acl userportal hdr(host) -i {{ userportal }}
-
-    # harbor backend
-    acl harbor hdr(host) -i {{ harbor }}
-
-    use_backend userportal if userportal
-    use_backend harbor if harbor
-    default_backend keycloak
+    balance roundrobin
+{% for host in groups['k8s-workers'] %}
+    server   s{{ loop.index }} {{ hostvars[host].ansible_fqdn }}:31378 ssl verify none check inter 5000
+{% endfor %}
 
 
-#---------------------------------------------------------------------
-# round robin balancing between the Keycloak backends
-#---------------------------------------------------------------------
 backend keycloak
     balance roundrobin
     option  log-health-checks
@@ -91,23 +98,3 @@ backend keycloak
     server   s{{ loop.index }} {{ hostvars[host].ansible_fqdn }}:31360 check
 {% endfor %}
 
-#---------------------------------------------------------------------
-# round robin balancing between the userportal backends
-#---------------------------------------------------------------------
-backend userportal
-    #redirect scheme https if !{ ssl_fc }
-    balance roundrobin
-    option  log-health-checks
-    option  forwardfor
-{% for host in groups['k8s-workers'] %}
-    server   s{{ loop.index }} {{ hostvars[host].ansible_fqdn }}:31399 check
-{% endfor %}
-
-#---------------------------------------------------------------------
-# harbor
-#---------------------------------------------------------------------
-backend harbor
-    balance roundrobin
-    option  log-health-checks
-    option  forwardfor
-    server  s1 127.0.0.1:8008 check
