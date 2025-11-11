@@ -22,7 +22,6 @@ validationFailureActionOverrides:
         - vault
         - argocd
         - monitoring # kube-prometheus-stack
-        - smtpclient  # capabilities: add: - NET_RAW        # allow DNS resolver sockets
   restrict-seccomp-strict:
     - action: audit
       namespaces:
