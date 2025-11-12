@@ -1,6 +1,6 @@
 ---
 
-# cilium_helm
+# helm_cilium
 cilium_helm_version: "1.18.2"
 
 cilium_kubeproxy_replacement: "false"
