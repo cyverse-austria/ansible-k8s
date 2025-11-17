@@ -8,7 +8,7 @@ csiConfig:
       - "{{ ceph_csi_subnet }}.156:6789"
 
 storageClass:
-  create: true
+  create: {{ ceph_csi_storageclass_create }}
   name: ceph-rbd
   clusterID: "{{ ceph_csi_cluster_id }}" #"<your-ceph-cluster-id>"
   pool: "{{ ceph_csi_rbd_user_id }}"

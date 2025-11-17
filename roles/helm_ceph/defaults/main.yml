@@ -4,3 +4,4 @@ ceph_csi_cluster_id: "<ceph-cluster-id>"
 
 ceph_csi_rbd_user_id: "<ceph-user-id>"
 ceph_csi_rbd_user_key: "<ceph-user-key>"
+ceph_csi_storageclass_create: true
