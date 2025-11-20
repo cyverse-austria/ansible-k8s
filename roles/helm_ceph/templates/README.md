@@ -9,8 +9,6 @@ Ceph Container Storage Interface (CSI) driver for RBD, CephFS.
 kubectl patch storageclass ceph-rbd -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
 ```
 
-
-
 ## CephRBD
 How to get existing volumes of images
 
