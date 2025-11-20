@@ -1,0 +1,36 @@
+---
+- name: Add Vault Helm repository
+  ansible.builtin.command: helm repo add hashicorp https://helm.releases.hashicorp.com
+  register: add_vault_repo
+  changed_when: "'has been added' in add_vault_repo.stdout or 'already exists' in add_vault_repo.stderr"
+
+- name: Update Helm repositories
+  ansible.builtin.command: helm repo update
+
+- name: Ensure directory for Vault values exists
+  ansible.builtin.file:
+    path: /etc/kubernetes/vault
+    state: directory
+    mode: '0755'
+
+- name: Render Vault values file with template
+  ansible.builtin.template:
+    src: values.yaml.j2
+    dest: /etc/kubernetes/vault/vault-values.yaml
+    mode: '0644'
+
+- name: Install or upgrade Vault via Helm
+  ansible.builtin.command: >
+    helm upgrade --install vault hashicorp/vault
+    --namespace vault
+    --create-namespace
+    --version {{ vault_helm_version }}
+    -f /etc/kubernetes/vault/vault-values.yaml
+
+- name: Wait for Vault pods to be ready
+  ansible.builtin.shell: |
+    kubectl wait --for=condition=Ready pods -n vault --timeout=300s
+  retries: 3
+  delay: 10
+  register: vault_wait
+  until: vault_wait.rc == 0

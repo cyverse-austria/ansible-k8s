@@ -1,0 +1,39 @@
+# https://github.com/hashicorp/vault-helm/blob/main/values.yaml
+
+global:
+  # enabled is the master enabled switch. Setting this to true or false
+  # will enable or disable all the components within this chart by default.
+  enabled: true
+
+server:
+  # Configure the Update Strategy Type for the StatefulSet
+  # See https://kubernetes.io/docs/concepts/workloads/controllers/statefulset/#update-strategies
+  # Options: OnDelete, RollingUpdate
+  updateStrategyType: "{{ vault_update_strategy_type | default('RollingUpdate') }}"
+
+  ha:
+    enabled: false
+  ingress:
+    enabled: {{ vault_ingress_enabled | lower }}
+    ingressClassName: nginx
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    hosts:
+      - host: {{ vault_ingress_host }}
+        paths:
+          - /
+    tls: []
+
+# The Vault Agent Injector is a mutating admission webhook in Kubernetes.
+# Its job: automatically inject Vault Agent sidecars into pods so that applications can securely fetch and renew secrets.
+injector:
+  enabled: false
+
+# The Vault CSI Provider integrates Vault with the Kubernetes Secrets Store CSI Driver.
+# It lets you mount secrets directly into volumes inside your pods, instead of using a sidecar.
+csi:
+  enabled: false
+
+ui:
+  enabled: true

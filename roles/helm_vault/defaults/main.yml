@@ -1,0 +1,4 @@
+vault_helm_version: "0.31.0"
+vault_ingress_enabled: true
+vault_ingress_host: "vault.example.com"
+vault_update_strategy_type: "RollingUpdate"
