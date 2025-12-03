@@ -26,10 +26,14 @@
     --create-namespace
     -f /etc/kubernetes/nfs-provisioner/nfs-provisioner-values.yaml
 
-# - name: Wait for NFS Provisioner pods to be ready
-#   ansible.builtin.shell: |
-#     kubectl wait --for=condition=Ready pods -n kube-system -l k8s-app=cilium --timeout=300s
-#   retries: 3
-#   delay: 10
-#   register: cilium_wait
-#   until: cilium_wait.rc == 0
+- name: Wait for NFS Provisioner pods to be ready
+  ansible.builtin.shell: |
+    kubectl wait \
+      --for=condition=Ready \
+      pods -n nfs-provisioner \
+      -l app=nfs-subdir-external-provisioner \
+      --timeout=300s
+  retries: 3
+  delay: 10
+  register: nfs_wait
+  until: nfs_wait.rc == 0
