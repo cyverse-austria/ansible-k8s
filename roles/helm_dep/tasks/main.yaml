@@ -17,3 +17,24 @@
   changed_when: "'Requirement already satisfied' not in install_k8s_collection.stderr"
   tags:
     - always
+
+- name: Install python3-venv if not already installed
+  apt:
+    name: python3-venv
+    state: present
+
+- name: Create a Python virtual environment
+  ansible.builtin.command:
+    cmd: python3 -m venv /temp/virtualenv/venv
+    creates: /temp/virtualenv/venv/bin/activate
+  become: yes
+
+- name: Install Kubernetes Python package in virtual environment
+  pip:
+    name: kubernetes
+    virtualenv: /temp/virtualenv/venv
+    virtualenv_python: /usr/bin/python3
+
+- name: Ensure the correct Python interpreter for Ansible
+  ansible.builtin.set_fact:
+    ansible_python_interpreter: /temp/virtualenv/venv/bin/python
