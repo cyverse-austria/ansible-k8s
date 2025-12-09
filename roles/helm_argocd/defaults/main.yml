@@ -6,7 +6,7 @@ argocd_oidc_client: argocd
 argocd_oidc_clientSecret: <client_secret>
 argocd_oidc_scopes: [groups]
 argocd_admin_role: somerolename
-
+argocd_empty: {}
 
 # Summary of Updated Permissions for role:project-admins:
 

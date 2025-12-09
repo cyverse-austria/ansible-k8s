@@ -214,9 +214,9 @@ repoServer:
 
   volumes:
     - name: custom-tools
-      emptyDir: {}
+      emptyDir: {{ argocd_empty }}
     - name: cmp-plugin
       configMap:
         name: cmp-plugin
     - name: cmp-tmp
-      emptyDir: {}
+      emptyDir: {{ argocd_empty }}
