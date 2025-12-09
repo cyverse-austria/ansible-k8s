@@ -23,9 +23,7 @@ spec:
         all:
           - key: "{% raw %}{{ request.operation or 'BACKGROUND' }}{% endraw %}"
             operator: NotEquals
-            value:
-              - CREATE
-              - UPDATE
+            value: ["CREATE", "UPDATE"]
       validate:
         message: "The default project may not be used in an Argo CD Application."
         pattern:
