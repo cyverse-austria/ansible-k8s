@@ -31,4 +31,3 @@
       - kubernetes
       - openshift
     state: present
-    executable: /usr/bin/pip3
