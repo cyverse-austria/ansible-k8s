@@ -27,3 +27,4 @@ argocd_repositories_default_url: https://github.com/tugraz-rdm/custom-docker-ima
 argocd_repositories_default_appId: "2285784"
 argocd_repositories_default_installationId: "94540400"
 argocd_repositories_default_privateKey: <inline_base64_key> # base64 -w 0 private-key.pem
+argocd_repositories_default_type: git
