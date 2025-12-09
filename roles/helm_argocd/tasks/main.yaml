@@ -39,7 +39,7 @@
       data:
         githubAppID: "{{ argocd_repositories_default_appId | b64encode }}"
         githubAppInstallationID: "{{ argocd_repositories_default_installationId | b64encode }}"
-        githubAppPrivateKey: "{{ argocd_repositories_default_privateKey | b64encode }}"
+        githubAppPrivateKey: "{{ argocd_repositories_default_privateKey }}"
         type: git
         url: "{{ argocd_repositories_default_url | b64encode  }}"
 
