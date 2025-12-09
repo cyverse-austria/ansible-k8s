@@ -1,4 +1,13 @@
 ---
+- name: Ensure kubernetes.core collection is installed
+  ansible.builtin.command: ansible-galaxy collection install kubernetes.core
+  register: install_k8s_collection
+  failed_when: install_k8s_collection.rc != 0 and "'Requirement already satisfied' not in install_k8s_collection.stderr"
+  changed_when: "'Requirement already satisfied' not in install_k8s_collection.stderr"
+  tags:
+    - always
+    
+# apply on the default ns
 - name: Apply Kyverno ClusterPolicy to prevent default project in Argo CD Applications
   kubernetes.core.k8s:
     api_version: kyverno.io/v1
