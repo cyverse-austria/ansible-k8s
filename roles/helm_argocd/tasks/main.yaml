@@ -1,13 +1,13 @@
 ---
-- name: Create required manifests
-  connection: local
-  gather_facts: false
-  become: false
-  tasks:
-    - name: Apply Kyverno ClusterPolicy to prevent default project in Argo CD Applications
-      kubernetes.core.k8s:
-        state: present
-        definition: "{{ lookup('template', 'kyverno-prevent-default-project.yaml') | from_yaml }}"
+# - name: Create required manifests
+#   connection: local
+#   gather_facts: false
+#   become: false
+#   tasks:
+#     - name: Apply Kyverno ClusterPolicy to prevent default project in Argo CD Applications
+#       kubernetes.core.k8s:
+#         state: present
+#         definition: "{{ lookup('template', 'kyverno-prevent-default-project.yaml') | from_yaml }}"
 
 # helm deplyment
 - name: Add Argocd Helm repository
