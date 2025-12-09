@@ -6,7 +6,12 @@
   changed_when: "'Requirement already satisfied' not in install_k8s_collection.stderr"
   tags:
     - always
-    
+- name: Verify if kubernetes.core collection is installed
+  ansible.builtin.shell: ansible-galaxy collection list | grep kubernetes.core
+  register: k8s_check
+  failed_when: k8s_check.rc != 0
+  changed_when: false
+
 # apply on the default ns
 - name: Apply Kyverno ClusterPolicy to prevent default project in Argo CD Applications
   kubernetes.core.k8s:
