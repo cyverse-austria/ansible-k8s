@@ -2,7 +2,7 @@
 - name: Apply Kyverno ClusterPolicy to prevent default project in Argo CD Applications
   kubernetes.core.k8s:
     state: present
-    definition: "{{ lookup('file', 'kyverno-prevent-default-project.yaml') | from_yaml }}"
+    definition: "{{ lookup('template', 'kyverno_prevent_default_project.yaml') | from_yaml_all }}"
 
 # helm deplyment
 - name: Add Argocd Helm repository
