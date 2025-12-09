@@ -25,9 +25,6 @@
     state: present
 
 ## ansible controller needs it
-- name: Ensure required Python libraries for Kubernetes are installed
-  pip:
-    name:
-      - kubernetes
-      - openshift
-    state: present
+- name: install kubernetes
+  ansible.builtin.pip:
+    name: kubernetes
