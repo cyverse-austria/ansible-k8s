@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: cmp-plugin
-  namespace: "argocd"
+  namespace: "{{ argocd_namespace }}"
 data:
   avp-kustomize.yaml: |
     ---

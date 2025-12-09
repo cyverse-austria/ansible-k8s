@@ -17,6 +17,11 @@
     state: present
     definition: "{{ lookup('template', 'cmp_configmap.yaml') | from_yaml_all }}"
 
+- name: Create required secret for Argo CD Vault Plugin
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'argocd_vault_plugin_secret.yaml') | from_yaml_all }}"
+
 # helm deplyment
 - name: Add Argocd Helm repository
   ansible.builtin.command: helm repo add argo https://argoproj.github.io/argo-helm
