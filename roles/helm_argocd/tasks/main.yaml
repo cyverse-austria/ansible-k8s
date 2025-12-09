@@ -37,7 +37,7 @@
   ansible.builtin.shell: |
     kubectl wait --for=condition=Ready pod \
       -n argocd \
-      -l app.kubernetes.io/instance=argocd \
+      -l app.kubernetes.io/component=repo-server
       --timeout=300s
   retries: 3
   delay: 10
