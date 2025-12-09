@@ -12,6 +12,11 @@
     state: present
     definition: "{{ lookup('template', 'kyverno_prevent_default_project.yaml') | from_yaml_all }}"
 
+- name: Apply ArgoCD Vault Plugin ConfigManagementPlugin in argocd ns
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'cmp_configmap.yaml') | from_yaml_all }}"
+
 # helm deplyment
 - name: Add Argocd Helm repository
   ansible.builtin.command: helm repo add argo https://argoproj.github.io/argo-helm
