@@ -21,7 +21,7 @@ spec:
                 - Application
       preconditions:
         all:
-          - key: "{% raw %}{{ request.operation or 'BACKGROUND' }}{% endraw %}"
+          - key: "{% raw %}{{ request.operation || 'BACKGROUND' }}{% endraw %}"
             operator: NotEquals
             value: ["CREATE", "UPDATE"]
       validate:
