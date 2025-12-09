@@ -37,11 +37,11 @@
         namespace: argocd
       type: Opaque
       data:
-        githubAppID: "{{ argocd_repositories_default_appId | b64encode }}"
-        githubAppInstallationID: "{{ argocd_repositories_default_installationId | b64encode }}"
+        githubAppID: "{{ argocd_repositories_default_appId }}"
+        githubAppInstallationID: "{{ argocd_repositories_default_installationId }}"
         # githubAppPrivateKey: "{{ argocd_repositories_default_privateKey }}"
         type: git
-        url: "{{ argocd_repositories_default_url | b64encode }}"
+        url: "{{ argocd_repositories_default_url }}"
 
 
 # helm deplyment
