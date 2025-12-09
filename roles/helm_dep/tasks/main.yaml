@@ -28,3 +28,4 @@
 - name: install kubernetes
   ansible.builtin.pip:
     name: kubernetes
+    virtualenv: /tmp/virtualenv
