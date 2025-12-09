@@ -3,7 +3,7 @@
 global:
   domain: {{ argocd_hostname }}
   image:
-    tag: "{{ argocd_version }}" # https://github.com/argoproj/argo-cd/releases
+    tag: "{{ argocd_version }}"
 server:
   ingress:
     enabled: true
@@ -186,7 +186,7 @@ repoServer:
         - name: GITHUB_APP_PRIVATE_KEY
           valueFrom:
             secretKeyRef:
-              name: {{ argocd_github_app_secret }} # already set by connected repositories
+              name: {{ argocd_github_app_secret }}
               key: githubAppPrivateKey
         - name: GITHUB_INSTALLATION_ID
           valueFrom:
