@@ -21,7 +21,7 @@
 - name: Install pipx
   apt:
     name: pipx
-    state: latest
+    state: present
 
 - name: Install kubernetes
   community.general.pipx:
