@@ -1,6 +1,5 @@
 ---
 - name: Create required manifests
-  hosts: localhost
   connection: local
   gather_facts: false
   tasks:
