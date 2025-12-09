@@ -25,7 +25,24 @@
 - name: Create required github app credentials
   kubernetes.core.k8s:
     state: present
-    definition: "{{ lookup('template', 'github_app_prv_key.yaml') | from_yaml_all }}"
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        # annotations:
+        #   managed-by: argocd.argoproj.io
+        # labels:
+        #   argocd.argoproj.io/secret-type: repository
+        name: repo-custom-docker-images
+        namespace: argocd
+      type: Opaque
+      data:
+        githubAppID: {{ argocd_repositories_default_appId | b64encode }}
+        githubAppInstallationID: {{ argocd_repositories_default_installationId | b64encode }}
+        githubAppPrivateKey: {{ argocd_repositories_default_privateKey | b64encode }}
+        type: git
+        url: {{ argocd_repositories_default_url | b64encode  }}
+
 
 # helm deplyment
 - name: Add Argocd Helm repository
