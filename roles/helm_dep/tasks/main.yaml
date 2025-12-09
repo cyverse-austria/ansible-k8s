@@ -18,6 +18,12 @@
   tags:
     - always
 
+
+- name: Ensure python3-pip is installed
+  package:
+    name: python3-pip
+    state: present
+
 ## ansible controller needs it
 - name: Ensure required Python libraries for Kubernetes are installed
   pip:
@@ -25,3 +31,4 @@
       - kubernetes
       - openshift
     state: present
+    executable: /usr/bin/pip3
