@@ -3,6 +3,7 @@
   kubernetes.core.k8s:
     state: present
     definition: "{{ lookup('file', 'kyverno-prevent-default-project.yaml') | from_yaml }}"
+
 # helm deplyment
 - name: Add Argocd Helm repository
   ansible.builtin.command: helm repo add argo https://argoproj.github.io/argo-helm
