@@ -29,17 +29,12 @@
       apiVersion: v1
       kind: Secret
       metadata:
-        # annotations:
-        #   managed-by: argocd.argoproj.io
-        # labels:
-        #   argocd.argoproj.io/secret-type: repository
         name: repo-custom-docker-images
         namespace: argocd
       type: Opaque
       data:
         githubAppID: "{{ argocd_repositories_default_appId }}"
         githubAppInstallationID: "{{ argocd_repositories_default_installationId }}"
-        # githubAppPrivateKey: "{{ argocd_repositories_default_privateKey }}"
         type: git
         url: "{{ argocd_repositories_default_url }}"
 
