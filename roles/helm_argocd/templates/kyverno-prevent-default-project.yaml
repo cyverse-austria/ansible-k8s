@@ -21,7 +21,7 @@ spec:
                 - Application
       preconditions:
         all:
-          - key: "{{ request.operation or 'BACKGROUND' }}"
+          - key: "{{ request.operation || 'BACKGROUND' }}"
             operator: NotEquals
             value:
               - CREATE
