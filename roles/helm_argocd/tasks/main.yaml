@@ -2,6 +2,7 @@
 - name: Create required manifests
   connection: local
   gather_facts: false
+  become: false
   tasks:
     - name: Apply Kyverno ClusterPolicy to prevent default project in Argo CD Applications
       kubernetes.core.k8s:
