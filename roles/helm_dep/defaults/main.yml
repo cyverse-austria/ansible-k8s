@@ -1,0 +1,22 @@
+argocd_helm_version: "9.1.7"
+argocd_version: "v3.2.1"  # https://github.com/argoproj/argo-cd/releases
+argocd_hostname: "argocd.example.com"
+argocd_oidc_issuer: https://keycloak.example.com/auth/realms/test
+argocd_oidc_client: argocd
+argocd_oidc_clientSecret: <client_secret>
+argocd_oidc_scopes: [groups]
+argocd_admin_role: somerolename
+argocd_empty: {}
+
+# Summary of Updated Permissions for role:project-admins:
+
+# Applications and Projects: Full access to manage all applications and projects.
+# Repositories: Can view and list all repositories but cannot create or update them.
+# Clusters: Can view and list all clusters but cannot create or update them.
+# Default Project: Can only view the default project, but cannot modify it in any way.
+argocd_dev_role: somerolename
+
+# Make sure the secret already exist, this secret is used to authenticate to a 
+# github app of a project and used for argocd repositories 
+# already set by connected repositories
+argocd_github_app_secret: repo-4263194373

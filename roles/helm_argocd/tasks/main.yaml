@@ -4,6 +4,7 @@
     state: present
     definition: "{{ lookup('template', 'kyverno-prevent-default-project.yaml') | from_yaml }}"
 
+# helm deplyment
 - name: Add Argocd Helm repository
   ansible.builtin.command: helm repo add argo https://argoproj.github.io/argo-helm
   register: add_argocd_repo
