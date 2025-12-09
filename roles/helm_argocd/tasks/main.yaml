@@ -1,4 +1,12 @@
 ---
+
+- name: create the ArgoCD namespace
+  kubernetes.core.k8s:
+    name: "argocd"
+    state: present
+    kind: namespace
+    api_version: v1
+
 - name: Apply Kyverno ClusterPolicy to prevent default project in Argo CD Applications
   kubernetes.core.k8s:
     state: present
