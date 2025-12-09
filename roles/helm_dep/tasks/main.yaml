@@ -18,14 +18,12 @@
   tags:
     - always
 
-
 - name: Ensure python3-pip is installed
   package:
     name: python3-pip
     state: present
 
-## ansible controller needs it
-- name: install kubernetes
-  ansible.builtin.pip:
+- name: Install kubernetes
+  community.general.pipx:
     name: kubernetes
-    virtualenv: /tmp/virtualenv
+    state: latest
