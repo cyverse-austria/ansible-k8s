@@ -41,7 +41,7 @@
         githubAppInstallationID: "{{ argocd_repositories_default_installationId | b64encode }}"
         # githubAppPrivateKey: "{{ argocd_repositories_default_privateKey }}"
         type: git
-        url: "{{ argocd_repositories_default_url | b64encode  }}"
+        url: "{{ argocd_repositories_default_url | b64encode }}"
 
 
 # helm deplyment
