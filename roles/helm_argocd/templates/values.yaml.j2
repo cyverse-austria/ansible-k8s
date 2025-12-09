@@ -82,20 +82,6 @@ configs:
     # The scope value can be a string, or a list of strings.
     scopes: "{{ argocd_oidc_scopes }}"
 
-  # test..
-  repositories:
-    - url: https://github.com/tugraz-rdm/custom-docker-images.git
-      name: custom-docker-images
-      type: git
-      auth:
-        # Specify authentication method here
-        githubApp:
-          appId: "2285784"
-          privateKeySecret:
-            name: github-app-private-key
-            key: private-key
-          installationId: "Iv23lij3yuF1Iw1CRWh8"
-
 ##################################
 ##### ArgoCD Vault Plugin (ACVP)#
 ##################################

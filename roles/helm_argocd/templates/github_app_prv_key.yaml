@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  annotations:
+    managed-by: argocd.argoproj.io
+  labels:
+    argocd.argoproj.io/secret-type: repository
+  name: repo-custom-docker-images
+  namespace: argocd
+type: Opaque
+data:
+  githubAppID: 2285784
+  githubAppInstallationID: 94540400
+  githubAppPrivateKey: <base64-encoded-key>
+  type: git
+  url: https://github.com/tugraz-rdm/custom-docker-images.git
