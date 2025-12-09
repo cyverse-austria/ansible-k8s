@@ -24,8 +24,6 @@
 
 - name: Create required github app credentials
   kubernetes.core.k8s:
-
-  kubernetes.core.k8s:
     state: present
     definition:
       apiVersion: v1
