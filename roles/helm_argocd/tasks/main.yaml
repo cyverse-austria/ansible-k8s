@@ -33,13 +33,13 @@
     --version {{ argocd_helm_version }}
     -f /etc/kubernetes/argocd/argocd-values.yaml
 
-- name: Wait for ArgoCD pods to be ready
-  ansible.builtin.shell: |
-    kubectl wait --for=condition=Ready pod \
-      -n argocd \
-      -l app.kubernetes.io/component=repo-server
-      --timeout=300s
-  retries: 3
-  delay: 10
-  register: argocd_wait
-  until: argocd_wait.rc == 0
+# - name: Wait for ArgoCD pods to be ready
+#   ansible.builtin.shell: |
+#     kubectl wait --for=condition=Ready pod \
+#       -n argocd \
+#       -l app.kubernetes.io/component=repo-server
+#       --timeout=300s
+#   retries: 3
+#   delay: 10
+#   register: argocd_wait
+#   until: argocd_wait.rc == 0
