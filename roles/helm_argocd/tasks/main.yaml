@@ -1,0 +1,36 @@
+---
+- name: Add Argocd Helm repository
+  ansible.builtin.command: helm repo add argo https://argoproj.github.io/argo-helm
+  register: add_argocd_repo
+  changed_when: "'has been added' in add_argocd_repo.stdout or 'already exists' in add_argocd_repo.stderr"
+
+- name: Update Helm repositories
+  ansible.builtin.command: helm repo update
+
+- name: Ensure directory for Argocd values exists
+  ansible.builtin.file:
+    path: /etc/kubernetes/argocd
+    state: directory
+    mode: '0755'
+
+- name: Render Argocd values file with template
+  ansible.builtin.template:
+    src: values.yaml.j2
+    dest: /etc/kubernetes/argocd/argocd-values.yaml
+    mode: '0644'
+
+- name: Install or upgrade Argocd via Helm
+  ansible.builtin.command: >
+    helm upgrade --install argocd argo/argo-cd
+    --namespace argocd
+    --create-namespace
+    --version {{ argocd_helm_version }}
+    -f /etc/kubernetes/argocd/argocd-values.yaml
+
+- name: Wait for ArgoCD pods to be ready
+  ansible.builtin.shell: |
+    kubectl wait --for=condition=Ready pods -n argocd --selector=app.kubernetes.io/instance=argocd --timeout=300s
+  retries: 3
+  delay: 10
+  register: argocd_wait
+  until: argocd_wait.rc == 0
