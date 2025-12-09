@@ -22,6 +22,11 @@
     state: present
     definition: "{{ lookup('template', 'argocd_vault_plugin_secret.yaml') | from_yaml_all }}"
 
+- name: Create required github app credentials
+  kubernetes.core.k8s:
+    state: present
+    definition: "{{ lookup('template', 'github_app_prv_key.yaml') | from_yaml_all }}"
+
 # helm deplyment
 - name: Add Argocd Helm repository
   ansible.builtin.command: helm repo add argo https://argoproj.github.io/argo-helm

@@ -9,8 +9,8 @@ metadata:
   namespace: argocd
 type: Opaque
 data:
-  githubAppID: 2285784
-  githubAppInstallationID: 94540400
-  githubAppPrivateKey: <base64-encoded-key>
+  githubAppID: {{ argocd_repositories_default_appId }}
+  githubAppInstallationID: {{ argocd_repositories_default_installationId}}
+  githubAppPrivateKey: {{ argocd_repositories_default_privateKey}}
   type: git
-  url: https://github.com/tugraz-rdm/custom-docker-images.git
+  url: {{ argocd_repositories_default_url }}

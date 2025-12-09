@@ -21,3 +21,9 @@ argocd_dev_role: somerolename
 # github app of a project and used for argocd repositories 
 # already set by connected repositories
 argocd_github_app_secret: repo-4263194373
+
+## Gitub app credentials
+argocd_repositories_default_url: https://github.com/tugraz-rdm/custom-docker-images.git
+argocd_repositories_default_appId: 2285784
+argocd_repositories_default_installationId: 94540400
+argocd_repositories_default_privateKey: <inline_base64_key>
