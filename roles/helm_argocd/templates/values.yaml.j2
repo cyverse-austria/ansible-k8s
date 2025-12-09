@@ -106,7 +106,7 @@ repoServer:
   extraContainers:
     - name: avp-kustomize
       command: [/var/run/argocd/argocd-cmp-server]
-      image: quay.io/argoproj/argocd:{{ .Values.global.image.tag }}
+      image: quay.io/argoproj/argocd:{{ argocd_version }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
@@ -129,7 +129,7 @@ repoServer:
 
     - name: avp
       command: [/var/run/argocd/argocd-cmp-server]
-      image: quay.io/argoproj/argocd:{{ .Values.global.image.tag }}
+      image: quay.io/argoproj/argocd:{{ argocd_version }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
@@ -152,7 +152,7 @@ repoServer:
 
     - name: avp-helm-inline-values
       command: [/var/run/argocd/argocd-cmp-server]
-      image: quay.io/argoproj/argocd:{{ .Values.global.image.tag }}
+      image: quay.io/argoproj/argocd:{{ argocd_version }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
@@ -175,7 +175,7 @@ repoServer:
 
     - name: avp-helm-files
       command: [/var/run/argocd/argocd-cmp-server]
-      image: mbwali/argocd-avp:{{ .Values.global.image.tag }}
+      image: mbwali/argocd-avp:{{ argocd_version }}
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
@@ -214,9 +214,9 @@ repoServer:
 
   volumes:
     - name: custom-tools
-      emptyDir: {{ argocd_empty }}
+      emptyDir: {}
     - name: cmp-plugin
       configMap:
         name: cmp-plugin
     - name: cmp-tmp
-      emptyDir: {{ argocd_empty }}
+      emptyDir: {}
