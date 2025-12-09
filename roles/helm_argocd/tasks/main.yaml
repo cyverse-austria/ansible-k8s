@@ -42,6 +42,7 @@
         type: "{{ argocd_repositories_default_type | b64encode }}"
         url: "{{ argocd_repositories_default_url | b64encode }}"
         githubAppPrivateKey: "{{ argocd_repositories_default_privateKey }}"
+        # project: dev
 
 
 # helm deplyment
