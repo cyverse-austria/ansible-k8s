@@ -100,6 +100,7 @@
     src: values.yaml.j2
     dest: /etc/kubernetes/argocd/argocd-values.yaml
     mode: '0644'
+    force: yes
 
 - name: Install or upgrade Argocd via Helm
   ansible.builtin.command: >
