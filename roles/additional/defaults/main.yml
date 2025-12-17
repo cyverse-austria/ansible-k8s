@@ -1,0 +1,5 @@
+harbor_robot_secret: replace_me
+harbor_url: replace_me
+harbor_robot_name: replace_me
+vice_image_pull_secret: pull-secret-name
+lcalyze_ns: replace_me
