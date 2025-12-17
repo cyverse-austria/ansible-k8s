@@ -1,4 +1,12 @@
 ---
+# this is temp- should find a way to avoid
+- name: create the "{{ lcalyze_ns }}" namespace
+  kubernetes.core.k8s:
+    name: "{{ lcalyze_ns }}"
+    state: present
+    kind: namespace
+    api_version: v1
+
 - name: create the harbor json file
   ansible.builtin.copy:
     dest: "harbor_login.json"
@@ -17,14 +25,14 @@
         }
       }
 
-- name: create the harbor image pull secret
+- name: Create the harbor image pull secret
   kubernetes.core.k8s:
     state: present
     force: true
     definition:
       apiVersion: v1
       data:
-        .dockerconfigjson: "{{ dockerconfigjson_content | b64encode }}"
+        .dockerconfigjson: "{{ dockerconfigjson_content | to_json | b64encode }}"
       kind: Secret
       metadata:
         name: "{{ image_pull_secret_name }}"
