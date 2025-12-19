@@ -18,8 +18,6 @@
       {
         "auths": {
           "{{ harbor_url }}": {
-            "username": "{{ harbor_robot_name }}",
-            "password": "{{ harbor_robot_secret }}",
             "auth": "{{ (harbor_robot_name + ':' + harbor_robot_secret) | b64encode }}"
           }
         }
