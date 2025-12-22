@@ -3,4 +3,4 @@ dependencies:
   # - { role: forced-fact-gathering }
   - role: gatherer_facts_from
     vars:
-      role_var: "{{ groups['k8s-worker'] }}"
+      role_var: "{{ groups['agent'] }}"
