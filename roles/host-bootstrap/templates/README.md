@@ -18,3 +18,8 @@ ssh-keygen -t ed25519 -f ~/.ssh/ansible
 ansible-playbook -i inventory_bootstrap.ini bootstrap.yml \
         -e "ansible_pub_key_file=~/.ssh/ansible.pub"
 ```
+
+
+## CI
+make sure you have the private key of ansible user also.
+that would be used to ssh to ansible user via the gitlab ci.
