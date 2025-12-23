@@ -13,13 +13,8 @@ ssh @jumphost
 ssh-keygen -t ed25519 -f ~/.ssh/ansible
 ```
 
-2. Export `ANSIBLE_PUB_KEY` (control node)
-```bash
-export ANSIBLE_PUB_KEY=somepublicekey
-```
-
-# Run
+# Run playbook
 ```bash
 ansible-playbook -i inventory_bootstrap.ini bootstrap.yml \
-        -e "ansible_pub_key=$ANSIBLE_PUB_KEY"
+        -e "ansible_pub_key_file=~/.ssh/ansible.pub"
 ```
