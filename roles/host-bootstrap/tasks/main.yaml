@@ -15,7 +15,7 @@
 - name: Install SSH public key for ansible
   ansible.posix.authorized_key:
     user: ansible
-    key: "{{ ansible_pub_key }}"
+    key: "{{ ansible_pub_key | trim }}"
     state: present
 
 - name: Ensure sudo is installed
