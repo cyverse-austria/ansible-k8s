@@ -13,9 +13,9 @@
     mode: '0700'
 
 - name: Install SSH public key for ansible
-  authorized_key:
+  ansible.posix.authorized_key:
     user: ansible
-    key: "{{ ANSIBLE_PUB_KEY }}"
+    key: "{{ ansible_pub_key }}"
     state: present
 
 - name: Ensure sudo is installed
