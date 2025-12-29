@@ -1,11 +1,11 @@
 ---
-- name: Ensure Helm is installed for the remote user
-  ansible.builtin.shell: |
-    if ! command -v helm &>/dev/null; then
-      curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-    fi
-  args:
-    executable: /bin/bash
+# - name: Ensure Helm is installed for the remote user
+#   ansible.builtin.shell: |
+#     if ! command -v helm &>/dev/null; then
+#       curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+#     fi
+#   args:
+#     executable: /bin/bash
 
 # Ensure kubernetes.core collection is installed (if not already installed)
 ## you dont need this is new multinode k3s cyverse.
