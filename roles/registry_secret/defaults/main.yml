@@ -5,15 +5,14 @@ image_pull_secret_name: pull-secret-name
 lcalyze_ns: replace_me
 
 # Gitlab registry
-
-# GitLab registry secret toggle
+## GitLab registry secret toggle
 gitlab_registry_secret: false   # set to true to create the secret
 
-# GitLab Container Registry URL
+## GitLab Container Registry URL
 gitlab_registry_url: "replace_me"  # e.g., registry.gitlab.com/mygroup/myproject
 
-# Kubernetes secret name for the GitLab registry
+## Kubernetes secret name for the GitLab registry
 gitlab_image_pull_secret_name: "replace_me"  # e.g., gitlab-registry-secret
 
-# GitLab access token
+## GitLab access token
 gitlab_token: "replace_me"  # personal access token with read_registry scope, or CI_JOB_TOKEN
