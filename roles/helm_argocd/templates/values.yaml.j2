@@ -74,7 +74,7 @@ configs:
       # p, role:project-admins, clusters, create, *, allow
       # p, role:project-admins, clusters, update, *, allow
       # allow logs to view
-      p, project-admins, logs, get, *, allow
+      p, role:project-admins, logs, get, *, allow
 
       # Restrict access to the "default" project
       p, role:project-admins, projects, get, default, allow
