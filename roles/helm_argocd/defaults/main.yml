@@ -20,7 +20,7 @@ argocd_dev_role: dev_rolename
 
 # This allows deleting any Pod managed by the lcalyze application in project devel.
 ## project/application
-argocd_allow_pod_deletion_application: devel/lcalyze
+argocd_allow_pod_deletion_application: dev/inveniordm
 
 ## Gitub app credentials
 argocd_github_app_secret: <github_app_secret_name>
