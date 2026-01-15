@@ -50,6 +50,7 @@ configs:
     create: true
     policy.default: role:unauthenticated
     policy.csv: |
+      # https://github.com/argoproj/argo-cd/blob/master/assets/builtin-policy.csv
       g, {{ argocd_admin_role }}, role:admin
       
       # for readonly we will have a new group
