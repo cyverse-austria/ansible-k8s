@@ -17,6 +17,10 @@ argocd_admin_role: admin_rolename
 # Default Project: Can only view the default project, but cannot modify it in any way.
 argocd_dev_role: dev_rolename
 
+
+# This allows deleting any Pod managed by the lcalyze application in project devel.
+argocd_allow_pod_deletion_application: devel/lcalyze//Pod
+
 ## Gitub app credentials
 argocd_github_app_secret: <github_app_secret_name>
 argocd_repositories_default_url: https://github.com/tugraz-rdm/custom-docker-images.git
@@ -24,3 +28,4 @@ argocd_repositories_default_appId: "2285784"
 argocd_repositories_default_installationId: "94540400"
 argocd_repositories_default_privateKey: <inline_base64_key> # base64 -w 0 private-key.pem 
 argocd_repositories_default_type: git
+
