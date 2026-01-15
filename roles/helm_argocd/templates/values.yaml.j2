@@ -66,7 +66,7 @@ configs:
       p, role:project-admins, applications, create, *, allow
       p, role:project-admins, applications, update, *, allow
 
-      # allow only the lcalyze applications delete of pod: devel/lcalyze
+      # allow only the lcalyze applications delete of pod: project/application
       p, role:project-admins, applications, delete/*/Pod/*/*, {{ argocd_allow_pod_deletion_application }}, allow
     
       # p, role:project-admins, projects, *, *, allow
