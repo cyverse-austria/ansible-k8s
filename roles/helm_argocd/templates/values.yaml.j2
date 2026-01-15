@@ -66,6 +66,9 @@ configs:
       p, role:project-admins, applications, create, *, allow
       p, role:project-admins, applications, update, *, allow
 
+      # allow only the lcalyze applications delete of pod: devel/lcalyze
+      p, role:project-admins, applications, delete/*/Pod/*/*, {{ argocd_allow_pod_deletion_application }}, allow
+    
       # p, role:project-admins, projects, *, *, allow
       p, role:project-admins, projects, get, *, allow
 
@@ -77,9 +80,6 @@ configs:
       p, role:project-admins, clusters, get, *, allow
       p, role:project-admins, clusters, list, *, allow
  
-      # allow only the lcalyze applications delete of pod: devel/lcalyze//Pod
-      p, role:project-admins, applications, delete-resource, {{ argocd_allow_pod_deletion_application }}/*/*, allow
-
       # allow logs to view
       p, role:project-admins, logs, get, *, allow
 
