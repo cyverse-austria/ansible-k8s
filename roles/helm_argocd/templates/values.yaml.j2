@@ -57,9 +57,16 @@ configs:
 
       g, {{ argocd_dev_role }}, role:project-admins
 
-      # Full permissions to manage applications and projects
-      p, role:project-admins, applications, *, *, allow
-      p, role:project-admins, projects, *, *, allow
+      # # Full permissions to manage applications and projects
+      # p, role:project-admins, applications, *, *, allow
+
+      p, role:project-admins, applications, get, *, allow
+      p, role:project-admins, applications, list, *, allow
+      p, role:project-admins, applications, create, *, allow
+      p, role:project-admins, applications, update, *, allow
+
+      # p, role:project-admins, projects, *, *, allow
+      p, role:project-admins, projects, get, *, allow
 
       # Full permissions to manage repositories
       p, role:project-admins, repositories, get, *, allow
