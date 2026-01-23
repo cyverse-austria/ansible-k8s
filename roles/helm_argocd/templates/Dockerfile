@@ -1,7 +1,7 @@
 
 # https://github.com/argoproj/argo-helm/blob/main/charts/argo-cd/Chart.yaml
-# docker build -t mbwali/argocd-avp:v3.2.5 .
-FROM quay.io/argoproj/argocd:v3.2.5
+# docker build -t mbwali/argocd-avp:v3.2.6 .
+FROM quay.io/argoproj/argocd:v3.2.6
 
 USER root
 
