@@ -18,7 +18,7 @@ argocd_admin_role: admin_rolename
 argocd_dev_role: dev_rolename
 
 
-# This allows deleting any Pod managed by the lcalyze application in project devel.
+# This allows deleting any Pod managed by the inveniordm application in project dev.
 ## project/application
 argocd_allow_pod_deletion_application: dev/inveniordm
 
