@@ -1,0 +1,6 @@
+# https://github.com/argoproj/argo-helm/blob/main/charts/argocd-image-updater/values.yaml
+
+config:
+  # -- Argo CD Image Updater registries list configuration. More information [here](https://argocd-image-updater.readthedocs.io/en/stable/configuration/registries/).
+  # https://argocd-image-updater.readthedocs.io/en/stable/configuration/registries/#configuration-format
+  registries: []
