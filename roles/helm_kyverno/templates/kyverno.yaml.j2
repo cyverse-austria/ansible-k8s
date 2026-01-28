@@ -17,3 +17,9 @@ reportsController:
             - get
             - list
             - watch
+
+
+admissionController:
+  autoscaling:
+    # -- Enable horizontal pod autoscaling
+    enabled: {{ kyverno_autoscaling }}
