@@ -1,2 +1,0 @@
-argocd_image_updater_namespace: "argocd"
-argocd_image_updater_helm_version: "1.0.5"

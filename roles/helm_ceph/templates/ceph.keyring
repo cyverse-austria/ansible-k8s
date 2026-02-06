@@ -1,3 +1,0 @@
-[client.rdmkube]
-key = ${DEV_CEPHRBD_USER_KEY}
-
