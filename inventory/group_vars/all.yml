@@ -10,8 +10,9 @@ cilium_hubble_ui_ingress_enabled: false
 cilium_ingress_host: "hubble.example.com"
 cilium_debug_enabled: false
 cilium_debug_verbose: ""
-
-
+cilium_clusterPoolIPv4PodCIDRList: "10.0.0.0/8" # k8s=10.0.0.0/8 / k3s=10.42.0.0/16
+cilium_operator_replicas: 2
+cilium_enforce_mode: "default"
 
 # k8s-controller-haproxy
 kubernetes_network: 10.244.0.0/16            # Pod network # will be overriden by Cilium (10.0.0.0/8)

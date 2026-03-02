@@ -1,6 +1,0 @@
-- name: Bootstrap ansible user
-  hosts: all
-  gather_facts: true
-  become: true
-  roles:
-    - role: host-bootstrap

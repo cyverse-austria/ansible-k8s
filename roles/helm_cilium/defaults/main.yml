@@ -1,0 +1,17 @@
+cilium_helm_version: "1.18.3"
+
+cilium_kubeproxy_replacement: "false"
+cilium_ingress_class: "nginx"
+cilium_hubble_ui_enabled: false
+cilium_hubble_ui_ingress_enabled: false
+cilium_ingress_host: "hubble.example.com"
+cilium_debug_enabled: false
+cilium_debug_verbose: ""
+cilium_clusterPoolIPv4PodCIDRList: "10.0.0.0/8"
+cilium_operator_replicas: 2
+cilium_enforce_mode: "default"
+
+## ingress controller
+cilium_ingress_controller_enable: false
+cilium_ingress_controller_node_port_http: 30080
+cilium_ingress_controller_node_port_https: 30443
