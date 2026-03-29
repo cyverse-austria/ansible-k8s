@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: gatherer_facts_from
+    vars:
+      role_var: "{{ groups['agent'] }}"

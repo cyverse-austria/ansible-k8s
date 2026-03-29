@@ -85,7 +85,7 @@ backend discoenv
     http-request add-header X-Forwarded-Proto https
 
     balance roundrobin
-{% for host in groups['k8s-workers'] %}
+{% for host in groups['agent'] %}
     server   s{{ loop.index }} {{ hostvars[host].ansible_fqdn }}:31378 ssl verify none check inter 5000
 {% endfor %}
 
@@ -94,7 +94,7 @@ backend keycloak
     balance roundrobin
     option  log-health-checks
     option  forwardfor
-{% for host in groups['k8s-workers'] %}
+{% for host in groups['agent'] %}
     server   s{{ loop.index }} {{ hostvars[host].ansible_fqdn }}:31360 check
 {% endfor %}
 
